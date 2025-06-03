@@ -15,7 +15,8 @@ SFML_LIBS   := -lsfml-graphics -lsfml-window -lsfml-system
 # Python configuration
 PYTHON      := python3
 PIP         := pip3
-AI_REQUIREMENTS := requirements.txt
+PYINSTALLER := $(PYTHON) -m PyInstaller
+AI_REQUIREMENTS := src/ai/requirements.txt
 
 DEBUG ?= 0
 ifeq ($(DEBUG),1)
@@ -54,7 +55,7 @@ BLUE    := $(shell echo -e "\033[0;34m")
 NC      := $(shell echo -e "\033[0m")
 
 # === RULES ===
-all: $(NAME_SERVER) $(NAME_GUI) setup_ai
+all: $(NAME_SERVER) setup_ai
 	@echo "$(GREEN)[OK] Full build complete.$(NC)"
 
 $(OBJ_DIR)/%.o: $(SERVER_DIR)/%.c | $(OBJ_DIR)
@@ -75,14 +76,17 @@ $(OBJ_DIR):
 	$(SILENT)mkdir -p $(OBJ_DIR)
 
 # === Python AI Rules ===
-setup_ai:
+setup_ai: build_ai
 	@echo "$(BLUE)[SETUP] Installing Python dependencies...$(NC)"
 	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)
 	@echo "$(GREEN)[OK] Python dependencies installed.$(NC)"
 
-run_ai:
-	@echo "$(BLUE)[RUN] Starting AI client...$(NC)"
-	$(SILENT)$(PYTHON) $(AI_DIR)/main.py
+build_ai: setup_ai
+	@echo "$(BLUE)[BUILD] Building AI binary...$(NC)"
+	$(SILENT)cd $(AI_DIR) && $(PYINSTALLER) --onefile --name $(NAME_AI) main.py
+	$(SILENT)mv $(AI_DIR)/dist/$(NAME_AI) .
+	$(SILENT)rm -rf $(AI_DIR)/build $(AI_DIR)/dist $(AI_DIR)/$(NAME_AI).spec
+	@echo "$(GREEN)[OK] AI binary built.$(NC)"
 
 test_ai:
 	@echo "$(BLUE)[TEST] Running AI tests...$(NC)"
@@ -95,15 +99,16 @@ clean_ai:
 	$(SILENT)find $(AI_DIR) -type d -name "*.egg-info" -delete
 	$(SILENT)find $(AI_DIR) -type d -name ".pytest_cache" -delete
 	$(SILENT)find $(AI_DIR) -type d -name ".coverage" -delete
+	$(SILENT)rm -f $(NAME_AI)
 
 clean: clean_ai
 	$(SILENT)$(RM) -r $(OBJ_DIR)
 	@echo "$(VIOLET)[CLEAN] Object files removed.$(NC)"
 
 fclean: clean
-	$(SILENT)$(RM) $(NAME_SERVER) $(NAME_GUI)
+	$(SILENT)$(RM) $(NAME_SERVER) $(NAME_GUI) $(NAME_AI)
 	@echo "$(VIOLET)[FCLEAN] Binaries removed.$(NC)"
 
 re: fclean all
 
-.PHONY: all clean fclean re run_ai setup_ai test_ai clean_ai
+.PHONY: all clean fclean re setup_ai test_ai clean_ai build_ai
