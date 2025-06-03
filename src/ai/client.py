@@ -94,4 +94,4 @@ class ZappyClient:
         """Ferme la connexion avec le serveur."""
         if self.socket:
             self.socket.close()
-            self.socket = None 
+            self.socket = None

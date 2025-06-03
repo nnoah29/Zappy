@@ -96,6 +96,7 @@ clean_ai:
 	@echo "$(VIOLET)[CLEAN] Cleaning Python cache files...$(NC)"
 	$(SILENT)find $(AI_DIR) -type f -name "*.pyc" -delete
 	$(SILENT)find $(AI_DIR) -type d -name "__pycache__" -delete
+	$(SILENT)rm -rf ".pytest_cache"
 	$(SILENT)find $(AI_DIR) -type d -name "*.egg-info" -delete
 	$(SILENT)find $(AI_DIR) -type d -name ".pytest_cache" -delete
 	$(SILENT)find $(AI_DIR) -type d -name ".coverage" -delete
