@@ -10,28 +10,25 @@
 */
 
 
-#ifndef MY_H
-#define MY_H
-#include <unistd.h>
+#ifndef COMMANDES_H
+#define COMMANDES_H
 
-#include "Server.h"
-#define MAX_TEAMS 10
+#define MAX_COMMANDS 10
+#include <time.h>
 
-typedef struct size {
-    int width;
-    int height;
-} size;
+typedef struct {
+    char *raw_cmd;
+    double duration;
+    struct timespec ready_at;
+} Command;
 
-/// Structure pour récupérer le parsing des arguments
-typedef struct configServer {
-    int port;
-    int map_w;
-    int map_h;
-    char *names[MAX_TEAMS];
-    int nbClients;
-    int freq;
-} configServer;
+typedef struct {
+    Command commands[MAX_COMMANDS];
+    int head;
+    int tail;
+    int size;
+} CommandQueue;
 
-void exit_error(char *error, int degree);
-void closeServer(Server *server);
-#endif //MY_H
+int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struct timespec now);
+
+#endif //COMMANDES_H

@@ -16,6 +16,7 @@
 #include <string.h>
 #include <bits/signum-generic.h>
 
+#include "my.h"
 #include "Server.h"
 
 int help(int ac, char **av) {
@@ -29,15 +30,26 @@ int help(int ac, char **av) {
     return 84;
 }
 
+configServer *parsing(int ac, char **av)
+{
+    configServer *server = malloc(sizeof(configServer));
+    ///
+
+
+    ///
+    return server;
+}
+
 int main(int ac, char **av) {
     if (ac != 3)
         return help(ac, av);
 
-    signal(SIGINT, handle_signal);
+    configServer *conf = parsing(ac, av);
 
     const int port = atoi(av[1]);
-    Server server;
-    initServer(&server, port);
-    runServer(&server);
+    Server *server = initServer(conf);
+    runServer(server);
+    closeServer(server);
+    free(conf);
     return 0;
 }

@@ -10,4 +10,8 @@ add_executable(SERVER main.c
         SessionClient.h
         Utilitaires.c
         my.h
+        Clock.c
+        Clock.h
+        Commandes.c
+        Commandes.h
 )
