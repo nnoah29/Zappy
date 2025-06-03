@@ -12,6 +12,11 @@ LDFLAGS     := -ldl
 
 SFML_LIBS   := -lsfml-graphics -lsfml-window -lsfml-system
 
+# Python configuration
+PYTHON      := python3
+PIP         := pip3
+AI_REQUIREMENTS := requirements.txt
+
 DEBUG ?= 0
 ifeq ($(DEBUG),1)
 	CFLAGS   += -g -DDEBUG
@@ -32,7 +37,7 @@ OBJ_DIR      := obj
 
 SERVER_DIR   := $(SRC_DIR)/SERVER
 GUI_DIR      := $(SRC_DIR)/GUI
-AI_DIR       := $(SRC_DIR)/AI
+AI_DIR       := $(SRC_DIR)/ai
 
 # === FILES ===
 SERVER_SRCS := $(shell find $(SERVER_DIR) -maxdepth 1 -name '*.c')
@@ -49,7 +54,7 @@ BLUE    := $(shell echo -e "\033[0;34m")
 NC      := $(shell echo -e "\033[0m")
 
 # === RULES ===
-all: $(NAME_SERVER) $(NAME_GUI)
+all: $(NAME_SERVER) $(NAME_GUI) setup_ai
 	@echo "$(GREEN)[OK] Full build complete.$(NC)"
 
 $(OBJ_DIR)/%.o: $(SERVER_DIR)/%.c | $(OBJ_DIR)
@@ -69,7 +74,29 @@ $(NAME_GUI): $(GUI_OBJS)
 $(OBJ_DIR):
 	$(SILENT)mkdir -p $(OBJ_DIR)
 
-clean:
+# === Python AI Rules ===
+setup_ai:
+	@echo "$(BLUE)[SETUP] Installing Python dependencies...$(NC)"
+	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)
+	@echo "$(GREEN)[OK] Python dependencies installed.$(NC)"
+
+run_ai:
+	@echo "$(BLUE)[RUN] Starting AI client...$(NC)"
+	$(SILENT)$(PYTHON) $(AI_DIR)/main.py
+
+test_ai:
+	@echo "$(BLUE)[TEST] Running AI tests...$(NC)"
+	$(SILENT)$(PYTHON) -m pytest $(AI_DIR)/tests -v
+
+clean_ai:
+	@echo "$(VIOLET)[CLEAN] Cleaning Python cache files...$(NC)"
+	$(SILENT)find $(AI_DIR) -type f -name "*.pyc" -delete
+	$(SILENT)find $(AI_DIR) -type d -name "__pycache__" -delete
+	$(SILENT)find $(AI_DIR) -type d -name "*.egg-info" -delete
+	$(SILENT)find $(AI_DIR) -type d -name ".pytest_cache" -delete
+	$(SILENT)find $(AI_DIR) -type d -name ".coverage" -delete
+
+clean: clean_ai
 	$(SILENT)$(RM) -r $(OBJ_DIR)
 	@echo "$(VIOLET)[CLEAN] Object files removed.$(NC)"
 
@@ -79,4 +106,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re run_ai
+.PHONY: all clean fclean re run_ai setup_ai test_ai clean_ai
