@@ -33,7 +33,7 @@ void putOnline(Server *server)
         exit_error("listen", 0);
 }
 
-Server *initServer(configServer *config)
+Server *initServer(ConfigServer *config)
 {
     Server *server = malloc(sizeof(Server));
 
@@ -75,95 +75,12 @@ void acceptClient(Server *server)
     server->fds[server->nfds].fd = client_fd;
     server->fds[server->nfds].events = POLLIN;
     server->clients[server->nfds].fd = client_fd;
+    server->clients[server->nfds].last_food_tick = get_elapsed_ticks(server->clock);
+
     // server->clients[server->nfds].active = 0;
     send(client_fd, "WELCOME\n", 8, 0);
     server->nfds++;
 }
-
-/*
- void acceptClient(Server *server) {
-    struct sockaddr_in client_addr;
-    socklen_t addr_len = sizeof(client_addr);
-    int client_fd = accept(server->server_fd, (struct sockaddr*)&client_addr, &addr_len);
-
-    if (client_fd < 0)
-        exit_error("accept", 0);
-
-    if (server->nfds >= MAX_CLIENTS) {
-        fprintf(stderr, "Trop de clients connectés\n");
-        close(client_fd);
-        return;
-    }
-
-    // Étape 1 : Envoi du WELCOME
-    send(client_fd, "WELCOME\n", 8, 0);
-
-    // Étape 2 : Lire la ligne "TEAM <name>\n"
-    char buffer[1024] = {0};
-    int n = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
-    if (n <= 0) {
-        close(client_fd);
-        return;
-    }
-
-    // Étape 3 : Extraction du nom d’équipe
-    char *team_name = NULL;
-    if (strncmp(buffer, "TEAM ", 5) == 0) {
-        team_name = strdup(buffer + 5);
-        team_name[strcspn(team_name, "\r\n")] = 0; // retirer \n éventuel
-    } else {
-        fprintf(stderr, "Protocole invalide : %s\n", buffer);
-        close(client_fd);
-        return;
-    }
-
-    // Étape 4 : Vérifier si c’est un client graphique
-    if (strcmp(team_name, "GRAPHIC") == 0) {
-        // enregistrer comme client graphique
-        init_graphic_client(server, client_fd);
-        free(team_name);
-        return;
-    }
-
-    // Étape 5 : Vérifier que le nom d’équipe existe et qu’il reste des slots
-    Team *team = get_team_by_name(server, team_name);
-    if (!team || team->available_slots <= 0) {
-        send(client_fd, "ko\n", 3, 0);
-        close(client_fd);
-        free(team_name);
-        return;
-    }
-
-    // Étape 6 : Affecter le joueur à une position aléatoire
-    int x = rand() % server->map_width;
-    int y = rand() % server->map_height;
-
-    // Étape 7 : Répondre CLIENT <slots>\n X Y\n
-    char response[128];
-    snprintf(response, sizeof(response), "CLIENT %d\n%d %d\n", team->available_slots - 1, x, y);
-    send(client_fd, response, strlen(response), 0);
-
-    // Étape 8 : Initialisation du client
-    SessionClient *client = &server->clients[server->nfds];
-    client->fd = client_fd;
-    client->active = 1;
-    client->team_name = team_name;
-    client->x = x;
-    client->y = y;
-    client->level = 1;
-    client->orientation = rand() % 4;
-    client->is_gui = false;
-    init_command_queue(&client->commands); // FIFO
-    init_inventory(&client->inventory); // avec 10 food ?
-
-    team->available_slots--;
-
-    server->fds[server->nfds].fd = client_fd;
-    server->fds[server->nfds].events = POLLIN;
-    server->nfds++;
-}
-
- */
 
 void removeClient(Server *server, int i)
 {
@@ -206,8 +123,6 @@ void handleClient(Server *server, int i) {
     }
     buffer[len] = '\0';
     stockCmd(buffer, client);
-    //printf("Client %d: %s", i, buffer);
-    //send(server->fds[i].fd, "200 OK\r\n", 8, 0);
 }
 
 void handle_signal(int signal)
@@ -229,6 +144,25 @@ void handleEntry(Server *server, int i)
 void execCmd(Server *server, int i)
 {
 
+
+}
+
+void checkLife(Server *server, int i)
+{
+    SessionClient *client = &server->clients[i];
+    const long now_tick = get_elapsed_ticks(server->clock);
+
+    if (now_tick - client->last_food_tick >= 126) {
+        client->inventory[FOOD] -= 1;
+        client->last_food_tick = now_tick;
+        if (client->inventory[FOOD] < 0)
+            removeClient(server, i);
+    }
+}
+
+void spawnRessources(Server *server)
+{
+
 }
 
 void runServer(Server *server)
@@ -244,6 +178,8 @@ void runServer(Server *server)
                 continue;
             handleEntry(server, i);
             execCmd(server, i);
+            checkLife(server, i);
         }
+        spawnRessources(server);
     }
 }

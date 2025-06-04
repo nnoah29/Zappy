@@ -16,13 +16,20 @@
 #include <poll.h>
 #include <netinet/in.h>
 #include <poll.h>
-
 #include "Clock.h"
 #include "my.h"
 #include "SessionClient.h"
-
+#define MAX_TEAMS 10
 #define MAX_CLIENTS 1000
 
+typedef struct configServer {
+    int port;
+    int map_w;
+    int map_h;
+    char *names[MAX_TEAMS];
+    int nbClients;
+    int freq;
+} ConfigServer;
 
 typedef struct {
     int port;
@@ -32,12 +39,13 @@ typedef struct {
     SessionClient clients[MAX_CLIENTS];
     Clock *clock;
     int idsGui[MAX_CLIENTS];
-    configServer *config;
+    ConfigServer *config;
     int nfds;
 } Server;
 
 void runServer(Server *server);
 void handle_signal(int signal);
-Server *initServer(configServer *config);
+Server *initServer(ConfigServer *config);
+void closeServer(Server *server);
 
 #endif //SERVER_H

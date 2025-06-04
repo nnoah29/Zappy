@@ -30,9 +30,9 @@ int help(int ac, char **av) {
     return 84;
 }
 
-configServer *parsing(int ac, char **av)
+ConfigServer *parsing(int ac, char **av)
 {
-    configServer *server = malloc(sizeof(configServer));
+    ConfigServer *server = malloc(sizeof(ConfigServer));
     ///
 
 
@@ -40,13 +40,11 @@ configServer *parsing(int ac, char **av)
     return server;
 }
 
-int main(int ac, char **av) {
+int main(int ac, char *av[]) {
     if (ac != 3)
         return help(ac, av);
 
-    configServer *conf = parsing(ac, av);
-
-    const int port = atoi(av[1]);
+    ConfigServer *conf = parsing(ac, av);
     Server *server = initServer(conf);
     runServer(server);
     closeServer(server);

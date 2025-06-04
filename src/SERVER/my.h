@@ -12,26 +12,14 @@
 
 #ifndef MY_H
 #define MY_H
+
 #include <unistd.h>
-
 #include "Server.h"
-#define MAX_TEAMS 10
 
-typedef struct size {
-    int width;
-    int height;
-} size;
 
 /// Structure pour récupérer le parsing des arguments
-typedef struct configServer {
-    int port;
-    int map_w;
-    int map_h;
-    char *names[MAX_TEAMS];
-    int nbClients;
-    int freq;
-} configServer;
+
 
 void exit_error(char *error, int degree);
-void closeServer(Server *server);
+
 #endif //MY_H

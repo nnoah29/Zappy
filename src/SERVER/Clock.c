@@ -27,9 +27,7 @@ double get_elapsed_seconds(Clock *clock) {
     struct timespec now;
     clock_gettime(CLOCK_MONOTONIC, &now);
 
-    const double elapsed =
-        (now.tv_sec - clock->ts.tv_sec) +
-        (now.tv_nsec - clock->ts.tv_nsec) / 1e9;
+    const double elapsed = (now.tv_sec - clock->ts.tv_sec) + (now.tv_nsec - clock->ts.tv_nsec) / 1e9;
     return elapsed;
 }
 
@@ -37,7 +35,7 @@ long get_elapsed_ticks(Clock *clock)
 {
     const double elapsed = get_elapsed_seconds(clock);
 
-    return (long)(elapsed / clock->tick);
+    return (long)(elapsed * clock->tick);
 }
 
 void get_current_time(struct timespec *ts) {

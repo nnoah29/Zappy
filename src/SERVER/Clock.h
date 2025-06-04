@@ -14,12 +14,12 @@
 #define CLOCK_H
 #include <time.h>
 
-typedef struct
-{
+typedef struct {
     struct timespec ts;
     double tick;
 } Clock;
 
 Clock *initClock(int freq);
 void get_current_time(struct timespec *ts);
+long get_elapsed_ticks(Clock *clock);
 #endif //CLOCK_H

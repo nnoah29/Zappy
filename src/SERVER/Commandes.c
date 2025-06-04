@@ -25,7 +25,7 @@ int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struc
 
     if (queue->size >= MAX_COMMANDS)
         return 0;
-    queue->commands[index].raw_cmd = strdup(cmd);
+    queue->commands[index].raw_cmd  = strdup(cmd);
     queue->commands[index].duration = duration;
     queue->commands[index].ready_at = now;
     queue->commands[index].ready_at.tv_sec += (time_t)duration;
@@ -55,9 +55,13 @@ Command *peek_command(CommandQueue *queue) {
     return &queue->commands[queue->head];
 }
 
-int is_command_ready(Command *cmd, struct timespec now) {
-    if (!cmd) return 0;
-    if (now.tv_sec > cmd->ready_at.tv_sec) return 1;
-    if (now.tv_sec == cmd->ready_at.tv_sec && now.tv_nsec >= cmd->ready_at.tv_nsec) return 1;
+int is_command_ready(Command *cmd, struct timespec now)
+{
+    if (!cmd)
+        return 0;
+    if (now.tv_sec > cmd->ready_at.tv_sec)
+        return 1;
+    if (now.tv_sec == cmd->ready_at.tv_sec && now.tv_nsec >= cmd->ready_at.tv_nsec)
+        return 1;
     return 0;
 }

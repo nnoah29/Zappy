@@ -14,7 +14,6 @@
 #define SESSIONCLIENT_H
 #include <stdbool.h>
 #include <time.h>
-
 #include "Commandes.h"
 
 
@@ -48,7 +47,7 @@ typedef struct {
     char *team_name;
     int orientation;
     int inventory[7];
-    double food_timer;
+    long last_food_tick;
     bool is_elevating;
     CommandQueue *queue;
 } SessionClient;
