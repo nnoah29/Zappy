@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from typing import List, Dict, Tuple
 from protocol import ZappyProtocol
 
@@ -81,7 +79,7 @@ class Vision:
     def set_level(self, level: int) -> None:
         """Met à jour le niveau du joueur."""
         self.level = level
-        
+
     def get_expected_vision_size(self) -> int:
         """Retourne le nombre de cases attendues pour le niveau actuel (logique Zappy)."""
         return 4 * self.level * self.level
