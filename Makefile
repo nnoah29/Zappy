@@ -83,7 +83,7 @@ setup_ai: build_ai
 	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)
 	@echo "$(GREEN)[OK] Python dependencies installed.$(NC)"
 
-build_ai: setup_ai
+build_ai:
 	@echo "$(BLUE)[BUILD] Building AI binary...$(NC)"
 	$(SILENT)cd $(AI_DIR) && $(PYINSTALLER) --onefile --name $(NAME_AI) main.py
 	$(SILENT)mv $(AI_DIR)/dist/$(NAME_AI) .
