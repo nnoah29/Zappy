@@ -4,14 +4,14 @@ project(SERVER C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(SERVER main.c
-        Server.c
-        Server.h
-        SessionClient.c
-        SessionClient.h
+        Server/Server.c
+        Server/Server.h
+        SessionClients/SessionClient.c
+        SessionClients/SessionClient.h
         Utilitaires.c
         my.h
-        Clock.c
-        Clock.h
-        Commandes.c
-        Commandes.h
+        Clock/Clock.c
+        Clock/Clock.h
+        Commandes/Commandes.c
+        Commandes/Commandes.h
 )

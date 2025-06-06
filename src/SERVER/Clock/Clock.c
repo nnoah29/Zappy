@@ -42,7 +42,8 @@ void get_current_time(struct timespec *ts) {
     clock_gettime(CLOCK_MONOTONIC, ts);
 }
 
-int has_elapsed(struct timespec *target, struct timespec *now) {
+int has_elapsed(struct timespec *target, struct timespec *now)
+{
     if (now->tv_sec > target->tv_sec) return 1;
     if (now->tv_sec == target->tv_sec && now->tv_nsec >= target->tv_nsec) return 1;
     return 0;

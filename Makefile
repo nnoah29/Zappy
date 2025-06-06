@@ -13,9 +13,9 @@ LDFLAGS     := -ldl
 SFML_LIBS   := -lsfml-graphics -lsfml-window -lsfml-system
 
 # Python configuration
-PYTHON      := python3
-PIP         := pip3
-PYINSTALLER := $(PYTHON) -m PyInstaller
+PYTHON          := python3
+PIP             := pip3
+PYINSTALLER     := $(PYTHON) -m PyInstaller
 AI_REQUIREMENTS := src/ai/requirements.txt
 
 DEBUG ?= 0
@@ -48,11 +48,11 @@ GUI_SRCS    := $(shell find $(GUI_DIR) -name '*.cpp')
 GUI_OBJS    := $(GUI_SRCS:$(GUI_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
 # === COLORS ===
-GREEN   := $(shell echo -e "\033[0;32m")
-RED     := $(shell echo -e "\033[0;31m")
-VIOLET  := $(shell echo -e "\033[0;35m")
-BLUE    := $(shell echo -e "\033[0;34m")
-NC      := $(shell echo -e "\033[0m")
+GREEN  := $(shell echo -e "\033[0;32m")
+RED    := $(shell echo -e "\033[0;31m")
+VIOLET := $(shell echo -e "\033[0;35m")
+BLUE   := $(shell echo -e "\033[0;34m")
+NC     := $(shell echo -e "\033[0m")
 
 # === RULES ===
 all: $(NAME_SERVER) setup_ai

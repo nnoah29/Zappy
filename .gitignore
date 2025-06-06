@@ -1,0 +1,4 @@
+src/SERVER/cmake-build-debug
+src/SERVER/.qodo
+src/SERVER/.idea
+src/SERVER/CMakeLists.txt

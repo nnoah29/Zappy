@@ -9,12 +9,12 @@
 **         |___/ 
 */
 
-#include "Server.h"
+#include "../Server.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "my.h"
+#include "../my.h"
 static int running;
 static Server *s;
 

@@ -12,13 +12,8 @@
 
 #ifndef MY_H
 #define MY_H
-
 #include <unistd.h>
-#include "Server.h"
-
-
-/// Structure pour récupérer le parsing des arguments
-
+#include "Server/Server.h"
 
 void exit_error(char *error, int degree);
 

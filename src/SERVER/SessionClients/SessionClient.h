@@ -14,7 +14,7 @@
 #define SESSIONCLIENT_H
 #include <stdbool.h>
 #include <time.h>
-#include "Commandes.h"
+#include "../Commandes/Commandes.h"
 
 
 typedef enum {

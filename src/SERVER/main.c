@@ -17,7 +17,7 @@
 #include <bits/signum-generic.h>
 
 #include "my.h"
-#include "Server.h"
+#include "Server/Server.h"
 
 int help(int ac, char **av) {
     if (ac == 2 && strcmp(av[1], "-help") == 0) {
