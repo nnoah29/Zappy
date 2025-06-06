@@ -43,9 +43,32 @@ typedef struct {
     int nfds;
 } Server;
 
+
+typedef struct {
+    const char *name;
+    int units;
+} CommandInfo;
+
+static const CommandInfo command_table[] = {
+    {"Forward", 7},
+    {"Right", 7},
+    {"Left", 7},
+    {"Look", 7},
+    {"Inventory", 1},
+    {"Broadcast", 7},
+    {"Connect_nbr", 0},
+    {"Fork", 42},
+    {"Eject", 7},
+    {"Take", 7},
+    {"Set", 7},
+    {"Incantation", 300},
+};
+
+
 void runServer(Server *server);
 void handle_signal(int signal);
 Server *initServer(ConfigServer *config);
+double get_exec_duration(const char *cmd);
 void closeServer(Server *server);
 
 #endif //SERVER_H
