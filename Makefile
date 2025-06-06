@@ -57,7 +57,7 @@ BLUE   := $(shell echo -e "\033[0;34m")
 NC     := $(shell echo -e "\033[0m")
 
 # === RULES ===
-all: $(NAME_SERVER) setup_ai
+all: $(NAME_SERVER) build_ai
 	@echo "$(GREEN)[OK] Full build complete.$(NC)"
 
 $(OBJ_DIR)/%.o: $(SERVER_DIR)/%.c
