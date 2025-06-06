@@ -8,7 +8,7 @@ add_executable(SERVER main.c
         Server/Server.h
         SessionClients/SessionClient.c
         SessionClients/SessionClient.h
-        Utilitaires.c
+        Utilitaires/Utilitaires.c
         my.h
         Clock/Clock.c
         Clock/Clock.h

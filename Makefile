@@ -41,7 +41,7 @@ GUI_DIR      := $(SRC_DIR)/GUI
 AI_DIR       := $(SRC_DIR)/ai
 
 # === FILES ===
-SERVER_SRCS := $(shell find $(SERVER_DIR) -maxdepth 1 -name '*.c')
+SERVER_SRCS := $(shell find $(SERVER_DIR) -path "$(SERVER_DIR)/cmake-build-debug" -prune -o -name '*.c' -print)
 SERVER_OBJS := $(SERVER_SRCS:$(SERVER_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 GUI_SRCS    := $(shell find $(GUI_DIR) -name '*.cpp')
@@ -58,10 +58,12 @@ NC     := $(shell echo -e "\033[0m")
 all: $(NAME_SERVER) setup_ai
 	@echo "$(GREEN)[OK] Full build complete.$(NC)"
 
-$(OBJ_DIR)/%.o: $(SERVER_DIR)/%.c | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(SERVER_DIR)/%.c
+	$(SILENT)mkdir -p $(dir $@)
 	$(SILENT)$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(GUI_DIR)/%.cpp | $(OBJ_DIR)
+$(OBJ_DIR)/%.o: $(GUI_DIR)/%.cpp
+	$(SILENT)mkdir -p $(dir $@)
 	$(SILENT)$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(NAME_SERVER): $(SERVER_OBJS)

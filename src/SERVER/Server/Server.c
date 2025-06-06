@@ -9,7 +9,7 @@
 **         |___/ 
 */
 
-#include "../Server.h"
+#include "Server.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
