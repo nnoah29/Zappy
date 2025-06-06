@@ -17,7 +17,6 @@
 #include <netinet/in.h>
 #include <poll.h>
 #include "../Clock/Clock.h"
-#include "../my.h"
 #include "../SessionClients/SessionClient.h"
 #define MAX_TEAMS 10
 #define MAX_CLIENTS 1000

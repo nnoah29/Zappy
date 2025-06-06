@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../my.h"
-static int running;
+static int running = 1;
 static Server *s;
 
 void putOnline(Server *server)
@@ -56,7 +56,20 @@ Server *initServer(ConfigServer *config)
 
 void closeServer(Server *server)
 {
-    close(server->server_fd);
+    if (server->server_fd != -1)
+        close(server->server_fd);
+    for (int i = 0; i < server->nfds; i++) {
+        if (server->fds[i].fd >= 0)
+            close(server->fds[i].fd);
+    }
+    if (server->clock)
+        free(server->clock);
+    if (server->config) {
+        for (int i = 0; i < server->config->nb_teams; i++)
+            free(server->config->names[i]);
+        free(server->config);
+    }
+    free(server);
 }
 
 void acceptClient(Server *server)
