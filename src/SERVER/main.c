@@ -111,9 +111,10 @@ int main(int ac, char *av[])
     ConfigServer *conf;
     Server *server;
 
-    if (ac != 3)
+    if (ac == 2 && av[1] == "-h")
         return help(ac, av);
     conf = parsing(ac, av);
+    print_config(conf);
     server = initServer(conf);
     runServer(server);
     closeServer(server);
