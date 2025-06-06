@@ -28,6 +28,7 @@ typedef struct configServer {
     int map_h;
     char *names[MAX_TEAMS];
     int nbClients;
+    int nb_teams;
     int freq;
 } ConfigServer;
 
