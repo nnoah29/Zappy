@@ -2,67 +2,125 @@ from typing import List, Tuple, Optional
 import logging
 from protocol import ZappyProtocol
 from vision import Vision
+from movement import Movement
 
 class CollisionManager:
     """Gère la détection et la résolution des collisions."""
     
-    def __init__(self, protocol: ZappyProtocol, vision: Vision):
+    def __init__(self, protocol: ZappyProtocol, vision: Vision, movement: Movement):
         """Initialise le gestionnaire de collisions.
         
         Args:
             protocol (ZappyProtocol): Protocole de communication
             vision (Vision): Système de vision
+            movement (Movement): Gestionnaire de mouvement
         """
         self.protocol = protocol
         self.vision = vision
+        self.movement = movement
         self.logger = logging.getLogger(__name__)
-        self.last_positions: List[Tuple[int, int]] = []
+        self.collision_count = 0
+        self.last_collision_pos: Optional[Tuple[int, int]] = None
+        self.escape_attempts = 0
+        self.max_escape_attempts = 3
         self.stuck_count = 0
         self.max_stuck_count = 3
         self.position_history_size = 5
 
     def check_collision(self) -> bool:
-        """Vérifie si le joueur est bloqué (collision).
+        """Vérifie s'il y a une collision.
         
         Returns:
-            bool: True si le joueur est bloqué
+            bool: True si une collision est détectée
         """
-        current_pos = self.vision.get_case_position(0)  # Position actuelle (case 0)
-        
-        # Ajoute la position actuelle à l'historique
-        self.last_positions.append(current_pos)
-        
-        # Garde seulement les N dernières positions
-        if len(self.last_positions) > self.position_history_size:
-            self.last_positions.pop(0)
-            
-        # Vérifie si on est bloqué au même endroit
-        if len(self.last_positions) >= 3:
-            if all(pos == current_pos for pos in self.last_positions[-3:]):
-                # Ne pas incrémenter si on est déjà bloqué
-                if not self.is_severely_stuck() and self.stuck_count == 0:
-                    self.stuck_count += 1
+        # Vérifie les joueurs dans le champ de vision
+        players = self.vision.get_players_in_vision()
+        if not players:
+            return False
+
+        # Vérifie si un joueur est directement devant
+        for player_pos in players:
+            if self.vision.is_case_in_front(self.vision.get_case_position(players.index(player_pos))):
+                self.collision_count += 1
+                self.last_collision_pos = player_pos
                 return True
-                
+
         return False
 
-    def handle_collision(self) -> None:
-        """Gère une collision en essayant de se débloquer."""
-        if self.stuck_count > self.max_stuck_count:
-            # Si on est bloqué depuis trop longtemps, on essaie une autre direction
-            self.logger.warning("Bloqué depuis trop longtemps, changement de direction")
-            self.protocol.right()
-            self.protocol.right()  # Tourne de 180 degrés
-            self.reset()
-        else:
-            # Essaie de se déplacer sur le côté
-            self.protocol.right()
-            self.protocol.forward()
+    def handle_collision(self) -> bool:
+        """Gère une collision détectée.
+        
+        Returns:
+            bool: True si la collision a été résolue
+        """
+        if not self.check_collision():
+            self.escape_attempts = 0  # Réinitialise les tentatives si pas de collision
+            return True
+
+        # Si trop de tentatives d'évasion, on essaie une autre stratégie
+        if self.escape_attempts >= self.max_escape_attempts:
+            success = self._handle_severe_collision()
+            if success:
+                self.escape_attempts = 0  # Réinitialise les tentatives si succès
+            return success
+
+        # Stratégie d'évasion basique
+        self.escape_attempts += 1
+        success = self._basic_escape_strategy()
+        if success:
+            self.escape_attempts = 0  # Réinitialise les tentatives si succès
+        return success
+
+    def _basic_escape_strategy(self) -> bool:
+        """Stratégie basique d'évasion de collision.
+        
+        Returns:
+            bool: True si l'évasion a réussi
+        """
+        # Tourne à droite et avance
+        if not self.protocol.right():
+            return False
+        if not self.protocol.forward():
+            return False
+
+        # Vérifie si la collision persiste
+        if not self.check_collision():
+            return True
+
+        # Si toujours bloqué, essaie de tourner à gauche
+        if not self.protocol.left():
+            return False
+        if not self.protocol.left():
+            return False
+        if not self.protocol.forward():
+            return False
+
+        return not self.check_collision()
+
+    def _handle_severe_collision(self) -> bool:
+        """Gère une collision sévère (après plusieurs tentatives d'évasion).
+        
+        Returns:
+            bool: True si la collision a été résolue
+        """
+        # Essaie de se déplacer dans une direction aléatoire
+        for _ in range(4):  # Essaie les 4 directions
+            if not self.protocol.right():
+                return False
+            if not self.protocol.forward():
+                return False
+            if not self.check_collision():
+                return True
+
+        return False
 
     def reset(self) -> None:
         """Réinitialise l'état du gestionnaire de collisions."""
+        self.collision_count = 0
+        self.last_collision_pos = None
+        self.escape_attempts = 0
         self.stuck_count = 0
-        self.last_positions.clear()
+        self.position_history_size = 5
 
     def get_stuck_count(self) -> int:
         """Récupère le nombre de fois que le joueur est resté bloqué.

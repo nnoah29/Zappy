@@ -229,4 +229,4 @@ class AI:
             return
 
         # Avance dans une direction aléatoire
-        self.protocol.forward() 
+        self.protocol.forward()
