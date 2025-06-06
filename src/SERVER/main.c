@@ -51,20 +51,21 @@ void print_config(ConfigServer *server)
     printf("Frequency: %d\n", server->freq);
 }
 
+void check_config(ConfigServer *conf)
+{
+    if (conf->port <= 0 || conf->map_w <= 0 || conf->map_h <= 0 ||
+        conf->nbClients <= 0 || conf->freq <= 0 || conf->nb_teams == 0)
+        exit_error("Invalid configuration values", 84);
+}
+
 ConfigServer *parse_args(int argc, char **argv)
 {
     ConfigServer *conf = malloc(sizeof(ConfigServer));
 
     recursive_parse(conf, argv, 1, argc);
-    if (conf->port <= 0 || conf->map_w <= 0 || conf->map_h <= 0 ||
-        conf->nbClients <= 0 || conf->freq <= 0 || conf->nb_teams == 0) {
-        printf("Invalid configuration values\n");
-        free(conf);
-        return NULL;
-    }
+    check_config(conf);
     return conf;
 }
-
 
 int main(int ac, char *av[])
 {

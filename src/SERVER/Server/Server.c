@@ -194,5 +194,6 @@ void runServer(Server *server)
             checkLife(server, i);
         }
         spawnRessources(server);
+        running = 0;
     }
 }
