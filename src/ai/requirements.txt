@@ -2,3 +2,4 @@ pytest
 pylint
 argparse
 typing-extensions>=4.0.0
+pyinstaller

@@ -14,9 +14,11 @@ SFML_LIBS   := -lsfml-graphics -lsfml-window -lsfml-system
 
 # Python configuration
 PYTHON          := python3
-PIP             := pip3
-PYINSTALLER     := $(PYTHON) -m PyInstaller
+#PYINSTALLER     := $(PYTHON) -m PyInstaller
 AI_REQUIREMENTS := src/ai/requirements.txt
+VENV_DIR := .venv
+PIP := $(VENV_DIR)/bin/pip
+PYINSTALLER := $(VENV_DIR)/bin/pyinstaller
 
 DEBUG ?= 0
 ifeq ($(DEBUG),1)
@@ -78,16 +80,35 @@ $(OBJ_DIR):
 	$(SILENT)mkdir -p $(OBJ_DIR)
 
 # === Python AI Rules ===
-setup_ai: build_ai
+#setup_ai: build_ai
+#	@echo "$(BLUE)[SETUP] Installing Python dependencies...$(NC)"
+#	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)
+#	@echo "$(GREEN)[OK] Python dependencies installed.$(NC)"
+#
+#build_ai:
+#	@echo "$(BLUE)[BUILD] Building AI binary...$(NC)"
+#	$(SILENT)$(PIP) install pyinstaller
+#	$(SILENT)cd $(AI_DIR) && $(PYINSTALLER) --onefile --name $(NAME_AI) main.py
+#	$(SILENT)mv $(AI_DIR)/dist/$(NAME_AI) .
+#	$(SILENT)rm -rf $(AI_DIR)/build $(AI_DIR)/dist $(AI_DIR)/$(NAME_AI).spec
+#	@echo "$(GREEN)[OK] AI binary built.$(NC)"
+
+
+setup_ai: $(VENV_DIR)/bin/activate
 	@echo "$(BLUE)[SETUP] Installing Python dependencies...$(NC)"
 	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)
 	@echo "$(GREEN)[OK] Python dependencies installed.$(NC)"
 
-build_ai:
+$(VENV_DIR)/bin/activate:
+	@echo "$(BLUE)[SETUP] Creating virtual environment...$(NC)"
+	$(SILENT)$(PYTHON) -m venv $(VENV_DIR)
+	@echo "$(GREEN)[OK] Virtual environment ready.$(NC)"
+
+build_ai: setup_ai
 	@echo "$(BLUE)[BUILD] Building AI binary...$(NC)"
-	$(SILENT)cd $(AI_DIR) && $(PYINSTALLER) --onefile --name $(NAME_AI) main.py
-	$(SILENT)mv $(AI_DIR)/dist/$(NAME_AI) .
-	$(SILENT)rm -rf $(AI_DIR)/build $(AI_DIR)/dist $(AI_DIR)/$(NAME_AI).spec
+	$(PYINSTALLER) --onefile --name $(NAME_AI) $(AI_DIR)/main.py
+	$(SILENT)mv dist/$(NAME_AI) .
+	$(SILENT)rm -rf build dist $(NAME_AI).spec
 	@echo "$(GREEN)[OK] AI binary built.$(NC)"
 
 test_ai:
@@ -105,7 +126,7 @@ clean_ai:
 	$(SILENT)rm -f $(NAME_AI)
 
 clean: clean_ai
-	$(SILENT)$(RM) -r $(OBJ_DIR)
+	$(SILENT)$(RM) -r $(OBJ_DIR) $(VENV_DIR)
 	@echo "$(VIOLET)[CLEAN] Object files removed.$(NC)"
 
 fclean: clean

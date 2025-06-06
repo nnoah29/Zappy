@@ -125,7 +125,8 @@ void stockCmd(char *cmd, const SessionClient *client)
     }
 }
 
-void handleClient(Server *server, int i) {
+void handleClient(Server *server, int i)
+{
     char buffer[1024];
     const long int len = recv(server->fds[i].fd, buffer, sizeof(buffer) - 1, 0);
     const SessionClient *client = &server->clients[i];
