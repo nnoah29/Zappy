@@ -1,3 +1,5 @@
+from src.ai.logger import logger
+
 class Inventory:
     def __init__(self):
         self.items = {
@@ -9,13 +11,16 @@ class Inventory:
             "phiras": 0,
             "thystame": 0,
         }
+        logger.info(f"inventory created: {self.items}")
 
     def add(self, item, quantity=1):
         if item in self.items:
             self.items[item] += quantity
+        logger.info(f"inventory updated: {self.items} adding {item}")
 
     def remove(self, item, quantity=1):
         if item in self.items and self.items[item] >= quantity:
             self.items[item] -= quantity
             return True
+        logger.info(f"inventory updated: {self.items} removing {item}")
         return False
