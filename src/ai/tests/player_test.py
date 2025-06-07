@@ -9,3 +9,10 @@ def test_player_init():
     assert player.y == 0
     assert player.orientation == "N"
 
+
+def test_player_North_move():
+    player = Player("momo", "MTN", 0, 0)
+    player.orientation = "N"
+    player.move_forward(10, 10)
+    assert player.x == 0
+    assert player.y == 9
