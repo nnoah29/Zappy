@@ -18,6 +18,9 @@ class Inventory:
             self.items[item] += quantity
         logger.info(f"inventory updated: {self.items} adding {item}")
 
+    def get(self, item):
+        return self.items.get(item, 0)
+
     def remove(self, item, quantity=1):
         if item in self.items and self.items[item] >= quantity:
             self.items[item] -= quantity

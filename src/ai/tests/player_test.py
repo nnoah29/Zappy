@@ -36,3 +36,4 @@ def test_player_West_move():
     player.orientation = "W"
     player.move_forward(10, 10)
     assert player.x == 9
+
