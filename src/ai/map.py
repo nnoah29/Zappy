@@ -1,3 +1,5 @@
+from src.ai.logger import logger
+
 class Tile:
     def __init__(self):
         self.resources = {
@@ -10,6 +12,8 @@ class Tile:
             "thystame": 0,
         }
         self.players = []  # Liste des IDs de joueurs
+        logger.info(f"map tile created: {self.resources} {self.players}")
+
 
 class Map:
     def __init__(self, width, height):
