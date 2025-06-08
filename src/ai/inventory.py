@@ -27,3 +27,4 @@ class Inventory:
             return True
         logger.info(f"inventory updated: {self.items} removing {item}")
         return False
+

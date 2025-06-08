@@ -1,6 +1,6 @@
+#src.ai.logger.py
 import logging
 import os
-from venv import logger
 
 os.makedirs("logs", exist_ok=True )
 
@@ -12,3 +12,4 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("zappy_logger")
+logger.info("Logger initialized.")
