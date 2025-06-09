@@ -27,11 +27,5 @@ int main(int argc, char **argv)
         std::cout << "USAGE: ./zappy_gui -p port -h machine" << std::endl;
         return 0;
     }
-    Core gameCore;     
-    std::cout << "Starting game loop..." << std::endl;
-    gameCore.initialize();
-    gameCore.run();
-    std::cout << "Game loop ended." << std::endl;
-    
     return 0;
 }
