@@ -78,7 +78,6 @@ static const CommandInfo command_table[] = {
 void runServer(Server *server);
 void handle_signal(int signal);
 Server *initServer(ConfigServer *config);
-double get_exec_duration(const char *cmd);
 void closeServer(Server *server);
 
 #endif //SERVER_H

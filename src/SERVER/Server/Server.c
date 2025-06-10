@@ -131,7 +131,7 @@ double get_exec_duration(const char *cmd, int freq)
         return -1.0;
     strncpy(cmd_cpy, cmd, sizeof(cmd_cpy) - 1);
     cmd_cpy[sizeof(cmd_cpy) - 1] = '\0';
-    token = strtok(buffer, " \t\n\r");
+    token = strtok(cmd_cpy, " \t\n\r");
     if (!token)
         return -1.0;
     for (size_t i = 0; i < sizeof(command_table) / sizeof(CommandInfo); i++) {
@@ -141,7 +141,7 @@ double get_exec_duration(const char *cmd, int freq)
     return -1.0;
 }
 
-void stockCmd(char *cmd, const SessionClient *client)
+void stockCmd(char *cmd, const SessionClient *client, int freq)
 {
     const char *line = strtok(cmd, "\n");
     struct timespec now;
@@ -149,7 +149,7 @@ void stockCmd(char *cmd, const SessionClient *client)
 
     while (line) {
         get_current_time(&now);
-        exec_duration = get_exec_duration(line);
+        exec_duration = get_exec_duration(line, freq);
         if (!enqueue_command(client->queue, line, exec_duration, now))
             send(client->fd, "ko\n", 3, 0);
         line = strtok(NULL, "\n");
@@ -168,7 +168,7 @@ void handleClient(Server *server, int i)
         return;
     }
     buffer[len] = '\0';
-    stockCmd(buffer, client);
+    stockCmd(buffer, client, server->config->freq);
 }
 
 void handle_signal(int signal)
