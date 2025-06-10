@@ -30,5 +30,8 @@ typedef struct {
 } CommandQueue;
 
 int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struct timespec now);
+Command *peek_command(CommandQueue *queue);
+int is_command_ready(Command *cmd, struct timespec now);
+int dequeue_command(CommandQueue *queue);
 
 #endif //COMMANDES_H

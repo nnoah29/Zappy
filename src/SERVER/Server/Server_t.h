@@ -21,6 +21,15 @@
 #define MAX_TEAMS 10
 #define MAX_CLIENTS 1000
 
+typedef struct Teams
+{
+    char *name;
+    int nbPlayers;
+    int nbMaxPlayers;
+    SessionClient *players[MAX_CLIENTS];
+    int nbEggs;
+} Teams;
+
 typedef struct configServer {
     int port;
     int map_w;
@@ -31,12 +40,13 @@ typedef struct configServer {
     int freq;
 } ConfigServer;
 
-typedef struct {
+typedef struct Server_t {
     int port;
     int server_fd;
     struct sockaddr_in server_addr;
     struct pollfd fds[MAX_CLIENTS];
     SessionClient clients[MAX_CLIENTS];
+    Teams teams[MAX_TEAgit MS];
     Clock *clock;
     int idsGui[MAX_CLIENTS];
     ConfigServer *config;

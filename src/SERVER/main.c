@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "my.h"
-#include "Server/Server.h"
+#include "Server/Server_t.h"
 
 static OptionParser parsers[] = {
     {"-p", parse_port},
@@ -75,8 +75,5 @@ int main(int ac, char *av[])
 
     runServer(server);
     closeServer(server);
-    for (int i = 0; i < conf->nb_teams; i++)
-        free(conf->names[i]);
-    free(conf);
     return 0;
 }

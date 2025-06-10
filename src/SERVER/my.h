@@ -13,7 +13,7 @@
 #ifndef MY_H
 #define MY_H
 #include <unistd.h>
-#include "Server/Server.h"
+#include "Server/Server_t.h"
 
 typedef void (*parser_func)(ConfigServer *conf, char **argv, int *i);
 typedef struct {

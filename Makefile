@@ -79,21 +79,6 @@ $(NAME_GUI): $(GUI_OBJS)
 $(OBJ_DIR):
 	$(SILENT)mkdir -p $(OBJ_DIR)
 
-# === Python AI Rules ===
-#setup_ai: build_ai
-#	@echo "$(BLUE)[SETUP] Installing Python dependencies...$(NC)"
-#	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)
-#	@echo "$(GREEN)[OK] Python dependencies installed.$(NC)"
-#
-#build_ai:
-#	@echo "$(BLUE)[BUILD] Building AI binary...$(NC)"
-#	$(SILENT)$(PIP) install pyinstaller
-#	$(SILENT)cd $(AI_DIR) && $(PYINSTALLER) --onefile --name $(NAME_AI) main.py
-#	$(SILENT)mv $(AI_DIR)/dist/$(NAME_AI) .
-#	$(SILENT)rm -rf $(AI_DIR)/build $(AI_DIR)/dist $(AI_DIR)/$(NAME_AI).spec
-#	@echo "$(GREEN)[OK] AI binary built.$(NC)"
-
-
 setup_ai: $(VENV_DIR)/bin/activate
 	@echo "$(BLUE)[SETUP] Installing Python dependencies...$(NC)"
 	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)

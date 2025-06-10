@@ -13,7 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-void init_command_queue(CommandQueue *queue) {
+void init_command_queue(CommandQueue *queue)
+{
     queue->head = 0;
     queue->tail = 0;
     queue->size = 0;
@@ -39,7 +40,8 @@ int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struc
     return 1;
 }
 
-int dequeue_command(CommandQueue *queue) {
+int dequeue_command(CommandQueue *queue)
+{
     if (queue->size == 0)
         return 0;
     free(queue->commands[queue->head].raw_cmd);
@@ -49,7 +51,8 @@ int dequeue_command(CommandQueue *queue) {
     return 1;
 }
 
-Command *peek_command(CommandQueue *queue) {
+Command *peek_command(CommandQueue *queue)
+{
     if (queue->size == 0)
         return NULL;
     return &queue->commands[queue->head];

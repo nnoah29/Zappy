@@ -44,7 +44,8 @@ typedef struct {
     int level;
     bool active;
     bool is_gui;
-    char *team_name;
+    bool is_egg;
+    int team_idx;
     int orientation;
     int inventory[7];
     long last_food_tick;

@@ -9,7 +9,7 @@
 **         |___/ 
 */
 
-#include "Server.h"
+#include "Server_t.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,6 +33,27 @@ void putOnline(Server *server)
         exit_error("listen", 0);
 }
 
+void initClients(Server *server)
+{
+    for (int i = 0; i < MAX_CLIENTS; ++i) {
+        server->fds[i].fd = -1;
+        server->clients[i].fd = -1;
+        server->clients[i].active = 0;
+    }
+}
+
+void initTeams(Server *server)
+{
+    char **names = server->config->names;
+
+    for (int i = 0; names[i] != NULL; ++i) {
+        server->teams[i].name = strdup(names[i]);
+        server->teams[i].nbPlayers = 0;
+        server->teams[i].nbMaxPlayers = server->config->nbClients;
+        server->teams[i].nbEggs = server->config->nbClients * 2/3;
+    }
+}
+
 Server *initServer(ConfigServer *config)
 {
     Server *server = malloc(sizeof(Server));
@@ -41,11 +62,8 @@ Server *initServer(ConfigServer *config)
     server->config = config;
     server->port = config->port;
     server->nfds = 0;
-    for (int i = 0; i < MAX_CLIENTS; ++i) {
-        server->fds[i].fd = -1;
-        server->clients[i].fd = -1;
-        server->clients[i].active = 0;
-    }
+    initClients(server);
+    initTeams(server);
     putOnline(server);
     server->clock = initClock(config->freq);
     signal(SIGINT, handle_signal);
@@ -89,7 +107,6 @@ void acceptClient(Server *server)
     server->fds[server->nfds].events = POLLIN;
     server->clients[server->nfds].fd = client_fd;
     server->clients[server->nfds].last_food_tick = get_elapsed_ticks(server->clock);
-
     // server->clients[server->nfds].active = 0;
     send(client_fd, "WELCOME\n", 8, 0);
     server->nfds++;
@@ -125,6 +142,7 @@ void stockCmd(char *cmd, const SessionClient *client)
     }
 }
 
+
 void handleClient(Server *server, int i)
 {
     char buffer[1024];
@@ -155,10 +173,68 @@ void handleEntry(Server *server, int i)
     }
 }
 
-void execCmd(Server *server, int i)
+void assignTeam(Server *server, int i, char *team)
+{
+    int nb = 0;
+
+    if (strcmp(team, "GRAPHIC") == 0) {
+        server->clients[i].team_idx = -1;
+        server->clients[i].is_egg = false;
+        server->clients[i].is_gui = true;
+        server->clients[i].active = true;
+        return;
+    }
+    for (int j = 0; j < server->config->nb_teams; j++) {
+        if (strcmp(team, server->teams[j].name) == 0 && server->teams[j].nbEggs > 0 && server->teams[j].nbMaxPlayers > 0 ) {
+            nb = server->teams[j].nbPlayers;
+            server->teams[j].players[nb] = &server->clients[i];
+            server->teams[j].nbPlayers++;
+            server->teams[j].nbEggs--;
+            server->teams[j].nbMaxPlayers--;
+            server->clients[i].team_idx = j;
+            server->clients[i].is_egg = false;
+            server->clients[i].is_gui = false;
+            return;
+        }
+    }
+    send(server->clients[i].fd, "Team does not exit\n", 19, 0);
+    removeClient(server, i);
+}
+
+
+void connec_t(Server *server, SessionClient *client, char *cmd)
 {
 
+}
 
+void handleCommandGui(Server *server, SessionClient *client, char *cmd)
+{
+
+}
+
+void handleCommand(Server *server, SessionClient *client, char *cmd)
+{
+    if (!client->active) {
+        connec_t(server, client, cmd);
+        return;
+    }
+    if (client->is_gui) {
+        handleCommandGui(server, client, cmd);
+        return;
+    }
+}
+
+void execCmd(Server *server, int i)
+{
+    SessionClient *client = &server->clients[i];
+    struct timespec now;
+    get_current_time(&now);
+    Command *cmd = peek_command(client->queue);
+
+    if (is_command_ready(cmd, now)) {
+        handleCommand(server, client, cmd->raw_cmd);
+        dequeue_command(client->queue);
+    }
 }
 
 void checkLife(Server *server, int i)
@@ -186,15 +262,14 @@ void runServer(Server *server)
     while (running) {
         ready = poll(server->fds, server->nfds, -1);
         if (ready < 0)
-            exit_error("poll", 0);
+            continue;
         for (int i = 0; i < server->nfds; ++i) {
-            if (server->fds[i].fd < 0)
+            if (server->fds[i].fd < 0 || server->clients[i].is_egg)
                 continue;
             handleEntry(server, i);
             execCmd(server, i);
             checkLife(server, i);
         }
         spawnRessources(server);
-        running = 0;
     }
 }
