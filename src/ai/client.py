@@ -45,26 +45,64 @@ class ZappyClient:
     def connect(self):
         """Établit la connexion avec le serveur et effectue le protocole d'authentification."""
         try:
+            # Création et connexion du socket
+            self.logger.info(f"Tentative de connexion à {self.hostname}:{self.port}")
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.settimeout(7.0)  # Timeout pour la connexion initiale
             self.socket.connect((self.hostname, self.port))
-            
+            self.logger.info("Socket connecté avec succès")
+
             # Réception du message de bienvenue
+            self.logger.info("En attente du message de bienvenue...")
             welcome = self._receive()
+            self.logger.info(f"Message reçu: {welcome}")
             if welcome != "WELCOME":
-                raise Exception("Message de bienvenue invalide")
-            
+                raise Exception(f"Message de bienvenue invalide: {welcome}")
+
             # Envoi du nom d'équipe
+            self.logger.info(f"Envoi du nom d'équipe: {self.team_name}")
             self._send(self.team_name + "\n")
-            
-            # Réception du numéro de client
-            self.client_num = int(self._receive())
-            
-            # Réception de la taille de la carte
-            map_size = self._receive().split()
-            self.map_size = (int(map_size[0]), int(map_size[1]))
+
+            # Réception de la réponse du serveur (peut contenir plusieurs lignes)
+            self.logger.info("En attente de la réponse du serveur...")
+            response = self._receive()
+            self.logger.info(f"Réponse reçue: {response}")
+            lines = response.strip().split('\n')
+
+            # Lecture du numéro de client
+            try:
+                self.client_num = int(lines[0])
+                self.logger.info(f"Numéro de client reçu: {self.client_num}")
+            except ValueError:
+                raise Exception(f"Numéro de client invalide: {lines[0]}")
+
+            # Si la map est déjà présente dans la même réponse
+            if len(lines) > 1:
+                map_size = lines[1]
+                self.logger.info(f"Dimensions de la carte reçues dans la même réponse: {map_size}")
+            else:
+                self.logger.info("En attente des dimensions de la carte...")
+                map_size = self._receive()
+                self.logger.info(f"Dimensions de la carte reçues: {map_size}")
+
+            # Lecture des dimensions de la carte
+            try:
+                dimensions = map_size.strip().split()
+                if len(dimensions) != 2:
+                    raise Exception(f"Format de dimensions invalide: {map_size}")
+                self.map_size = (int(dimensions[0]), int(dimensions[1]))
+                self.logger.info(f"Dimensions de la carte parsées: {self.map_size}")
+            except ValueError:
+                raise Exception(f"Dimensions invalides: {map_size}")
+
+            self.logger.info(f"Connecté au serveur. Client #{self.client_num}, Carte: {self.map_size[0]}x{self.map_size[1]}")
+
         except Exception as e:
             self.logger.error(f"Erreur de connexion: {e}")
-            raise
+            if self.socket:
+                self.socket.close()
+                self.socket = None
+            raise  # Propager l'erreur pour une meilleure gestion en amont
 
     def _get_timeout(self, command: str) -> float:
         """Récupère le timeout pour une commande donnée.
@@ -77,7 +115,7 @@ class ZappyClient:
         """
         # Extrait le nom de la commande (sans les arguments)
         cmd_name = command.split()[0]
-        return self.TIMEOUTS.get(cmd_name, 7.0)
+        return self.TIMEOUTS.get(cmd_name, 7.0)  # Timeout par défaut de 7 secondes
 
     def _send(self, message: str):
         """Envoie un message au serveur.
@@ -113,46 +151,28 @@ class ZappyClient:
             self.socket.settimeout(None)
 
     def _receive(self) -> str:
-        """Reçoit un message du serveur.
-        
-        Returns:
-            str: Message reçu
-            
-        Raises:
-            socket.error: Si la réception échoue
-            TimeoutError: Si le timeout est dépassé
-        """
+        """Reçoit une réponse du serveur."""
         if not self.socket:
-            raise ConnectionError("Non connecté au serveur")
-            
+            raise Exception("Socket non connecté")
+        
         try:
-            # Configure le timeout pour la réception
-            self.socket.settimeout(7.0)  # Timeout par défaut pour la réception
-            
-            # Attend les données avec select
-            ready = select.select([self.socket], [], [], 7.0)
-            if not ready[0]:
-                raise TimeoutError("Timeout de réception après 7s")
-                
+            self.logger.debug("En attente de données du serveur...")
             data = self.socket.recv(4096)
             if not data:
-                raise ConnectionError("Connexion fermée par le serveur")
-                
-            message = data.decode().strip()
-            self.logger.debug(f"Reçu: {message}")
-            return message
+                raise Exception("Connexion fermée par le serveur")
             
+            response = data.decode('utf-8').strip()
+            self.logger.debug(f"Données reçues: {response}")
+            return response
         except socket.timeout:
-            error_msg = "Timeout de réception après 7s"
-            self.logger.error(error_msg)
-            raise TimeoutError(error_msg)
+            self.logger.error("Timeout lors de la réception des données")
+            raise
         except socket.error as e:
-            error_msg = f"Erreur de réception: {str(e)}"
-            self.logger.error(error_msg)
-            raise socket.error(error_msg)
-        finally:
-            # Réinitialise le timeout
-            self.socket.settimeout(None)
+            self.logger.error(f"Erreur lors de la réception: {e}")
+            raise socket.error("Erreur de réception")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la réception: {e}")
+            raise
 
     def run(self) -> None:
         """Boucle principale du client."""

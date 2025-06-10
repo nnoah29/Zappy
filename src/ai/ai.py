@@ -4,6 +4,7 @@ from client import ZappyClient
 from protocol import ZappyProtocol
 from vision import Vision
 from collision_manager import CollisionManager
+from movement import Movement
 
 class AI:
     def __init__(self, client: ZappyClient):
@@ -14,8 +15,9 @@ class AI:
         """
         self.client = client
         self.protocol = ZappyProtocol(client)
-        self.vision = Vision()
-        self.collision_manager = CollisionManager(self.protocol, self.vision)
+        self.vision = Vision(self.protocol)
+        self.movement = Movement(self.protocol, self.vision)
+        self.collision_manager = CollisionManager(self.protocol, self.vision, self.movement)
         self.logger = logging.getLogger(__name__)
         self.level = 1
         self.inventory: Dict[str, int] = {}
@@ -28,8 +30,7 @@ class AI:
         """Met à jour l'état de l'IA et prend une décision."""
         try:
             # Met à jour la vision
-            look_response = self.protocol.look()
-            self.vision.update(look_response)
+            self.vision.look()  # La vision est mise à jour automatiquement lors de l'appel à look()
             
             # Met à jour l'inventaire
             inventory_response = self.protocol.inventory()
@@ -49,12 +50,20 @@ class AI:
             inventory_str (str): Réponse du serveur pour l'inventaire
         """
         try:
+            self.logger.debug(f"Réponse brute de l'inventaire: {inventory_str}")
             # Format: "[nourriture X, linemate Y, deraumere Z, ...]"
             items = inventory_str.strip("[]").split(", ")
+            self.logger.debug(f"Items après split: {items}")
             self.inventory = {}
             for item in items:
-                name, count = item.split(" ")
+                self.logger.debug(f"Traitement de l'item: {item}")
+                parts = item.split(" ")
+                self.logger.debug(f"Parts après split: {parts}")
+                if len(parts) != 2:
+                    raise Exception(f"Format d'item invalide: {item}")
+                name, count = parts
                 self.inventory[name] = int(count)
+            self.logger.debug(f"Inventaire mis à jour: {self.inventory}")
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de l'inventaire: {e}")
             raise
@@ -150,8 +159,14 @@ class AI:
     def _find_resources(self) -> None:
         """Trouve et collecte des ressources."""
         # Cherche la ressource la plus proche
-        target = self.vision.find_nearest_resource()
-        if target:
+        target = self.vision.find_nearest_object("food")  # On commence par chercher de la nourriture
+        if target == (-1, -1):  # Si pas de nourriture, on cherche d'autres ressources
+            for resource in ["linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]:
+                target = self.vision.find_nearest_object(resource)
+                if target != (-1, -1):
+                    break
+        
+        if target != (-1, -1):
             self.target_position = target
             self._move_to_target()
         else:
@@ -205,21 +220,25 @@ class AI:
             return
 
         # Calcule la direction vers la cible
-        direction = self.vision.get_direction_to_target(self.target_position)
+        current_pos = (0, 0)  # Position du joueur
+        target_x, target_y = self.target_position
         
-        # Tourne si nécessaire
-        if direction == "right":
+        # Détermine la direction à prendre
+        if target_x > 0:
             self.protocol.right()
-        elif direction == "left":
+        elif target_x < 0:
             self.protocol.left()
-        else:
-            # Avance vers la cible
+        elif target_y > 0:
             self.protocol.forward()
             
             # Vérifie si on a atteint la cible
-            if self.vision.is_at_target(self.target_position):
-                self.target_position = None
-                self.collision_manager.reset()
+            vision = self.vision.look()
+            for i, case in enumerate(vision):
+                pos = self.vision.get_case_position(i)
+                if pos == self.target_position:
+                    self.target_position = None
+                    self.collision_manager.reset()
+                    break
 
     def _explore(self) -> None:
         """Explore la carte en évitant les collisions."""

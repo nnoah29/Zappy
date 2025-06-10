@@ -7,19 +7,7 @@ import signal
 import time
 from typing import Optional
 from client import ZappyClient
-from protocol import ZappyProtocol
 from ai import AI
-
-def setup_logging() -> None:
-    """Configure le système de logging."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.StreamHandler(),
-            logging.FileHandler('zappy.log')
-        ]
-    )
 
 def parse_args() -> argparse.Namespace:
     """Parse les arguments en ligne de commande.
@@ -60,7 +48,6 @@ def main() -> int:
     try:
         # Configuration
         args = parse_args()
-        setup_logging()
         logger = logging.getLogger(__name__)
         
         signal.signal(signal.SIGINT, handle_signal)

@@ -1,5 +1,5 @@
 import logging
-from typing import Optional, Tuple, List
+from typing import Optional
 from client import ZappyClient
 
 class ZappyProtocol:
