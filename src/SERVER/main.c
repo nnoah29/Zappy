@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "my.h"
-#include "Server/Server_t.h"
+#include "Server/Server.h"
 
 static OptionParser parsers[] = {
     {"-p", parse_port},

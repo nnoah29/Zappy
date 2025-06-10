@@ -40,13 +40,13 @@ typedef struct configServer {
     int freq;
 } ConfigServer;
 
-typedef struct Server_t {
+typedef struct Server {
     int port;
     int server_fd;
     struct sockaddr_in server_addr;
     struct pollfd fds[MAX_CLIENTS];
     SessionClient clients[MAX_CLIENTS];
-    Teams teams[MAX_TEAgit MS];
+    Teams teams[MAX_TEAMS];
     Clock *clock;
     int idsGui[MAX_CLIENTS];
     ConfigServer *config;
