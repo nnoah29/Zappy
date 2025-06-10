@@ -14,4 +14,5 @@ add_executable(SERVER main.c
         Clock/Clock.h
         Commandes/Commandes.c
         Commandes/Commandes.h
+        Server/Server.c
 )
