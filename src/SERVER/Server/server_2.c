@@ -11,7 +11,7 @@
 #include <string.h>
 #include "../my.h"
 
-void acceptClient(server_t *server)
+void accept_client_connection(server_t *server)
 {
     struct sockaddr_in client_addr;
     socklen_t addr_len = sizeof(client_addr);
@@ -34,7 +34,7 @@ void acceptClient(server_t *server)
     server->nfds++;
 }
 
-void removeClient(server_t *server, int i)
+void close_client_connection(server_t *server, int i)
 {
     if (server->fds[i].fd != -1)
         close(server->fds[i].fd);
@@ -65,7 +65,7 @@ double get_exec_duration(const char *cmd, int freq)
     return 0.0;
 }
 
-void stockCmd(char *cmd, const session_client_t *client, int freq)
+void process_command(char *cmd, const session_client_t *client, int freq)
 {
     const char *line = strtok(cmd, "\n");
     struct timespec now;
@@ -74,13 +74,13 @@ void stockCmd(char *cmd, const session_client_t *client, int freq)
     while (line) {
         get_current_time(&now);
         exec_duration = get_exec_duration(line, freq);
-        if (!enqueue_command(client->queue, line, exec_duration, now))
+        if (!enqueue_command(client->queue, line, exec_duration, &now))
             send(client->fd, "ko\n", 3, 0);
         line = strtok(NULL, "\n");
     }
 }
 
-void handleClient(server_t *server, int i)
+void receive_client_data(server_t *server, int i)
 {
     char buffer[1024];
     const long int len = recv(server->fds[i].fd,
@@ -88,9 +88,9 @@ void handleClient(server_t *server, int i)
     const session_client_t *client = &server->clients[i];
 
     if (len <= 0) {
-        removeClient(server, i);
+        close_client_connection(server, i);
         return;
     }
     buffer[len] = '\0';
-    stockCmd(buffer, client, server->config->freq);
+    process_command(buffer, client, server->config->freq);
 }

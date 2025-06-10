@@ -5,5 +5,4 @@
 ** sessionClient.c
 */
 
-
-#include "sessionClient.h"
+#include "session_client.h"

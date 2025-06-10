@@ -16,31 +16,31 @@ void connec_t(server_t *server, session_client_t *client, char *cmd)
 {
 }
 
-void handleCommandGui(server_t *server, session_client_t *client, char *cmd)
+void handle_command_gui(server_t *server, session_client_t *client, char *cmd)
 {
 }
 
-void spawnRessources(server_t *server)
+void spawn_ressources(server_t *server)
 {
 }
 
-void execCmd(server_t *server, int i)
+void exec_cmd(server_t *server, int i)
 {
     session_client_t *client = &server->clients[i];
     struct timespec now;
-    int cmdIdx;
+    int cmdIdx = 0;
     const command_t *cmd = NULL;
 
     get_current_time(&now);
-    cmdIdx = get_next_ready_command(client->queue, now);
+    cmdIdx = get_next_ready_command(client->queue, &now);
     if (cmdIdx < 0)
         return;
     cmd = &client->queue->commands[cmdIdx];
-    handleCommand(server, client, cmd->raw_cmd);
+    handle_command(server, client, cmd->raw_cmd);
     remove_command_at(client->queue, cmdIdx);
 }
 
-void checkLife(server_t *server, int i)
+void check_life(server_t *server, int i)
 {
     session_client_t *client = &server->clients[i];
     const long now_tick = get_elapsed_ticks(server->clock);
@@ -49,6 +49,6 @@ void checkLife(server_t *server, int i)
         client->inventory[FOOD] -= 1;
         client->last_food_tick = now_tick;
         if (client->inventory[FOOD] < 0)
-            removeClient(server, i);
+            close_client_connection(server, i);
     }
 }

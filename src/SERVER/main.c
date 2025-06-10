@@ -12,7 +12,7 @@
 #include "my.h"
 #include "Server/server.h"
 
-const static option_parser_t parsers[] = {
+static const  option_parser_t parsers[] = {
     {"-p", parse_port},
     {"-x", parse_width},
     {"-y", parse_height},
@@ -65,9 +65,9 @@ config_server_t *parse_args(int argc, char **argv)
 int main(int ac, char *av[])
 {
     config_server_t *conf = parse_args(ac, av);
-    server_t* server = initServer(conf);
+    server_t *server = setup_server(conf);
 
-    runServer(server);
-    closeServer(server);
+    run_server(server);
+    cleanup_server(server);
     return 0;
 }

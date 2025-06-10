@@ -19,20 +19,21 @@ void handle_signal(int signal)
     running = 0;
 }
 
-void handleEntry(server_t *server, int i)
+void register_player_in_team(server_t *server, int i, int j, char *team)
 {
-    if (server->fds[i].revents & POLLIN) {
-        if (server->fds[i].fd == server->server_fd)
-            acceptClient(server);
-        else
-            handleClient(server, i);
-    }
+    const int nb = server->teams[j].nbPlayers;
+
+    server->teams[j].players[nb] = &server->clients[i];
+    server->teams[j].nbPlayers++;
+    server->teams[j].nbEggs--;
+    server->teams[j].nbMaxPlayers--;
+    server->clients[i].team_idx = j;
+    server->clients[i].is_egg = false;
+    server->clients[i].is_gui = false;
 }
 
-void assignTeam(server_t *server, int i, char *team)
+void assign_team(server_t *server, int i, char *team)
 {
-    int nb = 0;
-
     if (strcmp(team, "GRAPHIC") == 0) {
         server->clients[i].team_idx = -1;
         server->clients[i].is_egg = false;
@@ -43,35 +44,28 @@ void assignTeam(server_t *server, int i, char *team)
     for (int j = 0; j < server->config->nb_teams; j++) {
         if (strcmp(team, server->teams[j].name) == 0 &&
             server->teams[j].nbEggs > 0 && server->teams[j].nbMaxPlayers > 0){
-            nb = server->teams[j].nbPlayers;
-            server->teams[j].players[nb] = &server->clients[i];
-            server->teams[j].nbPlayers++;
-            server->teams[j].nbEggs--;
-            server->teams[j].nbMaxPlayers--;
-            server->clients[i].team_idx = j;
-            server->clients[i].is_egg = false;
-            server->clients[i].is_gui = false;
+            register_player_in_team(server, i, j, team);
             return;
         }
     }
     send(server->clients[i].fd, "Team does not exit\n", 19, 0);
-    removeClient(server, i);
+    close_client_connection(server, i);
 }
 
-void handleCommand(server_t *server, session_client_t *client, char *cmd)
+void handle_command(server_t *server, session_client_t *client, char *cmd)
 {
     if (!client->active) {
         connec_t(server, client, cmd);
         return;
     }
     if (client->is_gui) {
-        handleCommandGui(server, client, cmd);
+        handle_command_gui(server, client, cmd);
         return;
     }
     printf("cmd: %s\n", cmd);
 }
 
-void runServer(server_t *server)
+void run_server(server_t *server)
 {
     int ready = 0;
 
@@ -80,6 +74,6 @@ void runServer(server_t *server)
         if (ready < 0)
             continue;
         handle_server(server);
-        spawnRessources(server);
+        spawn_ressources(server);
     }
 }

@@ -12,13 +12,23 @@
 #include <string.h>
 #include "../my.h"
 
+void handle_events(server_t *server, int i)
+{
+    if (server->fds[i].revents & POLLIN) {
+        if (server->fds[i].fd == server->server_fd)
+            accept_client_connection(server);
+        else
+            receive_client_data(server, i);
+    }
+}
+
 void handle_server(server_t *server)
 {
     for (int i = 0; i < server->nfds; ++i) {
         if (server->fds[i].fd < 0 || server->clients[i].is_egg)
             continue;
-        handleEntry(server, i);
-        execCmd(server, i);
-        checkLife(server, i);
+        handle_events(server, i);
+        exec_cmd(server, i);
+        check_life(server, i);
     }
 }

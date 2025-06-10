@@ -12,8 +12,8 @@
     #include <poll.h>
     #include <netinet/in.h>
     #include <poll.h>
-    #include "../Clock/Clock.h"
-    #include "../SessionClients/sessionClient.h"
+    #include "../Clock/clock.h"
+    #include "../SessionClients/session_client.h"
 
 typedef struct Teams {
     char *name;
@@ -40,7 +40,7 @@ typedef struct server {
     struct pollfd fds[MAX_CLIENTS];
     session_client_t clients[MAX_CLIENTS];
     teams_t teams[MAX_TEAMS];
-    Clock *clock;
+    my_clock_t *clock;
     int idsGui[MAX_CLIENTS];
     config_server_t *config;
     int nfds;
@@ -68,30 +68,30 @@ static const command_info_t command_table[] = {
 };
 
 
-void runServer(server_t *server);
+void run_server(server_t *server);
 void handle_signal(int signal);
-server_t *initServer(config_server_t *config);
-void closeServer(server_t *server);
-void putOnline(server_t *server);
-void initClients(server_t *server);
-void initTeams(server_t *server);
-server_t *initServer(config_server_t *config);
-void closeServer(server_t *server);
-void acceptClient(server_t *server);
-void removeClient(server_t *server, int i);
+server_t *setup_server(config_server_t *config);
+void cleanup_server(server_t *server);
+void put_online(server_t *server);
+void init_clients(server_t *server);
+void initialize_teams(server_t *server);
+server_t *setup_server(config_server_t *config);
+void cleanup_server(server_t *server);
+void accept_client_connection(server_t *server);
+void close_client_connection(server_t *server, int i);
 double get_exec_duration(const char *cmd, int freq);
-void stockCmd(char *cmd, const session_client_t *client, int freq);
-void handleClient(server_t *server, int i);
+void process_command(char *cmd, const session_client_t *client, int freq);
+void receive_client_data(server_t *server, int i);
 void handle_signal(int signal);
-void handleEntry(server_t *server, int i);
-void assignTeam(server_t *server, int i, char *team);
-void handleCommand(server_t *server, session_client_t *client, char *cmd);
-void runServer(server_t *server);
+void handle_events(server_t *server, int i);
+void assign_team(server_t *server, int i, char *team);
+void handle_command(server_t *server, session_client_t *client, char *cmd);
+void run_server(server_t *server);
 void connec_t(server_t *server, session_client_t *client, char *cmd);
-void handleCommandGui(server_t *server, session_client_t *client, char *cmd);
-void spawnRessources(server_t *server);
-void execCmd(server_t *server, int i);
-void checkLife(server_t *server, int i);
+void handle_command_gui(server_t *server, session_client_t *client, char *cmd);
+void spawn_ressources(server_t *server);
+void exec_cmd(server_t *server, int i);
+void check_life(server_t *server, int i);
 void handle_server(server_t *server);
 
 #endif //SERVER_H

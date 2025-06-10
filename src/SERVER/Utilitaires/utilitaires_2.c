@@ -30,3 +30,8 @@ void parse_names(config_server_t *conf, char **argv, int *i)
     conf->nb_teams = j;
     (*i)--;
 }
+
+void get_current_time(struct timespec *ts)
+{
+    clock_gettime(CLOCK_MONOTONIC, ts);
+}

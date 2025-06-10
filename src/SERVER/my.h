@@ -11,10 +11,10 @@
     #include <unistd.h>
     #include "Server/server.h"
 
-typedef void (*parser_func)(config_server_t *conf, char **argv, int *i);
+typedef void (*parser_func_t)(config_server_t *conf, char **argv, int *i);
 typedef struct {
     const char *key;
-    parser_func func;
+    parser_func_t func;
 }option_parser_t;
 
 void exit_error(char *error, int degree);

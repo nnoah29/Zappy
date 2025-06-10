@@ -11,9 +11,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../my.h"
-const static server_t *s;
+static const server_t *s;
 
-void putOnline(server_t *server)
+void put_online(server_t *server)
 {
     server->server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server->server_fd == -1)
@@ -29,7 +29,7 @@ void putOnline(server_t *server)
         exit_error("listen", 0);
 }
 
-void initClients(server_t *server)
+void init_clients(server_t *server)
 {
     for (int i = 0; i < MAX_CLIENTS; ++i) {
         server->fds[i].fd = -1;
@@ -38,7 +38,7 @@ void initClients(server_t *server)
     }
 }
 
-void initTeams(server_t *server)
+void initialize_teams(server_t *server)
 {
     char **names = server->config->names;
 
@@ -50,7 +50,7 @@ void initTeams(server_t *server)
     }
 }
 
-server_t *initServer(config_server_t *config)
+server_t *setup_server(config_server_t *config)
 {
     server_t *server = malloc(sizeof(server_t));
 
@@ -58,17 +58,17 @@ server_t *initServer(config_server_t *config)
     server->config = config;
     server->port = config->port;
     server->nfds = 0;
-    initClients(server);
-    initTeams(server);
-    putOnline(server);
-    server->clock = initClock(config->freq);
+    init_clients(server);
+    initialize_teams(server);
+    put_online(server);
+    server->clock = create_clock(config->freq);
     signal(SIGINT, handle_signal);
     printf("Serveur en attente de connexions sur le port %d\n", server->port);
     s = server;
     return server;
 }
 
-void closeServer(server_t *server)
+void cleanup_server(server_t *server)
 {
     if (server->server_fd != -1)
         close(server->server_fd);
