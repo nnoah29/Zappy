@@ -19,7 +19,6 @@ typedef struct {
     double tick;
 } Clock;
 
-//papa
 Clock *initClock(int freq);
 void get_current_time(struct timespec *ts);
 long get_elapsed_ticks(Clock *clock);
