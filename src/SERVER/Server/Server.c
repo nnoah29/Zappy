@@ -122,9 +122,23 @@ void removeClient(Server *server, int i)
     printf("Client %d supprimé\n", i);
 }
 
-double get_exec_duration(const char *cmd)
+double get_exec_duration(const char *cmd, int freq)
 {
-    return 1.0;
+    char cmd_cpy[256];
+    char *token;
+
+    if (!cmd)
+        return -1.0;
+    strncpy(cmd_cpy, cmd, sizeof(cmd_cpy) - 1);
+    cmd_cpy[sizeof(cmd_cpy) - 1] = '\0';
+    token = strtok(buffer, " \t\n\r");
+    if (!token)
+        return -1.0;
+    for (size_t i = 0; i < sizeof(command_table) / sizeof(CommandInfo); i++) {
+        if (strcmp(token, command_table[i].name) == 0)
+            return (double)command_table[i].units/ freq;
+    }
+    return -1.0;
 }
 
 void stockCmd(char *cmd, const SessionClient *client)
