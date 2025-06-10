@@ -22,4 +22,5 @@ typedef struct {
 Clock *initClock(int freq);
 void get_current_time(struct timespec *ts);
 long get_elapsed_ticks(Clock *clock);
+int timespec_cmp(struct timespec *a, struct timespec *b);
 #endif //CLOCK_H

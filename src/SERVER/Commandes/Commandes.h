@@ -15,6 +15,7 @@
 
 #define MAX_COMMANDS 10
 #include <time.h>
+#include "../Clock/Clock.h"
 
 typedef struct {
     char *raw_cmd;
@@ -29,9 +30,16 @@ typedef struct {
     int size;
 } CommandQueue;
 
+typedef struct  Cmd_Idx {
+    int idx;
+    Command *cmd;
+} Cmd_Idx;
+
 int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struct timespec now);
 Command *peek_command(CommandQueue *queue);
 int is_command_ready(Command *cmd, struct timespec now);
 int dequeue_command(CommandQueue *queue);
+int get_next_ready_command(CommandQueue* queue, struct timespec now);
+int remove_command_at(CommandQueue *queue, int index);
 
 #endif //COMMANDES_H

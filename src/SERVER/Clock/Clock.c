@@ -38,13 +38,25 @@ long get_elapsed_ticks(Clock *clock)
     return (long)(elapsed * clock->tick);
 }
 
-void get_current_time(struct timespec *ts) {
+void get_current_time(struct timespec *ts)
+{
     clock_gettime(CLOCK_MONOTONIC, ts);
 }
 
 int has_elapsed(struct timespec *target, struct timespec *now)
 {
-    if (now->tv_sec > target->tv_sec) return 1;
-    if (now->tv_sec == target->tv_sec && now->tv_nsec >= target->tv_nsec) return 1;
+    if (now->tv_sec > target->tv_sec)
+        return 1;
+    if (now->tv_sec == target->tv_sec && now->tv_nsec >= target->tv_nsec)
+        return 1;
+    return 0;
+}
+
+int timespec_cmp(struct timespec *a, struct timespec *b)
+{
+    if (a->tv_sec != b->tv_sec)
+        return (a->tv_sec < b->tv_sec) ? -1 : 1;
+    if (a->tv_nsec != b->tv_nsec)
+        return (a->tv_nsec < b->tv_nsec) ? -1 : 1;
     return 0;
 }

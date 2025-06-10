@@ -124,21 +124,22 @@ void removeClient(Server *server, int i)
 
 double get_exec_duration(const char *cmd, int freq)
 {
-    char cmd_cpy[256];
-    char *token;
+    char *cmd_cpy = NULL;
+    char *token = NULL;
 
     if (!cmd)
         return -1.0;
-    strncpy(cmd_cpy, cmd, sizeof(cmd_cpy) - 1);
-    cmd_cpy[sizeof(cmd_cpy) - 1] = '\0';
+    cmd_cpy = strdup(cmd);
     token = strtok(cmd_cpy, " \t\n\r");
+    free(cmd_cpy);
     if (!token)
         return -1.0;
     for (size_t i = 0; i < sizeof(command_table) / sizeof(CommandInfo); i++) {
-        if (strcmp(token, command_table[i].name) == 0)
-            return (double)command_table[i].units/ freq;
+        if (strcmp(token, command_table[i].name) == 0) {
+            return (double)command_table[i].units / freq;
+        }
     }
-    return -1.0;
+    return 0.0;
 }
 
 void stockCmd(char *cmd, const SessionClient *client, int freq)
@@ -155,7 +156,6 @@ void stockCmd(char *cmd, const SessionClient *client, int freq)
         line = strtok(NULL, "\n");
     }
 }
-
 
 void handleClient(Server *server, int i)
 {
@@ -236,6 +236,7 @@ void handleCommand(Server *server, SessionClient *client, char *cmd)
         handleCommandGui(server, client, cmd);
         return;
     }
+    printf("cmd: %s\n", cmd);
 }
 
 void execCmd(Server *server, int i)
@@ -243,12 +244,18 @@ void execCmd(Server *server, int i)
     SessionClient *client = &server->clients[i];
     struct timespec now;
     get_current_time(&now);
-    Command *cmd = peek_command(client->queue);
+    const int cmdIdx = get_next_ready_command(client->queue, now);
+    const Command *cmd = NULL;
 
-    if (is_command_ready(cmd, now)) {
-        handleCommand(server, client, cmd->raw_cmd);
-        dequeue_command(client->queue);
-    }
+    if (cmdIdx < 0)
+        return;
+    cmd = &client->queue->commands[cmdIdx];
+    handleCommand(server, client, cmd->raw_cmd);
+    remove_command_at(client->queue, cmdIdx);
+    //Command *cmd = peek_command(client->queue);
+    // if (is_command_ready(cmd, now)) {
+    //     dequeue_command(client->queue);
+    // }
 }
 
 void checkLife(Server *server, int i)

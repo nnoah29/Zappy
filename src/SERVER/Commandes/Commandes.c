@@ -13,6 +13,44 @@
 #include <stdlib.h>
 #include <string.h>
 
+int get_next_ready_command(CommandQueue* queue, struct timespec now)
+{
+    int best_index = -1;
+    int index = 0;
+    Command *cmd = NULL;
+
+    if (queue->size == 0)
+        return -1;
+    for (int i = 0; i < queue->size; ++i) {
+        index = (queue->head + i) % MAX_COMMANDS;
+        cmd = &queue->commands[index];
+        if (is_command_ready(cmd, now)) {
+            if (best_index == -1 ||
+                timespec_cmp(&cmd->ready_at, &queue->commands[best_index].ready_at) < 0) {
+                best_index = index;
+            }
+        }
+    }
+    return best_index;
+}
+
+int remove_command_at(CommandQueue *queue, int index)
+{
+    int next = -1;
+
+    if (queue->size == 0)
+        return 0;
+    free(queue->commands[index].raw_cmd);
+    for (int i = index; i != queue->tail; i = (i + 1) % MAX_COMMANDS) {
+        next = (i + 1) % MAX_COMMANDS;
+        queue->commands[i] = queue->commands[next];
+    }
+    queue->tail = (queue->tail - 1 + MAX_COMMANDS) % MAX_COMMANDS;
+    queue->size--;
+    return 1;
+}
+
+
 void init_command_queue(CommandQueue *queue)
 {
     queue->head = 0;
