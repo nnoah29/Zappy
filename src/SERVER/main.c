@@ -1,14 +1,9 @@
 /*
-**  _                                              _      ___    ___  
-** | |                                            | |    |__ \  / _ \
-** | |_Created _       _ __   _ __    ___    __ _ | |__     ) || (_) |
-** | '_ \ | | | |     | '_ \ | '_ \  / _ \  / _` || '_ \   / /  \__, |
-** | |_) || |_| |     | | | || | | || (_) || (_| || | | | / /_    / / 
-** |_.__/  \__, |     |_| |_||_| |_| \___/  \__,_||_| |_||____|  /_/ 
-**          __/ |     on 02/06/25.                                          
-**         |___/ 
+** EPITECH PROJECT, 2024
+** B-YEP-400-COT-4-1-zappy-noah.toffa
+** File description:
+** main.c
 */
-
 
 #include <signal.h>
 #include <stdio.h>
@@ -17,7 +12,7 @@
 #include "my.h"
 #include "Server/Server.h"
 
-static OptionParser parsers[] = {
+const static OptionParser parsers[] = {
     {"-p", parse_port},
     {"-x", parse_width},
     {"-y", parse_height},
@@ -70,7 +65,6 @@ ConfigServer *parse_args(int argc, char **argv)
 int main(int ac, char *av[])
 {
     ConfigServer* conf = parse_args(ac, av);
-    //print_config(conf);
     Server* server = initServer(conf);
 
     runServer(server);

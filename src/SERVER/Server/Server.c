@@ -1,12 +1,8 @@
 /*
-**  _                                              _      ___    ___  
-** | |                                            | |    |__ \  / _ \
-** | |_Created _       _ __   _ __    ___    __ _ | |__     ) || (_) |
-** | '_ \ | | | |     | '_ \ | '_ \  / _ \  / _` || '_ \   / /  \__, |
-** | |_) || |_| |     | | | || | | || (_) || (_| || | | | / /_    / / 
-** |_.__/  \__, |     |_| |_||_| |_| \___/  \__,_||_| |_||____|  /_/ 
-**          __/ |     on 02/06/25.
-**         |___/
+** EPITECH PROJECT, 2024
+** B-YEP-400-COT-4-1-zappy-noah.toffa
+** File description:
+** Server.c
 */
 
 #include "Server.h"
@@ -107,7 +103,6 @@ void acceptClient(Server *server)
     server->fds[server->nfds].events = POLLIN;
     server->clients[server->nfds].fd = client_fd;
     server->clients[server->nfds].last_food_tick = get_elapsed_ticks(server->clock);
-    // server->clients[server->nfds].active = 0;
     send(client_fd, "WELCOME\n", 8, 0);
     server->nfds++;
 }
@@ -252,10 +247,6 @@ void execCmd(Server *server, int i)
     cmd = &client->queue->commands[cmdIdx];
     handleCommand(server, client, cmd->raw_cmd);
     remove_command_at(client->queue, cmdIdx);
-    //Command *cmd = peek_command(client->queue);
-    // if (is_command_ready(cmd, now)) {
-    //     dequeue_command(client->queue);
-    // }
 }
 
 void checkLife(Server *server, int i)
