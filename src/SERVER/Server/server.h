@@ -5,20 +5,17 @@
 ** Server.h
 */
 
-
 #ifndef SERVER_H
-#define SERVER_H
+    #define SERVER_H
+    #define MAX_TEAMS 10
+    #define MAX_CLIENTS 1000
+    #include <poll.h>
+    #include <netinet/in.h>
+    #include <poll.h>
+    #include "../Clock/Clock.h"
+    #include "../SessionClients/sessionClient.h"
 
-#include <poll.h>
-#include <netinet/in.h>
-#include <poll.h>
-#include "../Clock/Clock.h"
-#include "../SessionClients/sessionClient.h"
-#define MAX_TEAMS 10
-#define MAX_CLIENTS 1000
-
-typedef struct Teams
-{
+typedef struct Teams {
     char *name;
     int nbPlayers;
     int nbMaxPlayers;
@@ -75,5 +72,26 @@ void runServer(server_t *server);
 void handle_signal(int signal);
 server_t *initServer(config_server_t *config);
 void closeServer(server_t *server);
+void putOnline(server_t *server);
+void initClients(server_t *server);
+void initTeams(server_t *server);
+server_t *initServer(config_server_t *config);
+void closeServer(server_t *server);
+void acceptClient(server_t *server);
+void removeClient(server_t *server, int i);
+double get_exec_duration(const char *cmd, int freq);
+void stockCmd(char *cmd, const session_client_t *client, int freq);
+void handleClient(server_t *server, int i);
+void handle_signal(int signal);
+void handleEntry(server_t *server, int i);
+void assignTeam(server_t *server, int i, char *team);
+void handleCommand(server_t *server, session_client_t *client, char *cmd);
+void runServer(server_t *server);
+void connec_t(server_t *server, session_client_t *client, char *cmd);
+void handleCommandGui(server_t *server, session_client_t *client, char *cmd);
+void spawnRessources(server_t *server);
+void execCmd(server_t *server, int i);
+void checkLife(server_t *server, int i);
+void handle_server(server_t *server);
 
 #endif //SERVER_H

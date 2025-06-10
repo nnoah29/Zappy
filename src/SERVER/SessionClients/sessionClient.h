@@ -1,20 +1,15 @@
 /*
-**  _                                              _      ___    ___  
-** | |                                            | |    |__ \  / _ \
-** | |_Created _       _ __   _ __    ___    __ _ | |__     ) || (_) |
-** | '_ \ | | | |     | '_ \ | '_ \  / _ \  / _` || '_ \   / /  \__, |
-** | |_) || |_| |     | | | || | | || (_) || (_| || | | | / /_    / / 
-** |_.__/  \__, |     |_| |_||_| |_| \___/  \__,_||_| |_||____|  /_/ 
-**          __/ |     on 02/06/25.                                          
-**         |___/ 
+** EPITECH PROJECT, 2024
+** B-YEP-400-COT-4-1-zappy-noah.toffa
+** File description:
+** sessionClient.h
 */
 
-
 #ifndef SESSIONCLIENT_H
-#define SESSIONCLIENT_H
-#include <stdbool.h>
-#include <time.h>
-#include "../Commandes/commandes.h"
+    #define SESSIONCLIENT_H
+    #include <stdbool.h>
+    #include <time.h>
+    #include "../Commandes/commandes.h"
 
 typedef enum {
     FOOD,
@@ -24,16 +19,14 @@ typedef enum {
     MENDIANE,
     PHIRAS,
     THYSTAME
-} resource;
+} resource_t;
 
-typedef enum
-{
+typedef enum {
     NORTH,
     EAST,
     SOUTH,
     WEST
-} orientation;
-
+} orientation_t;
 
 typedef struct {
     int x;
