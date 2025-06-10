@@ -17,25 +17,25 @@ void exit_error(char *error, int degree)
     exit(84);
 }
 
-void parse_port(ConfigServer *conf, char **argv, int *i)
+void parse_port(config_server_t *conf, char **argv, int *i)
 {
     (*i)++;
     conf->port = atoi(argv[*i]);
 }
 
-void parse_width(ConfigServer *conf, char **argv, int *i)
+void parse_width(config_server_t *conf, char **argv, int *i)
 {
     (*i)++;
     conf->map_w = atoi(argv[*i]);
 }
 
-void parse_height(ConfigServer *conf, char **argv, int *i)
+void parse_height(config_server_t *conf, char **argv, int *i)
 {
     (*i)++;
     conf->map_h = atoi(argv[*i]);
 }
 
-void parse_clients(ConfigServer *conf, char **argv, int *i)
+void parse_clients(config_server_t *conf, char **argv, int *i)
 {
     (*i)++;
     conf->nbClients = atoi(argv[*i]);

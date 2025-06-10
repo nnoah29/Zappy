@@ -10,9 +10,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include "my.h"
-#include "Server/Server.h"
+#include "Server/server.h"
 
-const static OptionParser parsers[] = {
+const static option_parser_t parsers[] = {
     {"-p", parse_port},
     {"-x", parse_width},
     {"-y", parse_height},
@@ -22,7 +22,7 @@ const static OptionParser parsers[] = {
     {NULL, NULL}
 };
 
-void recursive_parse(ConfigServer *conf, char **argv, int i, int argc)
+void recursive_parse(config_server_t *conf, char **argv, int i, int argc)
 {
     if (i >= argc)
         return;
@@ -35,7 +35,7 @@ void recursive_parse(ConfigServer *conf, char **argv, int i, int argc)
     recursive_parse(conf, argv, i + 1, argc);
 }
 
-void print_config(ConfigServer *server)
+void print_config(config_server_t *server)
 {
     printf("Port: %d\n", server->port);
     printf("Map size: %d x %d\n", server->map_w, server->map_h);
@@ -46,16 +46,16 @@ void print_config(ConfigServer *server)
     printf("Frequency: %d\n", server->freq);
 }
 
-void check_config(ConfigServer *conf)
+void check_config(config_server_t *conf)
 {
     if (conf->port <= 0 || conf->map_w <= 0 || conf->map_h <= 0 ||
         conf->nbClients <= 0 || conf->freq <= 0 || conf->nb_teams == 0)
         exit_error("Invalid configuration values", 84);
 }
 
-ConfigServer *parse_args(int argc, char **argv)
+config_server_t *parse_args(int argc, char **argv)
 {
-    ConfigServer *conf = malloc(sizeof(ConfigServer));
+    config_server_t *conf = malloc(sizeof(config_server_t));
 
     recursive_parse(conf, argv, 1, argc);
     check_config(conf);
@@ -64,8 +64,8 @@ ConfigServer *parse_args(int argc, char **argv)
 
 int main(int ac, char *av[])
 {
-    ConfigServer* conf = parse_args(ac, av);
-    Server* server = initServer(conf);
+    config_server_t *conf = parse_args(ac, av);
+    server_t* server = initServer(conf);
 
     runServer(server);
     closeServer(server);

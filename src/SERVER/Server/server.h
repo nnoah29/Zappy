@@ -13,7 +13,7 @@
 #include <netinet/in.h>
 #include <poll.h>
 #include "../Clock/Clock.h"
-#include "../SessionClients/SessionClient.h"
+#include "../SessionClients/sessionClient.h"
 #define MAX_TEAMS 10
 #define MAX_CLIENTS 1000
 
@@ -22,9 +22,9 @@ typedef struct Teams
     char *name;
     int nbPlayers;
     int nbMaxPlayers;
-    SessionClient *players[MAX_CLIENTS];
+    session_client_t *players[MAX_CLIENTS];
     int nbEggs;
-} Teams;
+} teams_t;
 
 typedef struct configServer {
     int port;
@@ -34,28 +34,28 @@ typedef struct configServer {
     int nbClients;
     int nb_teams;
     int freq;
-} ConfigServer;
+} config_server_t;
 
-typedef struct Server {
+typedef struct server {
     int port;
     int server_fd;
     struct sockaddr_in server_addr;
     struct pollfd fds[MAX_CLIENTS];
-    SessionClient clients[MAX_CLIENTS];
-    Teams teams[MAX_TEAMS];
+    session_client_t clients[MAX_CLIENTS];
+    teams_t teams[MAX_TEAMS];
     Clock *clock;
     int idsGui[MAX_CLIENTS];
-    ConfigServer *config;
+    config_server_t *config;
     int nfds;
-} Server;
+} server_t;
 
 
 typedef struct {
     const char *name;
     int units;
-} CommandInfo;
+} command_info_t;
 
-static const CommandInfo command_table[] = {
+static const command_info_t command_table[] = {
     {"Forward", 7},
     {"Right", 7},
     {"Left", 7},
@@ -71,9 +71,9 @@ static const CommandInfo command_table[] = {
 };
 
 
-void runServer(Server *server);
+void runServer(server_t *server);
 void handle_signal(int signal);
-Server *initServer(ConfigServer *config);
-void closeServer(Server *server);
+server_t *initServer(config_server_t *config);
+void closeServer(server_t *server);
 
 #endif //SERVER_H

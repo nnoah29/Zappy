@@ -9,15 +9,15 @@
 **         |___/ 
 */
 
-#include "Commandes.h"
+#include "commandes.h"
 #include <stdlib.h>
 #include <string.h>
 
-int get_next_ready_command(CommandQueue* queue, struct timespec now)
+int get_next_ready_command(command_queue_t* queue, struct timespec now)
 {
     int best_index = -1;
     int index = 0;
-    Command *cmd = NULL;
+    command_t *cmd = NULL;
 
     if (queue->size == 0)
         return -1;
@@ -34,7 +34,7 @@ int get_next_ready_command(CommandQueue* queue, struct timespec now)
     return best_index;
 }
 
-int remove_command_at(CommandQueue *queue, int index)
+int remove_command_at(command_queue_t *queue, int index)
 {
     int next = -1;
 
@@ -51,14 +51,14 @@ int remove_command_at(CommandQueue *queue, int index)
 }
 
 
-void init_command_queue(CommandQueue *queue)
+void init_command_queue(command_queue_t *queue)
 {
     queue->head = 0;
     queue->tail = 0;
     queue->size = 0;
 }
 
-int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struct timespec now)
+int enqueue_command(command_queue_t *queue, const char *cmd, double duration, struct timespec now)
 {
     const int index = queue->tail;
 
@@ -78,7 +78,7 @@ int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struc
     return 1;
 }
 
-int dequeue_command(CommandQueue *queue)
+int dequeue_command(command_queue_t *queue)
 {
     if (queue->size == 0)
         return 0;
@@ -89,14 +89,14 @@ int dequeue_command(CommandQueue *queue)
     return 1;
 }
 
-Command *peek_command(CommandQueue *queue)
+command_t *peek_command(command_queue_t *queue)
 {
     if (queue->size == 0)
         return NULL;
     return &queue->commands[queue->head];
 }
 
-int is_command_ready(Command *cmd, struct timespec now)
+int is_command_ready(command_t *cmd, struct timespec now)
 {
     if (!cmd)
         return 0;

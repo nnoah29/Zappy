@@ -14,8 +14,7 @@
 #define SESSIONCLIENT_H
 #include <stdbool.h>
 #include <time.h>
-#include "../Commandes/Commandes.h"
-
+#include "../Commandes/commandes.h"
 
 typedef enum {
     FOOD,
@@ -25,7 +24,7 @@ typedef enum {
     MENDIANE,
     PHIRAS,
     THYSTAME
-} Resource;
+} resource;
 
 typedef enum
 {
@@ -33,7 +32,7 @@ typedef enum
     EAST,
     SOUTH,
     WEST
-} Orientation;
+} orientation;
 
 
 typedef struct {
@@ -50,7 +49,7 @@ typedef struct {
     int inventory[7];
     long last_food_tick;
     bool is_elevating;
-    CommandQueue *queue;
-} SessionClient;
+    command_queue_t *queue;
+} session_client_t;
 
 #endif //SESSIONCLIENT_H

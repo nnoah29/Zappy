@@ -9,20 +9,20 @@
     #define MY_H
 
     #include <unistd.h>
-    #include "Server/Server.h"
+    #include "Server/server.h"
 
-typedef void (*parser_func)(ConfigServer *conf, char **argv, int *i);
+typedef void (*parser_func)(config_server_t *conf, char **argv, int *i);
 typedef struct {
     const char *key;
     parser_func func;
-}OptionParser;
+}option_parser_t;
 
 void exit_error(char *error, int degree);
-void parse_port(ConfigServer *conf, char **argv, int *i);
-void parse_width(ConfigServer *conf, char **argv, int *i);
-void parse_height(ConfigServer *conf, char **argv, int *i);
-void parse_clients(ConfigServer *conf, char **argv, int *i);
-void parse_freq(ConfigServer *conf, char **argv, int *i);
-void parse_names(ConfigServer *conf, char **argv, int *i);
+void parse_port(config_server_t *conf, char **argv, int *i);
+void parse_width(config_server_t *conf, char **argv, int *i);
+void parse_height(config_server_t *conf, char **argv, int *i);
+void parse_clients(config_server_t *conf, char **argv, int *i);
+void parse_freq(config_server_t *conf, char **argv, int *i);
+void parse_names(config_server_t *conf, char **argv, int *i);
 
 #endif //MY_H

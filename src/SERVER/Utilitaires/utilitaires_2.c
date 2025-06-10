@@ -10,13 +10,13 @@
 #include <string.h>
 #include "../my.h"
 
-void parse_freq(ConfigServer *conf, char **argv, int *i)
+void parse_freq(config_server_t *conf, char **argv, int *i)
 {
     (*i)++;
     conf->freq = atoi(argv[*i]);
 }
 
-void parse_names(ConfigServer *conf, char **argv, int *i)
+void parse_names(config_server_t *conf, char **argv, int *i)
 {
     int j = 0;
 

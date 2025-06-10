@@ -5,16 +5,16 @@
 ** Server.c
 */
 
-#include "Server.h"
+#include "server.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../my.h"
 static int running = 1;
-static Server *s;
+const static server_t *s;
 
-void putOnline(Server *server)
+void putOnline(server_t *server)
 {
     server->server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server->server_fd == -1)
@@ -29,7 +29,7 @@ void putOnline(Server *server)
         exit_error("listen", 0);
 }
 
-void initClients(Server *server)
+void initClients(server_t *server)
 {
     for (int i = 0; i < MAX_CLIENTS; ++i) {
         server->fds[i].fd = -1;
@@ -38,7 +38,7 @@ void initClients(Server *server)
     }
 }
 
-void initTeams(Server *server)
+void initTeams(server_t *server)
 {
     char **names = server->config->names;
 
@@ -50,11 +50,11 @@ void initTeams(Server *server)
     }
 }
 
-Server *initServer(ConfigServer *config)
+server_t *initServer(config_server_t *config)
 {
-    Server *server = malloc(sizeof(Server));
+    server_t *server = malloc(sizeof(server_t));
 
-    memset(server, 0, sizeof(Server));
+    memset(server, 0, sizeof(server_t));
     server->config = config;
     server->port = config->port;
     server->nfds = 0;
@@ -68,7 +68,7 @@ Server *initServer(ConfigServer *config)
     return server;
 }
 
-void closeServer(Server *server)
+void closeServer(server_t *server)
 {
     if (server->server_fd != -1)
         close(server->server_fd);
@@ -86,7 +86,7 @@ void closeServer(Server *server)
     free(server);
 }
 
-void acceptClient(Server *server)
+void acceptClient(server_t *server)
 {
     struct sockaddr_in client_addr;
     socklen_t addr_len = sizeof(client_addr);
@@ -107,7 +107,7 @@ void acceptClient(Server *server)
     server->nfds++;
 }
 
-void removeClient(Server *server, int i)
+void removeClient(server_t *server, int i)
 {
     if (server->fds[i].fd != -1)
         close(server->fds[i].fd);
@@ -129,7 +129,7 @@ double get_exec_duration(const char *cmd, int freq)
     free(cmd_cpy);
     if (!token)
         return -1.0;
-    for (size_t i = 0; i < sizeof(command_table) / sizeof(CommandInfo); i++) {
+    for (size_t i = 0; i < sizeof(command_table) / sizeof(command_info_t); i++) {
         if (strcmp(token, command_table[i].name) == 0) {
             return (double)command_table[i].units / freq;
         }
@@ -137,7 +137,7 @@ double get_exec_duration(const char *cmd, int freq)
     return 0.0;
 }
 
-void stockCmd(char *cmd, const SessionClient *client, int freq)
+void stockCmd(char *cmd, const session_client_t *client, int freq)
 {
     const char *line = strtok(cmd, "\n");
     struct timespec now;
@@ -152,11 +152,11 @@ void stockCmd(char *cmd, const SessionClient *client, int freq)
     }
 }
 
-void handleClient(Server *server, int i)
+void handleClient(server_t *server, int i)
 {
     char buffer[1024];
     const long int len = recv(server->fds[i].fd, buffer, sizeof(buffer) - 1, 0);
-    const SessionClient *client = &server->clients[i];
+    const session_client_t *client = &server->clients[i];
 
     if (len <= 0) {
         removeClient(server, i);
@@ -172,7 +172,7 @@ void handle_signal(int signal)
     running = 0;
 }
 
-void handleEntry(Server *server, int i)
+void handleEntry(server_t *server, int i)
 {
     if (server->fds[i].revents & POLLIN) {
         if (server->fds[i].fd == server->server_fd)
@@ -182,7 +182,7 @@ void handleEntry(Server *server, int i)
     }
 }
 
-void assignTeam(Server *server, int i, char *team)
+void assignTeam(server_t *server, int i, char *team)
 {
     int nb = 0;
 
@@ -211,17 +211,17 @@ void assignTeam(Server *server, int i, char *team)
 }
 
 
-void connec_t(Server *server, SessionClient *client, char *cmd)
+void connec_t(server_t *server, session_client_t *client, char *cmd)
 {
 
 }
 
-void handleCommandGui(Server *server, SessionClient *client, char *cmd)
+void handleCommandGui(server_t *server, session_client_t *client, char *cmd)
 {
 
 }
 
-void handleCommand(Server *server, SessionClient *client, char *cmd)
+void handleCommand(server_t *server, session_client_t *client, char *cmd)
 {
     if (!client->active) {
         connec_t(server, client, cmd);
@@ -234,13 +234,13 @@ void handleCommand(Server *server, SessionClient *client, char *cmd)
     printf("cmd: %s\n", cmd);
 }
 
-void execCmd(Server *server, int i)
+void execCmd(server_t *server, int i)
 {
-    SessionClient *client = &server->clients[i];
+    session_client_t *client = &server->clients[i];
     struct timespec now;
     get_current_time(&now);
     const int cmdIdx = get_next_ready_command(client->queue, now);
-    const Command *cmd = NULL;
+    const command_t *cmd = NULL;
 
     if (cmdIdx < 0)
         return;
@@ -249,9 +249,9 @@ void execCmd(Server *server, int i)
     remove_command_at(client->queue, cmdIdx);
 }
 
-void checkLife(Server *server, int i)
+void checkLife(server_t *server, int i)
 {
-    SessionClient *client = &server->clients[i];
+    session_client_t *client = &server->clients[i];
     const long now_tick = get_elapsed_ticks(server->clock);
 
     if (now_tick - client->last_food_tick >= 126) {
@@ -262,12 +262,12 @@ void checkLife(Server *server, int i)
     }
 }
 
-void spawnRessources(Server *server)
+void spawnRessources(server_t *server)
 {
 
 }
 
-void runServer(Server *server)
+void runServer(server_t *server)
 {
     int ready = 0;
 

@@ -21,25 +21,20 @@ typedef struct {
     char *raw_cmd;
     double duration;
     struct timespec ready_at;
-} Command;
+} command_t;
 
 typedef struct {
-    Command commands[MAX_COMMANDS];
+    command_t commands[MAX_COMMANDS];
     int head;
     int tail;
     int size;
-} CommandQueue;
+} command_queue_t;
 
-typedef struct  Cmd_Idx {
-    int idx;
-    Command *cmd;
-} Cmd_Idx;
-
-int enqueue_command(CommandQueue *queue, const char *cmd, double duration, struct timespec now);
-Command *peek_command(CommandQueue *queue);
-int is_command_ready(Command *cmd, struct timespec now);
-int dequeue_command(CommandQueue *queue);
-int get_next_ready_command(CommandQueue* queue, struct timespec now);
-int remove_command_at(CommandQueue *queue, int index);
+int enqueue_command(command_queue_t *queue, const char *cmd, double duration, struct timespec now);
+command_t *peek_command(command_queue_t *queue);
+int is_command_ready(command_t *cmd, struct timespec now);
+int dequeue_command(command_queue_t *queue);
+int get_next_ready_command(command_queue_t* queue, struct timespec now);
+int remove_command_at(command_queue_t *queue, int index);
 
 #endif //COMMANDES_H
