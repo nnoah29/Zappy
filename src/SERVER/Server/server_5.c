@@ -32,3 +32,8 @@ void handle_server(server_t *server)
         check_life(server, i);
     }
 }
+
+void handle_command_ai(server_t *server, session_client_t *client, const command_t *cmd)
+{
+
+}

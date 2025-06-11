@@ -52,7 +52,7 @@ void assign_team(server_t *server, int i, char *team)
     close_client_connection(server, i);
 }
 
-void handle_command(server_t *server, session_client_t *client, char *cmd)
+void handle_command(server_t *server, session_client_t *client, const command_t *cmd)
 {
     if (!client->active) {
         connec_t(server, client, cmd);
@@ -62,6 +62,7 @@ void handle_command(server_t *server, session_client_t *client, char *cmd)
         handle_command_gui(server, client, cmd);
         return;
     }
+    handle_command_ai(server, client, cmd);
     printf("cmd: %s\n", cmd);
 }
 

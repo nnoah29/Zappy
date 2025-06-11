@@ -85,13 +85,14 @@ void receive_client_data(server_t *server, int i);
 void handle_signal(int signal);
 void handle_events(server_t *server, int i);
 void assign_team(server_t *server, int i, char *team);
-void handle_command(server_t *server, session_client_t *client, char *cmd);
+void handle_command(server_t *server, session_client_t *client, const command_t *cmd);
 void run_server(server_t *server);
-void connec_t(server_t *server, session_client_t *client, char *cmd);
-void handle_command_gui(server_t *server, session_client_t *client, char *cmd);
+void connec_t(server_t *server, session_client_t *client, const command_t *cmd);
+void handle_command_gui(server_t *server, session_client_t *client, const command_t *cmd);
 void spawn_ressources(server_t *server);
 void exec_cmd(server_t *server, int i);
 void check_life(server_t *server, int i);
 void handle_server(server_t *server);
+void handle_command_ai(server_t *server, session_client_t *client, const command_t *cmd);
 
 #endif //SERVER_H

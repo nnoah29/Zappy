@@ -67,8 +67,7 @@ int enqueue_command(command_queue_t *queue, const char *cmd, double duration,
 
     if (queue->size >= MAX_COMMANDS)
         return 0;
-    queue->commands[index].raw_cmd = strdup(cmd);
-    queue->commands[index].duration = duration;
+    setup_command(queue, cmd, index, duration);
     queue->commands[index].ready_at = *now;
     queue->commands[index].ready_at.tv_sec += (time_t)duration;
     queue->commands[index].ready_at.tv_nsec +=

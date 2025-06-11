@@ -12,12 +12,13 @@
 #include <string.h>
 #include "../my.h"
 
-void connec_t(server_t *server, session_client_t *client, char *cmd)
+void connec_t(server_t *server, session_client_t *client, const command_t *cmd)
 {
 }
 
-void handle_command_gui(server_t *server, session_client_t *client, char *cmd)
+void handle_command_gui(server_t *server, session_client_t *client, const command_t *cmd)
 {
+
 }
 
 void spawn_ressources(server_t *server)
@@ -36,7 +37,7 @@ void exec_cmd(server_t *server, int i)
     if (cmdIdx < 0)
         return;
     cmd = &client->queue->commands[cmdIdx];
-    handle_command(server, client, cmd->raw_cmd);
+    handle_command(server, client, cmd);
     remove_command_at(client->queue, cmdIdx);
 }
 
