@@ -1,22 +1,22 @@
-from typing import List, Tuple, Optional
+from typing import Tuple, Optional
 import logging
-from protocol import ZappyProtocol
-from vision import Vision
-from movement import Movement
+from core.protocol import ZappyProtocol
+from managers.vision_manager import VisionManager
+from managers.movement import Movement
 
 class CollisionManager:
     """Gère la détection et la résolution des collisions."""
     
-    def __init__(self, protocol: ZappyProtocol, vision: Vision, movement: Movement):
+    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager, movement: Movement):
         """Initialise le gestionnaire de collisions.
         
         Args:
             protocol (ZappyProtocol): Protocole de communication
-            vision (Vision): Système de vision
+            vision_manager (VisionManager): Gestionnaire de vision
             movement (Movement): Gestionnaire de mouvement
         """
         self.protocol = protocol
-        self.vision = vision
+        self.vision_manager = vision_manager
         self.movement = movement
         self.logger = logging.getLogger(__name__)
         self.collision_count = 0
@@ -34,13 +34,13 @@ class CollisionManager:
             bool: True si une collision est détectée
         """
         # Vérifie les joueurs dans le champ de vision
-        players = self.vision.get_players_in_vision()
+        players = self.vision_manager.get_players_in_range(1)  # Vérifie seulement les joueurs à distance 1
         if not players:
             return False
 
         # Vérifie si un joueur est directement devant
         for player_pos in players:
-            if self.vision.is_case_in_front(self.vision.get_case_position(players.index(player_pos))):
+            if self.vision_manager.is_case_in_front(self.vision_manager.get_case_index(player_pos[0], player_pos[1])):
                 self.collision_count += 1
                 self.last_collision_pos = player_pos
                 return True

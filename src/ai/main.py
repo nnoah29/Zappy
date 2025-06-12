@@ -6,8 +6,37 @@ import logging
 import signal
 import time
 from typing import Optional
-from client import ZappyClient
+from core.client import ZappyClient
 from ai import AI
+
+def setup_logging() -> None:
+    """Configure le système de logging."""
+    # Configuration du logging pour tous les modules
+    for logger_name in ['root', 'client', 'ai', 'protocol', 'vision']:
+        logger = logging.getLogger(logger_name)
+        logger.setLevel(logging.DEBUG)
+        
+        # Supprime les handlers existants pour éviter les doublons
+        for handler in logger.handlers[:]:
+            logger.removeHandler(handler)
+        
+        # Ajoute les handlers
+        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        
+        # Handler pour la console
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.DEBUG)
+        console_handler.setFormatter(formatter)
+        logger.addHandler(console_handler)
+        
+        # Handler pour le fichier
+        file_handler = logging.FileHandler('zappy.log')
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+    
+    logging.debug("Configuration du logging terminée. Fichier zappy.log créé.")
+    logging.info("Niveau de logging configuré à DEBUG pour tous les modules.")
 
 def parse_args() -> argparse.Namespace:
     """Parse les arguments en ligne de commande.
@@ -48,6 +77,7 @@ def main() -> int:
     try:
         # Configuration
         args = parse_args()
+        setup_logging()
         logger = logging.getLogger(__name__)
         
         signal.signal(signal.SIGINT, handle_signal)

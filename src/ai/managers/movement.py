@@ -1,19 +1,19 @@
 from typing import Tuple, List, Optional
-from protocol import ZappyProtocol
-from vision import Vision
+from core.protocol import ZappyProtocol
+from managers.vision_manager import VisionManager
 
 class Movement:
     """Gère les déplacements du joueur."""
 
-    def __init__(self, protocol: ZappyProtocol, vision: Vision):
+    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager):
         """Initialise le gestionnaire de mouvement.
         
         Args:
             protocol (ZappyProtocol): Protocole de communication
-            vision (Vision): Système de vision
+            vision_manager (VisionManager): Gestionnaire de vision
         """
         self.protocol = protocol
-        self.vision = vision
+        self.vision_manager = vision_manager
         self.current_direction = 0  # 0: Nord, 1: Est, 2: Sud, 3: Ouest
         self.last_positions: List[Tuple[int, int]] = []
         self.stuck_count = 0
@@ -49,9 +49,11 @@ class Movement:
             bool: True si la position est accessible
         """
         # Vérifie si la position est dans le champ de vision
-        vision = self.vision.look()
-        for i, case in enumerate(vision):
-            case_pos = self.vision.get_case_position(i)
+        if not self.vision_manager.vision_data:
+            return False
+            
+        for i, case in enumerate(self.vision_manager.vision_data):
+            case_pos = self.vision_manager.get_case_position(i)
             if case_pos == pos:
                 # Vérifie s'il n'y a pas d'obstacle
                 return "player" not in case

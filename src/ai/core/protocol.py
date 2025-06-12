@@ -1,6 +1,7 @@
 import logging
-from typing import Optional
-from client import ZappyClient
+import time
+from typing import Optional, List, Dict, Any
+from .client import ZappyClient
 
 class ZappyProtocol:
     def __init__(self, client: ZappyClient):
@@ -218,4 +219,80 @@ class ZappyProtocol:
             return int(level_response.split(": ")[1])
         except Exception as e:
             self.last_error = f"Erreur lors de l'élévation: {e}"
+            raise 
+
+    def parse_look_response(self, response: str) -> list:
+        """Parse la réponse de la commande Look.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            list: Liste des cases vues avec leurs objets
+        """
+        try:
+            # Enlève les crochets et sépare les cases
+            response = response.strip('[]')
+            cases = [case.strip() for case in response.split(',')]
+            return cases
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing de la vision: {e}"
+            raise
+
+    def parse_inventory_response(self, response: str) -> dict:
+        """Parse la réponse de la commande Inventory.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            dict: Inventaire avec les quantités
+        """
+        try:
+            # Enlève les crochets et sépare les objets
+            response = response.strip('[]')
+            items = [item.strip() for item in response.split(',')]
+            inventory = {}
+            for item in items:
+                if item:
+                    name, quantity = item.split()
+                    inventory[name] = int(quantity)
+            return inventory
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing de l'inventaire: {e}"
+            raise
+
+    def parse_broadcast_response(self, response: str) -> tuple:
+        """Parse la réponse d'un broadcast.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            tuple: (direction, message)
+        """
+        try:
+            # Format: "message K, text"
+            parts = response.split(',', 1)
+            direction = int(parts[0].split()[1])
+            message = parts[1].strip()
+            return (direction, message)
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing du broadcast: {e}"
+            raise
+
+    def parse_eject_response(self, response: str) -> int:
+        """Parse la réponse d'un eject.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            int: Direction de l'éjection
+        """
+        try:
+            # Format: "eject: K"
+            return int(response.split(':')[1].strip())
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing de l'éjection: {e}"
             raise 

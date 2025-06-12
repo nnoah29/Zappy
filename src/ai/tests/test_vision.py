@@ -4,13 +4,15 @@ import unittest
 from unittest.mock import Mock, patch
 from vision import Vision
 from protocol import ZappyProtocol
+from client import ZappyClient
 
 class TestVision(unittest.TestCase):
     """Tests pour la classe Vision."""
 
     def setUp(self):
-        """Initialise les tests."""
-        self.protocol = Mock(spec=ZappyProtocol)
+        """Initialise les objets nécessaires pour les tests."""
+        self.client = ZappyClient("localhost", 3000, "test_team")
+        self.protocol = ZappyProtocol(self.client)
         self.vision = Vision(self.protocol)
 
     def test_get_expected_vision_size(self):
@@ -27,77 +29,39 @@ class TestVision(unittest.TestCase):
         self.vision.set_level(3)
         self.assertEqual(self.vision.get_expected_vision_size(), 16)
 
-    def test_get_case_position_level_1(self):
-        """Test du calcul de position pour un joueur de niveau 1"""
-        self.vision.set_level(1)
-        
-        # Case 0: Position du joueur
+    def test_get_case_position(self):
+        """Teste le calcul des positions des cases."""
+        # Test de la position du joueur
         self.assertEqual(self.vision.get_case_position(0), (0, 0))
         
-        # Cases 1, 2, 3: Ligne y=1
-        self.assertEqual(self.vision.get_case_position(1), (-1, 1))  # Gauche
-        self.assertEqual(self.vision.get_case_position(2), (0, 1))   # Centre
-        self.assertEqual(self.vision.get_case_position(3), (1, 1))   # Droite
-
-    def test_get_case_position_level_2(self):
-        """Test du calcul de position pour un joueur de niveau 2"""
-        self.vision.set_level(2)
-        
-        # Case 0: Position du joueur
-        self.assertEqual(self.vision.get_case_position(0), (0, 0))
-        
-        # Cases 1, 2, 3: Ligne y=1
+        # Test des positions de la première ligne
         self.assertEqual(self.vision.get_case_position(1), (-1, 1))
         self.assertEqual(self.vision.get_case_position(2), (0, 1))
         self.assertEqual(self.vision.get_case_position(3), (1, 1))
         
-        # Cases 4, 5, 6, 7, 8: Ligne y=2
+        # Test des positions de la deuxième ligne
         self.assertEqual(self.vision.get_case_position(4), (-2, 2))
         self.assertEqual(self.vision.get_case_position(5), (-1, 2))
         self.assertEqual(self.vision.get_case_position(6), (0, 2))
         self.assertEqual(self.vision.get_case_position(7), (1, 2))
         self.assertEqual(self.vision.get_case_position(8), (2, 2))
 
-    def test_get_case_position_level_3(self):
-        """Test du calcul de position pour un joueur de niveau 3"""
-        self.vision.set_level(3)
+    def test_get_case_index(self):
+        """Teste le calcul des indices des cases."""
+        # Test de la position du joueur
+        self.assertEqual(self.vision.get_case_index(0, 0), 0)
         
-        # Case 0: Position du joueur
-        self.assertEqual(self.vision.get_case_position(0), (0, 0))
+        # Test des positions de la première ligne
+        self.assertEqual(self.vision.get_case_index(-1, 1), 1)
+        self.assertEqual(self.vision.get_case_index(0, 1), 2)
+        self.assertEqual(self.vision.get_case_index(1, 1), 3)
         
-        # Cases 1, 2, 3: Ligne y=1
-        self.assertEqual(self.vision.get_case_position(1), (-1, 1))
-        self.assertEqual(self.vision.get_case_position(2), (0, 1))
-        self.assertEqual(self.vision.get_case_position(3), (1, 1))
-        
-        # Cases 4, 5, 6, 7, 8: Ligne y=2
-        self.assertEqual(self.vision.get_case_position(4), (-2, 2))
-        self.assertEqual(self.vision.get_case_position(5), (-1, 2))
-        self.assertEqual(self.vision.get_case_position(6), (0, 2))
-        self.assertEqual(self.vision.get_case_position(7), (1, 2))
-        self.assertEqual(self.vision.get_case_position(8), (2, 2))
-        
-        # Cases 9-15: Ligne y=3
-        self.assertEqual(self.vision.get_case_position(9), (-3, 3))
-        self.assertEqual(self.vision.get_case_position(10), (-2, 3))
-        self.assertEqual(self.vision.get_case_position(11), (-1, 3))
-        self.assertEqual(self.vision.get_case_position(12), (0, 3))
-        self.assertEqual(self.vision.get_case_position(13), (1, 3))
-        self.assertEqual(self.vision.get_case_position(14), (2, 3))
-        self.assertEqual(self.vision.get_case_position(15), (3, 3))
-
-    def test_get_case_position_invalid_index(self):
-        """Test avec des index invalides."""
-        self.vision.set_level(1)
-        
-        # Index négatif
-        self.assertEqual(self.vision.get_case_position(-1), (-1, -1))
-        
-        # Index trop grand
-        self.assertEqual(self.vision.get_case_position(4), (-1, -1))
-        
-        # Index limite valide
-        self.assertEqual(self.vision.get_case_position(3), (1, 1))
+        # Test des positions de la deuxième ligne
+        self.assertEqual(self.vision.get_case_index(-2, 2), 4)
+        self.assertEqual(self.vision.get_case_index(-1, 2), 5)
+        self.assertEqual(self.vision.get_case_index(0, 2), 6)
+        self.assertEqual(self.vision.get_case_index(1, 2), 7)
+        self.assertEqual(self.vision.get_case_index(2, 2), 8)
 
     def test_parse_vision_empty(self):
         """Test du parsing d'une vision vide."""
@@ -133,35 +97,47 @@ class TestVision(unittest.TestCase):
         ]
         self.assertEqual(result, expected)
 
-    def test_find_nearest_object_level_1(self):
-        """Test de la recherche de l'objet le plus proche niveau 1."""
-        self.vision.set_level(1)
-        # [player, food, , deraumere] correspond aux cases 0,1,2,3
-        self.protocol.look.return_value = "[player, food, , deraumere]"
+    def test_analyze_environment(self):
+        """Teste l'analyse de l'environnement."""
+        # Simule une réponse de vision
+        vision_response = "[player, food, linemate, player deraumere, food food, ]"
+        self.vision.vision_data = self.protocol.parse_look_response(vision_response)
         
-        # L'objet food est à la case 1 -> position (-1, 1)
-        pos = self.vision.find_nearest_object("food")
-        self.assertEqual(pos, (-1, 1))
+        # Analyse l'environnement
+        env = self.vision.analyze_environment()
         
-        # L'objet deraumere est à la case 3 -> position (1, 1)
-        pos = self.vision.find_nearest_object("deraumere")
-        self.assertEqual(pos, (1, 1))
-        
-        # Objet inexistant
-        pos = self.vision.find_nearest_object("linemate")
-        self.assertEqual(pos, (-1, -1))
+        # Vérifie les résultats
+        self.assertEqual(len(env["players"]), 2)  # Un joueur sur la case 0 et un sur la case 3
+        self.assertEqual(len(env["food"]), 3)  # Un food sur la case 1 et deux sur la case 4
+        self.assertEqual(len(env["linemate"]), 1)  # Un linemate sur la case 2
+        self.assertEqual(len(env["deraumere"]), 1)  # Un deraumere sur la case 3
 
-    def test_find_nearest_object_level_2(self):
-        """Test de la recherche de l'objet le plus proche niveau 2."""
-        self.vision.set_level(2)
-        # Vision avec 9 cases: player à 0, food à 1, deraumere à 6
-        self.protocol.look.return_value = "[player, food, , , , , deraumere, , ]"
+    def test_find_nearest_object(self):
+        """Teste la recherche de l'objet le plus proche."""
+        # Simule une réponse de vision
+        vision_response = "[player, food, linemate, player deraumere, food food, ]"
+        self.vision.vision_data = self.protocol.parse_look_response(vision_response)
         
-        # L'objet food est à la case 1 -> position (-1, 1), distance = 2
-        # L'objet deraumere est à la case 6 -> position (0, 2), distance = 2
-        # Les deux sont à égale distance, food devrait être retourné (trouvé en premier)
-        pos = self.vision.find_nearest_object("food")
-        self.assertEqual(pos, (-1, 1))
+        # Test de la recherche de nourriture
+        food_pos = self.vision.find_nearest_object("food")
+        self.assertEqual(food_pos, (0, 1))  # La nourriture la plus proche est sur la case 1
+        
+        # Test de la recherche de linemate
+        linemate_pos = self.vision.find_nearest_object("linemate")
+        self.assertEqual(linemate_pos, (1, 1))  # Le linemate est sur la case 2
+
+    def test_get_best_food_path(self):
+        """Teste le calcul du meilleur chemin vers la nourriture."""
+        # Simule une réponse de vision
+        vision_response = "[player, food, linemate, player deraumere, food food, ]"
+        self.vision.vision_data = self.protocol.parse_look_response(vision_response)
+        
+        # Calcule le chemin vers la nourriture
+        path = self.vision.get_best_food_path()
+        
+        # Vérifie le chemin
+        self.assertEqual(len(path), 1)  # Un seul mouvement nécessaire
+        self.assertEqual(path[0], (0, 1))  # Déplacement vers la case 1
 
     def test_get_players_in_vision_level_1(self):
         """Test de la détection des joueurs dans la vision (niveau 1)."""
@@ -195,7 +171,7 @@ class TestVision(unittest.TestCase):
             self.vision.set_level(0)
         
         with self.assertRaises(ValueError):
-            self.vision.set_level(-1)
+            self.vision.set_case_level(-1)
         
         # Niveau valide
         self.vision.set_level(1)

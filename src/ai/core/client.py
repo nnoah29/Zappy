@@ -1,6 +1,5 @@
 import socket
 import logging
-import select
 from typing import Tuple, Optional
 
 # Configuration du logging

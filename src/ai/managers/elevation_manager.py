@@ -1,7 +1,7 @@
 from typing import Dict, List, Tuple, Optional
-from protocol import ZappyProtocol
-from vision import Vision
-from movement import Movement
+from core.protocol import ZappyProtocol
+from core.vision import Vision
+from managers.movement import Movement
 
 class ElevationManager:
     """Gère la logique d'élévation et les rituels."""

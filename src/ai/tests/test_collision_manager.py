@@ -5,7 +5,7 @@ from unittest.mock import Mock, patch
 from collision_manager import CollisionManager
 from protocol import ZappyProtocol
 from vision import Vision
-from movement import Movement
+from ai.movement import Movement
 
 class TestCollisionManager(unittest.TestCase):
     """Tests pour la classe CollisionManager."""

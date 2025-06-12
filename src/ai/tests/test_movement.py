@@ -2,7 +2,7 @@
 
 import unittest
 from unittest.mock import Mock, patch
-from movement import Movement
+from ai.movement import Movement
 from protocol import ZappyProtocol
 from vision import Vision
 
