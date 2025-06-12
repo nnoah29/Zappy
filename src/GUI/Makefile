@@ -10,7 +10,7 @@ OBJ = $(SRC:.cpp=.o)
 
 CXX = g++
 CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude
-LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lpthread
 
 $(NAME): $(OBJ)
 	$(CXX) $(OBJ) -o $(NAME) $(LDFLAGS)
