@@ -6,14 +6,17 @@
 NAME = zappy_gui
 
 SRC = $(wildcard src/*.cpp)
+OBJ = $(SRC:.cpp=.o)
 
 CXX = g++
+CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude
+LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
-CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude -lsfml-graphics -lsfml-window -lsfml-system
+$(NAME): $(OBJ)
+	$(CXX) $(OBJ) -o $(NAME) $(LDFLAGS)
 
-$(NAME):
-
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(SRC)
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJ)
