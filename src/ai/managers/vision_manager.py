@@ -21,6 +21,7 @@ class VisionManager:
         self.vision_data = None  # Données de vision actuelles
         self.level = 1  # Niveau actuel du joueur
         self.vision_range = self.vision.get_vision_range()
+        self.current_direction = 0  # 0: Nord, 1: Est, 2: Sud, 3: Ouest
 
     def get_vision_range(self) -> int:
         """Retourne la portée de vision selon le niveau.
@@ -258,7 +259,17 @@ class VisionManager:
         Returns:
             bool: True si la case est devant, False sinon
         """
-        return self.vision.is_case_in_front(index)
+        pos = self.get_case_position(index)
+        
+        # Vérifie la position en fonction de la direction
+        if self.current_direction == 0:  # Nord
+            return pos[1] < 0
+        elif self.current_direction == 1:  # Est
+            return pos[0] > 0
+        elif self.current_direction == 2:  # Sud
+            return pos[1] > 0
+        else:  # Ouest
+            return pos[0] < 0
 
     def get_case_content(self, x: int, y: int) -> Dict[str, int]:
         """
@@ -275,4 +286,54 @@ class VisionManager:
         if index == -1:
             return {}
         content = self.vision.get_case_content(index)
-        return {item: content.count(item) for item in content if item != "player"} 
+        return {item: content.count(item) for item in content if item != "player"}
+
+    def find_nearest_object(self, object_type: str) -> Optional[Tuple[int, int]]:
+        """Trouve l'objet le plus proche d'un type donné.
+        
+        Args:
+            object_type (str): Type d'objet à chercher
+            
+        Returns:
+            Optional[Tuple[int, int]]: Position de l'objet le plus proche ou None si non trouvé
+        """
+        if not self.vision_data:
+            return None
+
+        nearest_pos = None
+        min_distance = float('inf')
+
+        for i, case in enumerate(self.vision_data):
+            if object_type in case:
+                pos = self.get_case_position(i)
+                distance = abs(pos[0]) + abs(pos[1])  # Distance de Manhattan
+                if distance < min_distance:
+                    min_distance = distance
+                    nearest_pos = pos
+
+        return nearest_pos
+
+    def get_players_in_range(self, range: int) -> List[Tuple[int, int]]:
+        """Récupère la liste des joueurs dans un certain rayon.
+        
+        Args:
+            range (int): Rayon de recherche
+            
+        Returns:
+            List[Tuple[int, int]]: Liste des positions des joueurs
+        """
+        players = []
+        for i, case in enumerate(self.vision_data):
+            if "player" in case:
+                pos = self.get_case_position(i)
+                if abs(pos[0]) + abs(pos[1]) <= range:
+                    players.append(pos)
+        return players
+
+    def set_level(self, level: int) -> None:
+        """Définit le niveau du joueur.
+        
+        Args:
+            level (int): Niveau du joueur
+        """
+        self.vision.set_level(level) 

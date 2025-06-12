@@ -1,7 +1,9 @@
-from src.ai.logger import logger
+import logging
 
 class Tile:
-    def __init__(self):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
         self.resources = {
             "food": 0,
             "linemate": 0,
@@ -11,16 +13,15 @@ class Tile:
             "phiras": 0,
             "thystame": 0,
         }
-        self.players = []  # Liste des IDs de joueurs
-        logger.info(f"map tile created: {self.resources} {self.players}")
-
+        self.players = []
+        self.logger = logging.getLogger(__name__)
+        self.logger.info(f"map tile created: {self.resources} {self.players}")
 
 class Map:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.grid = [[Tile() for _ in range(width)] for _ in range(height)]
+        self.grid = [[Tile(x, y) for x in range(width)] for y in range(height)]
 
     def get_tile(self, x, y):
-        # gestion du monde sphérique (tore)
         return self.grid[y % self.height][x % self.width]

@@ -1,6 +1,7 @@
 from typing import Tuple, Optional
 import logging
 import time
+import random
 from core.protocol import ZappyProtocol
 from managers.vision_manager import VisionManager
 from managers.collision_manager import CollisionManager
@@ -30,137 +31,134 @@ class MovementManager:
         self.last_position: Optional[Tuple[int, int]] = None
         self.position_history = []
         self.position_history_size = 5
+        self.target: Optional[Tuple[int, int]] = None
+        self.stuck_counter = 0
+        self.max_stuck = 3
+        self.exploration_radius = 5
 
     def set_target(self, target: Tuple[int, int]) -> None:
-        """Définit la position cible.
+        """Définit la cible de mouvement.
         
         Args:
             target (Tuple[int, int]): Position cible (x, y)
         """
-        self.target_position = target
+        self.target = target
         self.logger.debug(f"Cible définie: {target}")
 
+    def get_random_exploration_target(self) -> Tuple[int, int]:
+        """Génère une cible aléatoire pour l'exploration.
+        
+        Returns:
+            Tuple[int, int]: Position cible (x, y)
+        """
+        x = random.randint(-self.exploration_radius, self.exploration_radius)
+        y = random.randint(-self.exploration_radius, self.exploration_radius)
+        return (x, y)
+
     def move_to_target(self, target_position: Optional[Tuple[int, int]] = None) -> bool:
-        """Déplace le joueur vers la cible.
+        """Déplace le joueur vers sa cible.
         
         Args:
             target_position (Optional[Tuple[int, int]]): Position cible optionnelle.
-                Si non fournie, utilise self.target_position.
+                Si non fournie, utilise self.target.
                 
         Returns:
-            bool: True si le mouvement a réussi
+            bool: True si le joueur a atteint sa cible
         """
         if target_position is not None:
             self.set_target(target_position)
             
-        if not self.target_position:
-            return False
-
-        # Vérifie le cooldown
-        current_time = time.time()
-        if current_time - self.last_move_time < self.move_cooldown:
-            return False
-
-        # Vérifie si on est bloqué
-        current_pos = self.vision_manager.get_current_position()
-        if self._is_stuck(current_pos):
-            self._handle_stuck_situation()
+        if not self.target:
             return True
 
-        # Calcule la direction vers la cible
-        target_direction = self._calculate_direction_to_target()
-        if target_direction is None:
-            return False
-
-        # Tourne vers la cible si nécessaire
-        if not self._face_target(target_direction):
-            return False
-
-        # Avance vers la cible
-        if not self.protocol.forward():
-            return False
-
-        self.last_move_time = current_time
-        self.last_position = current_pos
-        self._update_position_history(current_pos)
-        return True
-
-    def _calculate_direction_to_target(self) -> Optional[int]:
-        """Calcule la direction vers la cible.
-        
-        Returns:
-            Optional[int]: Direction (0-3) ou None si la cible est atteinte
-        """
-        if not self.target_position:
-            return None
-
-        current_pos = self.vision_manager.get_current_position()
-        dx = self.target_position[0] - current_pos[0]
-        dy = self.target_position[1] - current_pos[1]
-
-        # Si on est sur la cible
-        if dx == 0 and dy == 0:
-            return None
-
-        # Priorité au déplacement vertical
-        if dy != 0:
-            return 0 if dy < 0 else 2
-        # Puis horizontal
-        return 1 if dx > 0 else 3
-
-    def _face_target(self, target_direction: int) -> bool:
-        """Tourne le joueur vers la cible.
-        
-        Args:
-            target_direction (int): Direction cible (0-3)
-            
-        Returns:
-            bool: True si le joueur est face à la cible
-        """
-        while self.current_direction != target_direction:
-            if not self.protocol.right():
-                return False
-            self.current_direction = (self.current_direction + 1) % 4
-        return True
-
-    def _is_stuck(self, current_pos: Tuple[int, int]) -> bool:
-        """Vérifie si le joueur est bloqué.
-        
-        Args:
-            current_pos (Tuple[int, int]): Position actuelle
-            
-        Returns:
-            bool: True si le joueur est bloqué
-        """
-        if not self.last_position:
-            return False
-
-        if current_pos == self.last_position:
-            self.stuck_count += 1
+        # Vérifie si le joueur est bloqué
+        if self.last_position == self.target:
+            self.stuck_counter += 1
+            if self.stuck_counter >= self.max_stuck:
+                self.logger.debug("Joueur bloqué, nouvelle cible aléatoire")
+                self.target = self.get_random_exploration_target()
+                self.stuck_counter = 0
         else:
-            self.stuck_count = 0
+            self.stuck_counter = 0
 
-        return self.stuck_count >= self.max_stuck_count
+        # Calcule la direction vers la cible
+        dx = self.target[0]
+        dy = self.target[1]
 
-    def _handle_stuck_situation(self) -> None:
-        """Gère une situation de blocage."""
-        # Essaie de se débloquer en tournant à droite et avançant
-        if not self.protocol.right():
-            return
-        if not self.protocol.forward():
-            return
-        self.current_direction = (self.current_direction + 1) % 4
-        self.stuck_count = 0
+        # Tourne vers la cible
+        if dx > 0 and self.current_direction != 1:
+            self.turn_right()
+            return False
+        elif dx < 0 and self.current_direction != 3:
+            self.turn_left()
+            return False
+        elif dy > 0 and self.current_direction != 2:
+            self.turn_right()
+            return False
+        elif dy < 0 and self.current_direction != 0:
+            self.turn_left()
+            return False
 
-    def _update_position_history(self, position: Tuple[int, int]) -> None:
-        """Met à jour l'historique des positions.
+        # Avance si la case devant est libre
+        if self.can_move_forward():
+            self.forward()
+            self.last_position = self.target
+            return True
+
+        # Si bloqué, change de direction
+        self.turn_right()
+        return False
+
+    def can_move_forward(self) -> bool:
+        """Vérifie si le joueur peut avancer.
         
-        Args:
-            position (Tuple[int, int]): Nouvelle position
+        Returns:
+            bool: True si le joueur peut avancer
         """
-        self.position_history.append(position)
-        if len(self.position_history) > self.position_history_size:
-            self.position_history.pop(0)
+        # Vérifie la case devant
+        front_case = self.vision_manager.get_case_content(0, 1)
+        return not any(item in front_case for item in ['player', 'wall'])
+
+    def forward(self) -> None:
+        """Fait avancer le joueur."""
+        try:
+            response = self.protocol.forward()
+            if response == "ok":
+                # Met à jour la position en fonction de la direction
+                if self.current_direction == 0:  # Nord
+                    self.last_position = (self.last_position[0], self.last_position[1] - 1)
+                elif self.current_direction == 1:  # Est
+                    self.last_position = (self.last_position[0] + 1, self.last_position[1])
+                elif self.current_direction == 2:  # Sud
+                    self.last_position = (self.last_position[0], self.last_position[1] + 1)
+                else:  # Ouest
+                    self.last_position = (self.last_position[0] - 1, self.last_position[1])
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'avancée: {str(e)}")
+
+    def turn_right(self) -> None:
+        """Fait tourner le joueur vers la droite."""
+        try:
+            response = self.protocol.right()
+            if response == "ok":
+                self.current_direction = (self.current_direction + 1) % 4
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la rotation droite: {str(e)}")
+
+    def turn_left(self) -> None:
+        """Fait tourner le joueur vers la gauche."""
+        try:
+            response = self.protocol.left()
+            if response == "ok":
+                self.current_direction = (self.current_direction - 1) % 4
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la rotation gauche: {str(e)}")
+
+    def update(self) -> None:
+        """Met à jour l'état du mouvement."""
+        if not self.target:
+            self.target = self.get_random_exploration_target()
+        self.move_to_target()
 
     def explore(self) -> None:
         """Explore la carte en évitant les collisions."""

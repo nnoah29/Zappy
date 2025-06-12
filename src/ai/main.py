@@ -11,25 +11,20 @@ from ai import AI
 
 def setup_logging() -> None:
     """Configure le système de logging."""
-    # Configuration du logging pour tous les modules
     for logger_name in ['root', 'client', 'ai', 'protocol', 'vision']:
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
         
-        # Supprime les handlers existants pour éviter les doublons
         for handler in logger.handlers[:]:
             logger.removeHandler(handler)
         
-        # Ajoute les handlers
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         
-        # Handler pour la console
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.DEBUG)
         console_handler.setFormatter(formatter)
         logger.addHandler(console_handler)
         
-        # Handler pour le fichier
         file_handler = logging.FileHandler('zappy.log')
         file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(formatter)
@@ -75,7 +70,6 @@ def main() -> int:
         int: Code de sortie
     """
     try:
-        # Configuration
         args = parse_args()
         setup_logging()
         logger = logging.getLogger(__name__)
@@ -84,21 +78,17 @@ def main() -> int:
         signal.signal(signal.SIGTERM, handle_signal)
         
         client = ZappyClient(args.host, args.port, args.name)
-        
         try:
             client.connect()
+            client.ai = AI(client)
         except Exception as e:
             logger.error(f"Échec de la connexion au serveur: {e}")
             return 84
-        
-        ai = AI(client)
-        
+
         while True:
             try:
-                ai.update()
-                
+                client.run()
                 time.sleep(0.1)
-                
             except Exception as e:
                 logger.error(f"Erreur dans la boucle principale: {e}")
                 break

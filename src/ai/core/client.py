@@ -2,14 +2,12 @@ import socket
 import logging
 from typing import Tuple, Optional
 
-# Configuration du logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
 class ZappyClient:
-    # Timeouts en secondes pour chaque commande
     TIMEOUTS = {
         "Forward": 7,
         "Right": 7,
@@ -40,42 +38,37 @@ class ZappyClient:
         self.logger = logging.getLogger(__name__)
         self.map_size = None
         self.client_num = None
+        self.ai = None
 
     def connect(self):
         """Établit la connexion avec le serveur et effectue le protocole d'authentification."""
         try:
-            # Création et connexion du socket
             self.logger.info(f"Tentative de connexion à {self.hostname}:{self.port}")
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.settimeout(7.0)  # Timeout pour la connexion initiale
+            self.socket.settimeout(7.0)
             self.socket.connect((self.hostname, self.port))
             self.logger.info("Socket connecté avec succès")
 
-            # Réception du message de bienvenue
             self.logger.info("En attente du message de bienvenue...")
             welcome = self._receive()
             self.logger.info(f"Message reçu: {welcome}")
             if welcome != "WELCOME":
                 raise Exception(f"Message de bienvenue invalide: {welcome}")
 
-            # Envoi du nom d'équipe
             self.logger.info(f"Envoi du nom d'équipe: {self.team_name}")
             self._send(self.team_name + "\n")
 
-            # Réception de la réponse du serveur (peut contenir plusieurs lignes)
             self.logger.info("En attente de la réponse du serveur...")
             response = self._receive()
             self.logger.info(f"Réponse reçue: {response}")
             lines = response.strip().split('\n')
 
-            # Lecture du numéro de client
             try:
                 self.client_num = int(lines[0])
                 self.logger.info(f"Numéro de client reçu: {self.client_num}")
             except ValueError:
                 raise Exception(f"Numéro de client invalide: {lines[0]}")
 
-            # Si la map est déjà présente dans la même réponse
             if len(lines) > 1:
                 map_size = lines[1]
                 self.logger.info(f"Dimensions de la carte reçues dans la même réponse: {map_size}")
@@ -84,7 +77,6 @@ class ZappyClient:
                 map_size = self._receive()
                 self.logger.info(f"Dimensions de la carte reçues: {map_size}")
 
-            # Lecture des dimensions de la carte
             try:
                 dimensions = map_size.strip().split()
                 if len(dimensions) != 2:
@@ -101,7 +93,7 @@ class ZappyClient:
             if self.socket:
                 self.socket.close()
                 self.socket = None
-            raise  # Propager l'erreur pour une meilleure gestion en amont
+            raise
 
     def _get_timeout(self, command: str) -> float:
         """Récupère le timeout pour une commande donnée.
@@ -112,9 +104,8 @@ class ZappyClient:
         Returns:
             float: Timeout en secondes
         """
-        # Extrait le nom de la commande (sans les arguments)
         cmd_name = command.split()[0]
-        return self.TIMEOUTS.get(cmd_name, 7.0)  # Timeout par défaut de 7 secondes
+        return self.TIMEOUTS.get(cmd_name, 7.0)
 
     def _send(self, message: str):
         """Envoie un message au serveur.
@@ -130,11 +121,9 @@ class ZappyClient:
             raise ConnectionError("Non connecté au serveur")
             
         try:
-            # Configure le timeout pour l'envoi
             timeout = self._get_timeout(message)
             self.socket.settimeout(timeout)
             
-            # Envoie le message
             self.socket.send(message.encode())
             self.logger.debug(f"Envoyé ({timeout}s): {message.strip()}")
             
@@ -177,8 +166,7 @@ class ZappyClient:
         """Boucle principale du client."""
         try:
             while True:
-                # TODO: Implémenter la logique de jeu
-                pass
+                self.ai.update()
         except Exception as e:
             self.logger.error(f"Erreur dans la boucle principale: {e}")
             raise
