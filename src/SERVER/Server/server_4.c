@@ -12,12 +12,30 @@
 #include <string.h>
 #include "../my.h"
 
+// static const  gui_protocol_t gui[] = {
+//     {"msz", msz_function()},
+//     {"bct", bct_function()},
+//     {"mct", mct_function()},
+//     {"tna", tna_function()},
+//     {"ppo", ppo_function()},
+//     {"plv", plv_function()},
+//     {"sgt", sgt_function()},
+//     {"sst", sst_function()},
+//     {NULL, NULL}
+// };
+
 void connec_t(server_t *server, session_client_t *client, const command_t *cmd)
 {
 }
 
 void handle_command_gui(server_t *server, session_client_t *client, const command_t *cmd)
 {
+    // for (int i = 0; gui[i].client; i++) {
+    //     if (strcmp(cmd->raw_cmd, gui[i].client) == 0) {
+    //         gui[i].func(server, client, cmd);
+    //         break;
+    //     }
+    // }
 
 }
 

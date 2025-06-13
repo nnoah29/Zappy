@@ -67,6 +67,11 @@ static const command_info_t command_table[] = {
     {"Incantation", 300},
 };
 
+typedef void (*gui_func_t)(server_t *server, session_client_t *client, const command_t *cmd);
+typedef struct {
+    const char *client;
+    gui_func_t func;
+}gui_protocol_t;
 
 void run_server(server_t *server);
 void handle_signal(int signal);
