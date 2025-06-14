@@ -45,7 +45,7 @@ class TestVision(unittest.TestCase):
         self.assertEqual(self.vision.get_case_position(6), (0, 2))
         self.assertEqual(self.vision.get_case_position(7), (1, 2))
         self.assertEqual(self.vision.get_case_position(8), (2, 2))
-
+        
     def test_get_case_index(self):
         """Teste le calcul des indices des cases."""
         # Test de la position du joueur

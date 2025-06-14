@@ -2,13 +2,13 @@ import logging
 import time
 import random
 from typing import Optional, Tuple
-from core.client import ZappyClient
 from core.protocol import ZappyProtocol
-from managers.resource_manager import ResourceManager
 from managers.movement_manager import MovementManager
 from managers.vision_manager import VisionManager
 from models.player import Player
 from models.map import Map
+from managers.elevation_manager import ElevationManager
+from managers.inventory_manager import InventoryManager
 
 class AI:
     """Classe principale de l'IA."""
@@ -23,72 +23,193 @@ class AI:
         7: {'players': 6, 'linemate': 2, 'deraumere': 2, 'sibur': 2, 'mendiane': 2, 'phiras': 2, 'thystame': 1}
     }
 
-    def __init__(self, client: ZappyClient):
+    def __init__(self, protocol: ZappyProtocol, player: Player, map: Map, logger: logging.Logger):
         """Initialise l'IA.
         
         Args:
-            client (ZappyClient): Client connecté au serveur
+            protocol (ZappyProtocol): Protocole de communication
+            player (Player): Joueur contrôlé
+            map (Map): Carte du jeu
+            logger (Logger): Logger pour les messages
         """
-        self.client = client
-        self.protocol = ZappyProtocol(client)
-        self.vision_manager = VisionManager(self.protocol)
-        self.movement_manager = MovementManager(self.protocol, self.vision_manager)
-        self.resource_manager = ResourceManager(self.protocol)
-        self.logger = logging.getLogger(__name__)
-        self.level = 1
-        self.target_position: Optional[Tuple[int, int]] = None
-        self.last_update = 0
-        self.update_cooldown = 0.1
-        self.min_food = 5
-
-        # Initialisation du joueur et de la carte avec les informations du client
-        self.player = Player(
-            self.client.client_num,
-            self.client.team_name,
-            self.client.map_size[0] // 2,  # Position initiale au centre
-            self.client.map_size[1] // 2
-        )
-        self.map = Map(self.client.map_size[0], self.client.map_size[1])
+        self.protocol = protocol
+        self.player = player
+        self.map = map
+        self.logger = logger
         
-        self.logger.info(f"Joueur initialisé: ID={self.client.client_num}, Équipe={self.client.team_name}, Position=({self.client.map_size[0]//2}, {self.client.map_size[1]//2})")
-        self.logger.info(f"Carte initialisée: {self.client.map_size[0]}x{self.client.map_size[1]}")
+        self.vision_manager = VisionManager(protocol, player, map, logger)
+        self.movement_manager = MovementManager(protocol, player, map, self.vision_manager, logger)
+        self.inventory_manager = InventoryManager(protocol, player, logger)
+        self.elevation_manager = ElevationManager(protocol, self.vision_manager, self.movement_manager, logger)
+        
+        self.state = "exploring"
+        self.target_position: Optional[Tuple[int, int]] = None
+        self.target_resource: Optional[str] = None
+        self.last_update = 0
+        self.update_cooldown = 7
 
-    def update(self) -> None:
-        """Met à jour l'état de l'IA."""
+        self.logger.info(f"Joueur initialisé: ID={player.id}, Équipe={player.team}, Position={player.position}")
+        self.logger.info(f"Carte initialisée: {map.width}x{map.height}")
+        self.logger.info("IA initialisée avec succès")
+
+    def update(self) -> bool:
+        """Met à jour l'état de l'IA.
+        
+        Returns:
+            bool: True si la mise à jour a réussi
+        """
         try:
-            current_time = time.time()
-            if current_time - self.last_update < self.update_cooldown:
-                return
+            if time.time() - self.last_update < self.update_cooldown:
+                return True
                 
-            self.last_update = current_time
-
-            if self.vision_manager.can_update_vision():
-                self.vision_manager.update_vision()
-                self._update_map_from_vision()
-
-            self.resource_manager.update_inventory()
-
-            if self.resource_manager.get_food_count() < self.min_food:
-                self._collect_food()
-                return
-
-            if self.movement_manager.handle_collision():
-                return
-
-            if self.resource_manager.need_resources(self.level):
-                resource = self.resource_manager.get_needed_resource(self.level)
-                if resource:
-                    self._collect_resource(resource)
-                    return
-
-            if self.resource_manager.can_level_up(self.level):
-                self._try_elevation()
-            else:
-                self._explore()
-
+            if not self.vision_manager.update_vision():
+                return False
+            
+            if not self.inventory_manager.update_inventory():
+                return False
+                
+            if self.inventory_manager.inventory['food'] <= 0:
+                self.logger.error("Le joueur est mort de faim")
+                return False
+                
+            self._update_state()
+            
+            if not self._execute_action():
+                return False
+                
+            self.last_update = time.time()
+            return True
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour: {str(e)}")
-            raise
+            return False
+
+    def _update_state(self) -> None:
+        """Met à jour l'état de l'IA."""
+        try:
+            if self.inventory_manager.inventory['food'] < 5:
+                self.logger.debug("État changé: collecting food")
+                self.state = "collecting"
+                self.target_resource = "food"
+                return
+                
+            if self.elevation_manager.can_elevate():
+                self.logger.debug("État changé: elevating")
+                self.state = "elevating"
+                return
+                
+            needed_resources = self.elevation_manager.get_needed_resources()
+            if needed_resources:
+                self.logger.debug(f"État changé: collecting {needed_resources[0]}")
+                self.state = "collecting"
+                self.target_resource = needed_resources[0]
+                return
+                
+            self.logger.debug("État changé: exploring")
+            self.state = "exploring"
+            self.target_resource = None
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour de l'état: {str(e)}")
+            self.state = "exploring"
+
+    def _execute_action(self) -> bool:
+        """Exécute l'action correspondante à l'état actuel.
+        
+        Returns:
+            bool: True si l'action a réussi
+        """
+        try:
+            # Vérifie d'abord la nourriture (seuil critique à 5)
+            if self.inventory_manager.inventory['food'] < 5:
+                self.logger.debug("Niveau de nourriture critique, recherche de nourriture")
+                target = self.vision_manager.find_nearest_object("food")
+                if target:
+                    # Si on est déjà sur la nourriture, on la prend directement
+                    if target == (0, 0):
+                        if not self.movement_manager.take_object("food"):
+                            self.logger.debug("Impossible de prendre la nourriture")
+                            return False
+                        self.logger.debug("Nourriture prise avec succès")
+                        # Met à jour l'inventaire après avoir pris la nourriture
+                        if not self.inventory_manager.update_inventory():
+                            self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
+                            return False
+                        return True
+                    # Sinon on essaie de se déplacer vers la nourriture
+                    if not self.movement_manager.move_to(target):
+                        self.logger.debug("Impossible d'atteindre la nourriture, tentative de déplacement aléatoire")
+                        # Si on ne peut pas atteindre la nourriture, on essaie de se déplacer aléatoirement
+                        x = random.randint(-1, 1)
+                        y = random.randint(-1, 1)
+                        if not self.movement_manager.move_to((x, y)):
+                            self.logger.debug("Impossible de se déplacer aléatoirement")
+                            return False
+                        return True
+                    return True
+                else:
+                    self.logger.debug("Pas de nourriture en vue, exploration")
+                    self.state = "exploring"
+                    return True
+
+            # Vérifie si on peut s'élever
+            if self.elevation_manager.can_elevate():
+                self.logger.debug("Démarrage de l'élévation")
+                return self.elevation_manager.start_elevation()
+                
+            # Vérifie si on a besoin de ressources
+            needed_resources = self.elevation_manager.get_needed_resources()
+            if needed_resources:
+                self.logger.debug(f"Recherche de {needed_resources[0]}")
+                self.state = "collecting"
+                self.target_resource = needed_resources[0]
+                
+                # Cherche la ressource la plus proche
+                target = self.vision_manager.find_nearest_object(self.target_resource)
+                if not target:
+                    self.logger.debug(f"Pas de {self.target_resource} en vue, exploration")
+                    self.state = "exploring"
+                    return True
+                    
+                # Se déplace vers la ressource
+                if not self.movement_manager.move_to(target):
+                    self.logger.debug(f"Impossible d'atteindre {self.target_resource}, exploration")
+                    self.state = "exploring"
+                    return True
+                    
+                # Ramasse la ressource
+                if not self.movement_manager.take_object(self.target_resource):
+                    self.logger.debug(f"Impossible de prendre {self.target_resource}")
+                    return False
+
+                self.logger.debug(f"{self.target_resource} ramassé avec succès")
+                # Met à jour l'inventaire après avoir pris la ressource
+                if not self.inventory_manager.update_inventory():
+                    self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
+                    return False
+                return True
+
+            # Par défaut, on explore
+            self.logger.debug("Exploration")
+            self.state = "exploring"
+            self.target_resource = None
+            
+            # Se déplace aléatoirement
+            if not self.target_position:
+                x = random.randint(-1, 1)
+                y = random.randint(-1, 1)
+                self.target_position = (x, y)
+                self.logger.debug(f"Nouvelle cible d'exploration: {self.target_position}")
+                
+            if not self.movement_manager.move_to(self.target_position):
+                self.target_position = None
+                return True
+                
+            self.target_position = None
+            return True
+                
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'exécution de l'action: {str(e)}")
+            return False
 
     def _update_map_from_vision(self) -> None:
         """Met à jour la carte à partir de la vision."""
@@ -96,27 +217,21 @@ class AI:
         if not vision_data:
             return
 
-        # Met à jour la case du joueur
         current_tile = self.map.get_tile(self.player.x, self.player.y)
         current_tile.players = [self.player.id]
 
-        # Met à jour les cases visibles
         for i, case_str in enumerate(vision_data):
             if not case_str:
                 continue
 
-            # Parse la chaîne de caractères en ressources
             resources = {}
             items = case_str.split()
             for item in items:
                 if item != 'player':
                     resources[item] = resources.get(item, 0) + 1
 
-            # Calcule la position relative à partir de l'index
             x, y = self._get_relative_position(i)
             
-            # Applique la position relative à la position actuelle du joueur
-            # en tenant compte du monde torique
             target_x = (self.player.x + x) % self.map.width
             target_y = (self.player.y + y) % self.map.height
             
@@ -160,7 +275,7 @@ class AI:
             
             if (self.player.x, self.player.y) == target:
                 self.protocol.take("food")
-                self.resource_manager.update_inventory()
+                self.inventory_manager.update_inventory()
                 self.logger.debug("Nourriture prise")
                 self.target_position = None
             else:
@@ -184,7 +299,7 @@ class AI:
             
             if (self.player.x, self.player.y) == target:
                 self.protocol.take(resource)
-                self.resource_manager.update_inventory()
+                self.inventory_manager.update_inventory()
                 self.logger.debug(f"{resource} pris")
                 self.target_position = None
             else:
@@ -197,7 +312,6 @@ class AI:
 
     def _explore(self) -> None:
         """Explore la carte pour trouver des ressources."""
-        # Cherche la ressource la plus proche
         resources = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
         nearest_target = None
         min_distance = float('inf')
@@ -221,20 +335,18 @@ class AI:
 
     def _generate_new_exploration_target(self) -> None:
         """Génère une nouvelle cible d'exploration aléatoire."""
-        # Génère une position aléatoire dans un rayon de 5 cases
         max_radius = 5
         while True:
             x = random.randint(-max_radius, max_radius)
             y = random.randint(-max_radius, max_radius)
-            # Évite de revenir à la position actuelle
             if (x, y) != (0, 0):
-                # Applique la position relative à la position actuelle du joueur
                 target_x = (self.player.x + x) % self.map.width
                 target_y = (self.player.y + y) % self.map.height
                 self.target_position = (target_x, target_y)
                 self.logger.debug(f"Nouvelle cible d'exploration aléatoire: {self.target_position}")
-                self.movement_manager.move_to_target(self.target_position)
-                break
+                if self.movement_manager.move_to_target(self.target_position):
+                    break
+                continue
 
     def _try_elevation(self) -> None:
         """Tente de monter de niveau."""

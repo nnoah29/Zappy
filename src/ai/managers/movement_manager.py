@@ -2,29 +2,34 @@ from typing import Tuple, Optional
 import logging
 import time
 import random
-from core.protocol import ZappyProtocol
 from managers.vision_manager import VisionManager
 from managers.collision_manager import CollisionManager
-from managers.movement import Movement
+from core.protocol import ZappyProtocol
+from models.player import Player
+from models.map import Map
 
 class MovementManager:
     """Gère les déplacements et les collisions du joueur."""
 
-    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager):
+    def __init__(self, protocol: ZappyProtocol, player: Player, map: Map, vision_manager: VisionManager, logger: logging.Logger):
         """Initialise le gestionnaire de mouvement.
         
         Args:
             protocol (ZappyProtocol): Protocole de communication
+            player (Player): Joueur à déplacer
+            map (Map): Carte du jeu
             vision_manager (VisionManager): Gestionnaire de vision
+            logger (Logger): Logger pour les messages
         """
         self.protocol = protocol
+        self.player = player
+        self.map = map
         self.vision_manager = vision_manager
-        self.movement = Movement(protocol, vision_manager)
-        self.collision_manager = CollisionManager(protocol, vision_manager, self.movement)
-        self.logger = logging.getLogger(__name__)
+        self.collision_manager = CollisionManager(protocol, vision_manager, self, logger)
+        self.logger = logger
         self.last_move_time = 0
-        self.move_cooldown = 7  # Temps entre chaque mouvement
-        self.current_direction = 0  # 0: Nord, 1: Est, 2: Sud, 3: Ouest
+        self.move_cooldown = 7
+        self.current_direction = 0
         self.target_position: Optional[Tuple[int, int]] = None
         self.stuck_count = 0
         self.max_stuck_count = 3
@@ -36,148 +41,196 @@ class MovementManager:
         self.max_stuck = 3
         self.exploration_radius = 5
 
-    def set_target(self, target: Tuple[int, int]) -> None:
-        """Définit la cible de mouvement.
+    def move_to(self, target: Tuple[int, int]) -> bool:
+        """Déplace le joueur vers une position cible.
         
         Args:
-            target (Tuple[int, int]): Position cible (x, y)
-        """
-        self.target = target
-        self.logger.debug(f"Cible définie: {target}")
-
-    def get_random_exploration_target(self) -> Tuple[int, int]:
-        """Génère une cible aléatoire pour l'exploration.
-        
-        Returns:
-            Tuple[int, int]: Position cible (x, y)
-        """
-        x = random.randint(-self.exploration_radius, self.exploration_radius)
-        y = random.randint(-self.exploration_radius, self.exploration_radius)
-        return (x, y)
-
-    def move_to_target(self, target_position: Optional[Tuple[int, int]] = None) -> bool:
-        """Déplace le joueur vers sa cible.
-        
-        Args:
-            target_position (Optional[Tuple[int, int]]): Position cible optionnelle.
-                Si non fournie, utilise self.target.
-                
-        Returns:
-            bool: True si le joueur a atteint sa cible
-        """
-        if target_position is not None:
-            self.set_target(target_position)
+            target (Tuple[int, int]): Position cible relative
             
-        if not self.target:
+        Returns:
+            bool: True si le déplacement a réussi
+        """
+        try:
+            if not self.can_move():
+                self.logger.debug("Cooldown de déplacement actif")
+                return False
+                
+            dx = target[0]
+            dy = target[1]
+            
+            # Si on est sur la cible
+            if dx == 0 and dy == 0:
+                return True
+                
+            # Vérifie les collisions avant de se déplacer
+            if self.collision_manager.check_collision():
+                self.logger.debug("Collision détectée, tentative d'évitement")
+                if not self.collision_manager.avoid_collision():
+                    self.logger.debug("Impossible d'éviter la collision")
+                    # Si on ne peut pas éviter la collision, on essaie de se déplacer aléatoirement
+                    x = random.randint(-1, 1)
+                    y = random.randint(-1, 1)
+                    if (x, y) != (0, 0):
+                        return self.move_to((x, y))
+                    return False
+                    
+            current_direction = self.player.get_direction()
+            target_direction = self._get_direction_to_target(dx, dy)
+            
+            # Calcule le chemin le plus court pour la rotation
+            diff = (target_direction - current_direction) % 4
+            if diff == 1 or diff == 2:
+                if not self.turn_right():
+                    self.logger.debug("Échec de la rotation droite")
+                    return False
+            elif diff == 3:
+                if not self.turn_left():
+                    self.logger.debug("Échec de la rotation gauche")
+                    return False
+                    
+            if not self.move_forward():
+                self.logger.debug("Échec de l'avancement")
+                return False
+                
+            if self._is_stuck():
+                self.logger.debug("Joueur bloqué, changement de direction")
+                self._handle_stuck()
+                return False
+                
             return True
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors du déplacement vers la cible: {str(e)}")
+            return False
 
-        # Vérifie si le joueur est bloqué
-        if self.last_position == self.target:
-            self.stuck_counter += 1
-            if self.stuck_counter >= self.max_stuck:
-                self.logger.debug("Joueur bloqué, nouvelle cible aléatoire")
-                self.target = self.get_random_exploration_target()
-                self.stuck_counter = 0
+    def _get_direction_to_target(self, dx: int, dy: int) -> int:
+        """Calcule la direction vers une cible.
+        
+        Args:
+            dx (int): Différence en X
+            dy (int): Différence en Y
+            
+        Returns:
+            int: Direction (0: Nord, 1: Est, 2: Sud, 3: Ouest)
+        """
+        if abs(dx) > abs(dy):
+            return 1 if dx > 0 else 3
         else:
-            self.stuck_counter = 0
+            return 0 if dy < 0 else 2
 
-        # Calcule la direction vers la cible
-        dx = self.target[0]
-        dy = self.target[1]
-
-        # Tourne vers la cible
-        if dx > 0 and self.current_direction != 1:
-            self.turn_right()
-            return False
-        elif dx < 0 and self.current_direction != 3:
-            self.turn_left()
-            return False
-        elif dy > 0 and self.current_direction != 2:
-            self.turn_right()
-            return False
-        elif dy < 0 and self.current_direction != 0:
-            self.turn_left()
-            return False
-
-        # Avance si la case devant est libre
-        if self.can_move_forward():
-            self.forward()
-            self.last_position = self.target
-            return True
-
-        # Si bloqué, change de direction
-        self.turn_right()
+    def _is_stuck(self) -> bool:
+        """Vérifie si le joueur est bloqué.
+        
+        Returns:
+            bool: True si le joueur est bloqué
+        """
+        current_pos = self.player.get_position()
+        
+        self.position_history.append(current_pos)
+        if len(self.position_history) > self.position_history_size:
+            self.position_history.pop(0)
+            
+        if len(self.position_history) == self.position_history_size:
+            if all(pos == current_pos for pos in self.position_history):
+                return True
+                
         return False
 
-    def can_move_forward(self) -> bool:
-        """Vérifie si le joueur peut avancer.
+    def _handle_stuck(self) -> None:
+        """Gère le blocage du joueur."""
+        self.stuck_count += 1
+        if self.stuck_count >= self.max_stuck_count:
+            self.logger.debug("Joueur sévèrement bloqué, réinitialisation")
+            self.reset()
+        else:
+            # Change de direction aléatoirement
+            if random.random() < 0.5:
+                self.turn_left()
+            else:
+                self.turn_right()
+            # Réinitialise l'historique des positions
+            self.position_history = []
+            # Attend un peu avant de réessayer
+            time.sleep(0.1)
+
+    def can_move(self) -> bool:
+        """Vérifie si le joueur peut se déplacer.
         
         Returns:
-            bool: True si le joueur peut avancer
+            bool: True si le joueur peut se déplacer
         """
-        # Vérifie la case devant
-        front_case = self.vision_manager.get_case_content(0, 1)
-        return not any(item in front_case for item in ['player', 'wall'])
+        return time.time() - self.last_move_time >= self.move_cooldown
 
-    def forward(self) -> None:
-        """Fait avancer le joueur."""
+    def move_forward(self) -> bool:
+        """Fait avancer le joueur d'une case.
+        
+        Returns:
+            bool: True si le déplacement a réussi
+        """
         try:
             response = self.protocol.forward()
             if response == "ok":
-                # Met à jour la position en fonction de la direction
-                if self.current_direction == 0:  # Nord
-                    self.last_position = (self.last_position[0], self.last_position[1] - 1)
-                elif self.current_direction == 1:  # Est
-                    self.last_position = (self.last_position[0] + 1, self.last_position[1])
-                elif self.current_direction == 2:  # Sud
-                    self.last_position = (self.last_position[0], self.last_position[1] + 1)
-                else:  # Ouest
-                    self.last_position = (self.last_position[0] - 1, self.last_position[1])
+                x, y = self.player.get_position()
+                direction = self.player.get_direction()
+                
+                if direction == 0:
+                    y = (y - 1) % self.map.height
+                elif direction == 1:
+                    x = (x + 1) % self.map.width
+                elif direction == 2:
+                    y = (y + 1) % self.map.height
+                else:
+                    x = (x - 1) % self.map.width
+                    
+                self.player.set_position(x, y)
+                self.last_move_time = time.time()
+                self.logger.debug(f"Déplacement vers {self.player.get_position()}")
+                return True
+            self.logger.debug(f"Échec de l'avancement: {response}")
+            return False
         except Exception as e:
-            self.logger.error(f"Erreur lors de l'avancée: {str(e)}")
+            self.logger.error(f"Erreur lors du déplacement: {str(e)}")
+            return False
 
-    def turn_right(self) -> None:
-        """Fait tourner le joueur vers la droite."""
-        try:
-            response = self.protocol.right()
-            if response == "ok":
-                self.current_direction = (self.current_direction + 1) % 4
-        except Exception as e:
-            self.logger.error(f"Erreur lors de la rotation droite: {str(e)}")
-
-    def turn_left(self) -> None:
-        """Fait tourner le joueur vers la gauche."""
+    def turn_left(self) -> bool:
+        """Fait tourner le joueur vers la gauche.
+        
+        Returns:
+            bool: True si la rotation a réussi
+        """
         try:
             response = self.protocol.left()
             if response == "ok":
-                self.current_direction = (self.current_direction - 1) % 4
+                direction = (self.player.get_direction() - 1) % 4
+                self.player.set_direction(direction)
+                self.last_move_time = time.time()
+                self.logger.debug(f"Rotation vers la gauche: {direction}")
+                return True
+            self.logger.debug(f"Échec de la rotation gauche: {response}")
+            return False
         except Exception as e:
-            self.logger.error(f"Erreur lors de la rotation gauche: {str(e)}")
+            self.logger.error(f"Erreur lors de la rotation: {str(e)}")
+            return False
 
-    def update(self) -> None:
-        """Met à jour l'état du mouvement."""
-        if not self.target:
-            self.target = self.get_random_exploration_target()
-        self.move_to_target()
-
-    def explore(self) -> None:
-        """Explore la carte en évitant les collisions."""
-        if not self.target_position:
-            return
-
-        # Vérifie les collisions
-        if self.collision_manager.check_collision():
-            self.collision_manager.handle_collision()
-            return
-
-        # Avance dans une direction aléatoire
-        self.protocol.forward()
-
-    def handle_collision(self) -> None:
-        """Gère les collisions avec d'autres joueurs."""
-        if self.collision_manager.check_collision():
-            self.collision_manager.handle_collision()
-            time.sleep(0.1)  # Attendre un peu après une collision
+    def turn_right(self) -> bool:
+        """Fait tourner le joueur vers la droite.
+        
+        Returns:
+            bool: True si la rotation a réussi
+        """
+        try:
+            response = self.protocol.right()
+            if response == "ok":
+                direction = (self.player.get_direction() + 1) % 4
+                self.player.set_direction(direction)
+                self.last_move_time = time.time()
+                self.logger.debug(f"Rotation vers la droite: {direction}")
+                return True
+            self.logger.debug(f"Échec de la rotation droite: {response}")
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la rotation: {str(e)}")
+            return False
 
     def reset(self) -> None:
         """Réinitialise l'état du gestionnaire."""
@@ -187,4 +240,30 @@ class MovementManager:
         self.stuck_count = 0
         self.last_position = None
         self.position_history = []
-        self.collision_manager.reset() 
+        self.collision_manager.reset()
+
+    def take_object(self, object_type: str) -> bool:
+        """Prend un objet sur la case actuelle.
+        
+        Args:
+            object_type (str): Type d'objet à prendre
+            
+        Returns:
+            bool: True si l'objet a été pris
+        """
+        try:
+            # Vérifie le cooldown
+            if not self.can_move():
+                self.logger.debug("Cooldown de déplacement actif")
+                return False
+                
+            response = self.protocol.take(object_type)
+            if response == "ok":
+                self.last_move_time = time.time()
+                self.logger.debug(f"{object_type} pris avec succès")
+                return True
+            self.logger.debug(f"Échec de la prise de {object_type}: {response}")
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la prise d'objet: {str(e)}")
+            return False 

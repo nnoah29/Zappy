@@ -1,0 +1,61 @@
+2025-06-14 22:33:27,976 - __main__ - DEBUG - Configuration du logging terminée. Fichier zappy.log créé.
+2025-06-14 22:33:27,976 - __main__ - INFO - Niveau de logging configuré à DEBUG pour tous les modules.
+2025-06-14 22:33:27,976 - core.client - INFO - Tentative de connexion à localhost:3000
+2025-06-14 22:33:27,977 - core.client - INFO - Socket connecté avec succès
+2025-06-14 22:33:27,977 - core.client - INFO - En attente du message de bienvenue...
+2025-06-14 22:33:27,978 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:27,978 - core.client - DEBUG - Données reçues: WELCOME
+2025-06-14 22:33:27,978 - core.client - INFO - Message reçu: WELCOME
+2025-06-14 22:33:27,978 - core.client - INFO - Envoi du nom d'équipe: chris
+2025-06-14 22:33:27,978 - core.client - DEBUG - Envoyé (7.0s): chris
+2025-06-14 22:33:27,978 - core.client - INFO - En attente de la réponse du serveur...
+2025-06-14 22:33:27,979 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:27,979 - core.client - DEBUG - Données reçues: 154
+15 20
+2025-06-14 22:33:27,979 - core.client - INFO - Réponse reçue: 154
+15 20
+2025-06-14 22:33:27,979 - core.client - INFO - Numéro de client reçu: 154
+2025-06-14 22:33:27,979 - core.client - INFO - Dimensions de la carte reçues dans la même réponse: 15 20
+2025-06-14 22:33:27,979 - core.client - INFO - Dimensions de la carte parsées: (15, 20)
+2025-06-14 22:33:27,980 - core.client - INFO - Connecté au serveur. Client #154, Carte: 15x20
+2025-06-14 22:33:27,980 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-14 22:33:27,980 - __main__ - INFO - player 154 created on team chris at (7, 10)
+2025-06-14 22:33:28,105 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-14 22:33:28,106 - __main__ - INFO - Joueur initialisé: ID=154, Équipe=chris, Position=(7, 10)
+2025-06-14 22:33:28,106 - __main__ - INFO - Carte initialisée: 15x20
+2025-06-14 22:33:28,112 - __main__ - INFO - IA initialisée avec succès
+2025-06-14 22:33:28,113 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-14 22:33:28,113 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:28,190 - core.client - DEBUG - Données reçues: [ player,, food, ]
+2025-06-14 22:33:28,191 - __main__ - DEBUG - Vision mise à jour: [['player'], [], ['food'], []]
+2025-06-14 22:33:28,192 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-14 22:33:28,192 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:28,202 - core.client - DEBUG - Données reçues: [ food 9, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-14 22:33:28,203 - __main__ - DEBUG - Inventaire mis à jour: {'food': 9, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-14 22:33:28,204 - __main__ - DEBUG - Pas assez de linemate pour l'élévation
+2025-06-14 22:33:28,204 - __main__ - DEBUG - État changé: collecting linemate
+2025-06-14 22:33:28,204 - __main__ - DEBUG - Pas assez de linemate pour l'élévation
+2025-06-14 22:33:28,205 - __main__ - DEBUG - Recherche de linemate
+2025-06-14 22:33:28,205 - __main__ - DEBUG - Pas de linemate en vue, exploration
+2025-06-14 22:33:35,206 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-14 22:33:35,206 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:35,277 - core.client - DEBUG - Données reçues: [ player,, food, ]
+2025-06-14 22:33:35,278 - __main__ - DEBUG - Vision mise à jour: [['player'], [], ['food'], []]
+2025-06-14 22:33:35,278 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-14 22:33:35,278 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:35,288 - core.client - DEBUG - Données reçues: [ food 4, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-14 22:33:35,289 - __main__ - DEBUG - Inventaire mis à jour: {'food': 4, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-14 22:33:35,289 - __main__ - DEBUG - État changé: collecting food
+2025-06-14 22:33:35,289 - __main__ - DEBUG - Niveau de nourriture critique, recherche de nourriture
+2025-06-14 22:33:35,289 - __main__ - DEBUG - Collision détectée, tentative d'évitement
+2025-06-14 22:33:35,289 - __main__ - DEBUG - Impossible d'éviter la collision
+2025-06-14 22:33:35,289 - core.client - DEBUG - Envoyé (7s): Right
+2025-06-14 22:33:35,289 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:35,359 - core.client - DEBUG - Données reçues: ok
+2025-06-14 22:33:35,360 - __main__ - DEBUG - Échec de la rotation droite: True
+2025-06-14 22:33:35,360 - __main__ - DEBUG - Échec de la rotation droite
+2025-06-14 22:33:35,360 - __main__ - DEBUG - Impossible d'atteindre la nourriture, tentative de déplacement aléatoire
+2025-06-14 22:33:42,360 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-14 22:33:42,360 - core.client - DEBUG - En attente de données du serveur...
+2025-06-14 22:33:42,360 - core.client - DEBUG - Données reçues: dead
+2025-06-14 22:33:42,360 - __main__ - DEBUG - Vision mise à jour: [['dead']]

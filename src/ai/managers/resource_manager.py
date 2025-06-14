@@ -1,7 +1,10 @@
 from typing import Dict, Optional
 import logging
 from core.protocol import ZappyProtocol
-from managers.inventory import Inventory
+from managers.inventory_manager import InventoryManager
+import time
+from models.player import Player
+from models.map import Map
 
 class ResourceManager:
     """Gère les ressources et l'inventaire du joueur."""
@@ -17,32 +20,76 @@ class ResourceManager:
         7: {'players': 6, 'linemate': 2, 'deraumere': 2, 'sibur': 2, 'mendiane': 2, 'phiras': 2, 'thystame': 1}
     }
 
-    def __init__(self, protocol: ZappyProtocol):
+    def __init__(self, protocol: ZappyProtocol, player: Player, map: Map, logger: logging.Logger):
         """Initialise le gestionnaire de ressources.
         
         Args:
             protocol (ZappyProtocol): Protocole de communication
+            player (Player): Joueur contrôlé
+            map (Map): Carte du jeu
+            logger (Logger): Logger pour les messages
         """
         self.protocol = protocol
-        self.logger = logging.getLogger(__name__)
-        self.inventory = Inventory()
+        self.player = player
+        self.map = map
+        self.logger = logger
+        self.inventory = InventoryManager(protocol, player, logger)
         self.food_time = 126
         self.last_food_time = 0
+        self.resources = {
+            'food': 0,
+            'linemate': 0,
+            'deraumere': 0,
+            'sibur': 0,
+            'mendiane': 0,
+            'phiras': 0,
+            'thystame': 0
+        }
+        self.last_inventory_update = 0
+        self.inventory_cooldown = 1  # Temps entre chaque mise à jour de l'inventaire
 
-    def update_inventory(self) -> None:
-        """Met à jour l'inventaire du joueur."""
+    def update_inventory(self) -> bool:
+        """Met à jour l'inventaire du joueur.
+        
+        Returns:
+            bool: True si la mise à jour a réussi
+        """
         try:
             response = self.protocol.inventory()
-            if response:
-                # Parse la réponse du serveur
-                items = response.strip('[]').split(',')
-                for item in items:
-                    if item.strip():
-                        name, count = item.strip().split()
-                        self.inventory.items[name] = int(count)
-                self.logger.debug(f"Inventaire mis à jour: {self.inventory.items}")
+            self.resources = self._parse_inventory(response)
+            self.last_inventory_update = time.time()
+            self.logger.debug(f"Inventaire mis à jour: {self.resources}")
+            return True
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de l'inventaire: {str(e)}")
+            return False
+
+    def _parse_inventory(self, response: str) -> Dict[str, int]:
+        """Parse la réponse de la commande Inventory.
+        
+        Format: [food n, linemate n, deraumere n, sibur n, mendiane n, phiras n, thystame n]
+        
+        Args:
+            response (str): Réponse du serveur
+            
+        Returns:
+            Dict[str, int]: Inventaire du joueur
+        """
+        try:
+            # Enlève les crochets et sépare les ressources
+            response = response.strip('[]')
+            resources = response.split(',')
+            
+            # Parse chaque ressource
+            inventory = {}
+            for resource in resources:
+                name, count = resource.strip().split()
+                inventory[name] = int(count)
+                
+            return inventory
+        except Exception as e:
+            self.logger.error(f"Erreur lors du parsing de l'inventaire: {str(e)}")
+            raise
 
     def get_food_count(self) -> int:
         """Récupère le nombre de nourriture dans l'inventaire.
@@ -52,16 +99,16 @@ class ResourceManager:
         """
         return self.inventory.get('food')
 
-    def get_resource_count(self, resource: str) -> int:
-        """Récupère le nombre d'une ressource spécifique.
+    def get_resource_count(self, resource_type: str) -> int:
+        """Récupère le nombre d'une ressource.
         
         Args:
-            resource (str): Nom de la ressource
+            resource_type (str): Type de ressource
             
         Returns:
-            int: Nombre de la ressource
+            int: Nombre de ressources
         """
-        return self.inventory.get(resource)
+        return self.resources.get(resource_type, 0)
 
     def get_needed_resource(self, level: int) -> Optional[str]:
         """Retourne la ressource la plus prioritaire à collecter.
@@ -163,4 +210,31 @@ class ResourceManager:
         Returns:
             Dict[str, int]: Conditions d'élévation
         """
-        return self.ELEVATION_REQUIREMENTS[level] 
+        return self.ELEVATION_REQUIREMENTS[level]
+
+    def has_resources_for_elevation(self, level: int) -> bool:
+        """Vérifie si le joueur a les ressources nécessaires pour l'élévation.
+        
+        Args:
+            level (int): Niveau actuel
+            
+        Returns:
+            bool: True si le joueur a les ressources nécessaires
+        """
+        
+        if level not in self.ELEVATION_REQUIREMENTS:
+            return False
+            
+        for resource, count in self.ELEVATION_REQUIREMENTS[level].items():
+            if self.get_resource_count(resource) < count:
+                return False
+                
+        return True
+
+    def can_update_inventory(self) -> bool:
+        """Vérifie si l'inventaire peut être mis à jour.
+        
+        Returns:
+            bool: True si l'inventaire peut être mis à jour
+        """
+        return time.time() - self.last_inventory_update >= self.inventory_cooldown 

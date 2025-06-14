@@ -7,31 +7,42 @@ import signal
 import time
 from typing import Optional
 from core.client import ZappyClient
+from core.protocol import ZappyProtocol
+from models.player import Player
+from models.map import Map
 from ai import AI
 
-def setup_logging() -> None:
+def setup_logging():
     """Configure le système de logging."""
-    for logger_name in ['root', 'client', 'ai', 'protocol', 'vision']:
+    file_handler = logging.FileHandler('zappy.log', mode='w')
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.DEBUG)
+    console_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+    
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.DEBUG)
+    root_logger.addHandler(file_handler)
+    root_logger.addHandler(console_handler)
+    
+    loggers = ['core.client', 'core.protocol', 'models.player', 'models.map', 'managers.vision_manager', 
+              'managers.movement_manager', 'managers.inventory_manager', 'managers.elevation_manager']
+              
+    for logger_name in loggers:
         logger = logging.getLogger(logger_name)
         logger.setLevel(logging.DEBUG)
+        logger.propagate = True
         
-        for handler in logger.handlers[:]:
-            logger.removeHandler(handler)
-        
-        formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.DEBUG)
-        console_handler.setFormatter(formatter)
-        logger.addHandler(console_handler)
-        
-        file_handler = logging.FileHandler('zappy.log')
-        file_handler.setLevel(logging.DEBUG)
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = True
     
-    logging.debug("Configuration du logging terminée. Fichier zappy.log créé.")
-    logging.info("Niveau de logging configuré à DEBUG pour tous les modules.")
+    logger.debug("Configuration du logging terminée. Fichier zappy.log créé.")
+    logger.info("Niveau de logging configuré à DEBUG pour tous les modules.")
+    
+    return logger
 
 def parse_args() -> argparse.Namespace:
     """Parse les arguments en ligne de commande.
@@ -69,18 +80,31 @@ def main() -> int:
     Returns:
         int: Code de sortie
     """
+
     try:
         args = parse_args()
-        setup_logging()
-        logger = logging.getLogger(__name__)
-        
+        logger = setup_logging()
         signal.signal(signal.SIGINT, handle_signal)
         signal.signal(signal.SIGTERM, handle_signal)
         
         client = ZappyClient(args.host, args.port, args.name)
         try:
             client.connect()
-            client.ai = AI(client)
+            
+            protocol = ZappyProtocol(client)
+            
+            player = Player(
+                id=client.client_num,
+                team=client.team_name,
+                x=client.map_size[0] // 2,
+                y=client.map_size[1] // 2,
+                protocol=protocol,
+                logger=logger
+            )
+            game_map = Map(client.map_size[0], client.map_size[1])
+            
+            client.ai = AI(protocol, player, game_map, logger)
+            
         except Exception as e:
             logger.error(f"Échec de la connexion au serveur: {e}")
             return 84

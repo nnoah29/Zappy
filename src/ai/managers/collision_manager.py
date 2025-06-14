@@ -1,24 +1,26 @@
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Any
 import logging
 from core.protocol import ZappyProtocol
 from managers.vision_manager import VisionManager
-from managers.movement import Movement
+import time
+import random
 
 class CollisionManager:
-    """Gère la détection et la résolution des collisions."""
+    """Gère les collisions et les interactions entre joueurs."""
     
-    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager, movement: Movement):
-        """Initialise le gestionnaire de collisions.
+    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager, movement_manager: Any, logger: logging.Logger):
+        """Initialise le gestionnaire de collision.
         
         Args:
             protocol (ZappyProtocol): Protocole de communication
             vision_manager (VisionManager): Gestionnaire de vision
-            movement (Movement): Gestionnaire de mouvement
+            movement_manager (Any): Gestionnaire de déplacement
+            logger (Logger): Logger pour les messages
         """
         self.protocol = protocol
         self.vision_manager = vision_manager
-        self.movement = movement
-        self.logger = logging.getLogger(__name__)
+        self.movement_manager = movement_manager
+        self.logger = logger
         self.collision_count = 0
         self.last_collision_pos: Optional[Tuple[int, int]] = None
         self.escape_attempts = 0
@@ -26,26 +28,94 @@ class CollisionManager:
         self.stuck_count = 0
         self.max_stuck_count = 3
         self.position_history_size = 5
+        self.last_collision_time = 0
+        self.collision_cooldown = 7  # Temps entre chaque vérification de collision
 
     def check_collision(self) -> bool:
-        """Vérifie s'il y a une collision.
+        """Vérifie s'il y a une collision avec un autre joueur.
         
         Returns:
             bool: True si une collision est détectée
         """
-        # Vérifie les joueurs dans le champ de vision
-        players = self.vision_manager.get_players_in_range(1)  # Vérifie seulement les joueurs à distance 1
-        if not players:
+        try:
+            # Vérifie le cooldown
+            if time.time() - self.last_collision_time < self.collision_cooldown:
+                return False
+                
+            # Récupère les joueurs dans la vision
+            players = self.vision_manager.get_players_in_vision()
+            if not players:
+                return False
+                
+            # Vérifie si un joueur est sur la même case
+            for player_pos in players:
+                if player_pos == (0, 0):  # Même case que le joueur
+                    self.last_collision_time = time.time()
+                    return True
+                    
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la vérification des collisions: {str(e)}")
             return False
 
-        # Vérifie si un joueur est directement devant
-        for player_pos in players:
-            if self.vision_manager.is_case_in_front(self.vision_manager.get_case_index(player_pos[0], player_pos[1])):
-                self.collision_count += 1
-                self.last_collision_pos = player_pos
-                return True
+    def avoid_collision(self) -> bool:
+        """Évite une collision en se déplaçant.
+        
+        Returns:
+            bool: True si l'évitement a réussi
+        """
+        try:
+            # Vérifie le cooldown
+            if not self.can_check_collision():
+                return False
+                
+            # Récupère les joueurs dans la vision
+            players = self.vision_manager.get_players_in_vision()
+            if not players:
+                return False
+                
+            # Trouve une direction libre
+            directions = [0, 1, 2, 3]  # Nord, Est, Sud, Ouest
+            random.shuffle(directions)  # Mélange les directions pour plus de variété
+            
+            for direction in directions:
+                # Tourne dans la direction
+                current_direction = self.vision_manager.player.get_direction()
+                diff = (direction - current_direction) % 4
+                
+                if diff == 1 or diff == 2:
+                    if not self.movement_manager.turn_right():
+                        continue
+                elif diff == 3:
+                    if not self.movement_manager.turn_left():
+                        continue
+                        
+                # Vérifie si la case devant est libre
+                case = self.vision_manager.get_case_content(1, 0)
+                if "player" not in case:
+                    if self.movement_manager.move_forward():
+                        self.logger.debug(f"Collision évitée en se déplaçant vers {direction}")
+                        return True
+                        
+            # Si aucune direction n'est libre, essaie de reculer
+            self.logger.debug("Aucune direction libre, tentative de recul")
+            if not self.movement_manager.turn_right():
+                return False
+            if not self.movement_manager.turn_right():
+                return False
+            return self.movement_manager.move_forward()
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'évitement de collision: {str(e)}")
+            return False
 
-        return False
+    def can_check_collision(self) -> bool:
+        """Vérifie si on peut vérifier les collisions.
+        
+        Returns:
+            bool: True si on peut vérifier les collisions
+        """
+        return time.time() - self.last_collision_time >= self.collision_cooldown
 
     def handle_collision(self) -> bool:
         """Gère une collision détectée.
