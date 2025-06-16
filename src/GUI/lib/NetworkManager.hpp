@@ -12,18 +12,18 @@
 #include "Exceptions.hpp"
 
 class NetworkManager {
-    NetworkManager() = default;
-    ~NetworkManager() = default;
 public:
+    NetworkManager();
+    ~NetworkManager();
     void connect(std::string, int);
     void disconnect();
     void send(const std::string &message);
     std::string receive(size_t size = 1024);
     bool isConnected() const;
 private:
-    int clientSocket = -1;
+    int clientSocket;
     sockaddr_in serverAddr;
-    bool connected = false;
+    bool connected;
 };
 
 #endif //NETWORKMANAGER_HPP

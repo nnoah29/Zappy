@@ -4,15 +4,28 @@
 
 #include "../lib/NetworkManager.hpp"
 
-void NetworkManager::connect(std::string ip, int port) {
-    if (connected) {
+#include <cstring>
+
+NetworkManager::NetworkManager(): clientSocket(-1), connected(false)
+{
+    memset(&serverAddr, 0, sizeof(serverAddr));
+}
+
+NetworkManager::~NetworkManager()
+{
+    disconnect();
+}
+
+
+void NetworkManager::connect(std::string ip, int port)
+{
+    if (connected)
         throw Error("Already connected");
-    }
 
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (clientSocket < 0) {
+
+    if (clientSocket < 0)
         throw Error("Failed to create socket");
-    }
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
@@ -28,35 +41,36 @@ void NetworkManager::connect(std::string ip, int port) {
 
     connected = true;
 }
-void NetworkManager::disconnect() {
-    if (!connected) {
+
+void NetworkManager::disconnect()
+{
+    if (!connected)
         throw Error("Not connected");
-    }
     close(clientSocket);
     connected = false;
 }
 
-void NetworkManager::send(const std::string &message) {
-    if (!connected) {
+void NetworkManager::send(const std::string &message)
+{
+    if (!connected)
         throw Error("Not connected");
-    }
-    ssize_t bytesSent = ::send(clientSocket, message.c_str(), message.size(), 0);
-    if (bytesSent < 0) {
+    ssize_t bytesS = ::send(clientSocket, message.c_str(), message.size(), 0);
+    if (bytesS < 0)
         throw Error("Failed to send message");
-    }
 }
-std::string NetworkManager::receive(size_t size) {
-    if (!connected) {
+
+std::string NetworkManager::receive(size_t size)
+{
+    if (!connected)
         throw Error("Not connected");
-    }
     char buffer[size];
-    ssize_t bytesReceived = recv(clientSocket, buffer, size - 1, 0);
-    if (bytesReceived < 0) {
+    ssize_t bytesR = recv(clientSocket, buffer, size - 1, 0);
+    if (bytesR < 0)
         throw Error("Failed to receive message");
-    }
-    buffer[bytesReceived] = '\0'; // Null-terminate the string
+    buffer[bytesR] = '\0';
     return std::string(buffer);
 }
-bool NetworkManager::isConnected() const {
+bool NetworkManager::isConnected() const
+{
     return connected;
 }

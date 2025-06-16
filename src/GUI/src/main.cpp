@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "../lib/Exceptions.hpp"
 #include <iostream>
+#include "../lib/NetworkManager.hpp"
 
 int main(int argc, char **argv)
 {
@@ -50,9 +51,9 @@ int main(int argc, char **argv)
         if (machine.empty()) {
             throw Error("Machine address not specified");
         }
-        std::cout << "Configuration validée :" << std::endl;
-        std::cout << " - Port: " << port << std::endl;
-        std::cout << " - Machine: " << machine << std::endl;
+        NetworkManager networkManager;
+        networkManager.connect(machine, port);
+        networkManager.disconnect();
     } catch (const Error& e) {
         std::cerr << "Erreur: " << e.what() << std::endl;
         return 84;
