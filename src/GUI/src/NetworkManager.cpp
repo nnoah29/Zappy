@@ -5,6 +5,7 @@
 #include "../lib/NetworkManager.hpp"
 
 #include <cstring>
+#include <string>
 
 NetworkManager::NetworkManager(): clientSocket(-1), connected(false)
 {
