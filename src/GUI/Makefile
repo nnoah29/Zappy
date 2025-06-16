@@ -9,7 +9,7 @@ SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++17 -Iinclude
+CXXFLAGS = -Wall -Wextra -std=c++20 -Iinclude
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lpthread
 
 $(NAME): $(OBJ)
