@@ -19,6 +19,7 @@ NetworkManager::~NetworkManager()
 
 void NetworkManager::connect(std::string ip, int port)
 {
+
     if (connected)
         throw Error("Already connected");
 
@@ -38,7 +39,6 @@ void NetworkManager::connect(std::string ip, int port)
         close(clientSocket);
         throw Error("Connection failed");
     }
-
     connected = true;
 }
 

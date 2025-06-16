@@ -7,9 +7,8 @@
 int main(int argc, char **argv)
 {
     try {
-        if (argc != 5) {
+        if (argc != 5)
             throw Error("USAGE: ./zappy_gui -p port -h machine");
-        }
 
         int port = -1;
         std::string machine;
@@ -23,9 +22,8 @@ int main(int argc, char **argv)
 
         for (int i = 1; i < argc; i += 2) {
             std::string flag = argv[i];
-            if (i + 1 >= argc) {
+            if (i + 1 >= argc)
                 throw Error("Missing value for flag: " + flag);
-            }
 
             if (flag == "-p") {
                 try {
@@ -53,6 +51,7 @@ int main(int argc, char **argv)
         }
         NetworkManager networkManager;
         networkManager.connect(machine, port);
+        networkManager.send("@ALPHIC");
         networkManager.disconnect();
     } catch (const Error& e) {
         std::cerr << "Erreur: " << e.what() << std::endl;
