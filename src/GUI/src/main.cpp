@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "../lib/Exceptions.hpp"
 #include <iostream>
-#include "../lib/NetworkManager.hpp"
+#include "../lib/Network.hpp"
 
 static int port = -1;
 static std::string machine;
@@ -70,13 +70,12 @@ int main(int argc, char **argv)
         return 84;
     }
 
-    NetworkManager networkManager;
+    Network network;
     try {
-        networkManager.connect(machine, port);
-        std::string welcome = networkManager.receive();
-        networkManager.send("GRAPHIC\n");
-        std::string reponse = networkManager.receive();
-        std::cout << reponse << std::endl;
+        network.connect(machine, port);
+        std::string welcome = network.receive();
+        network.send("GRAPHIC\n");
+        std::string reponse = network.receive();
     } catch (const Error& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;

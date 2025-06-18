@@ -2,23 +2,23 @@
 // Created by aureldsk on 16/06/25.
 //
 
-#include "../lib/NetworkManager.hpp"
+#include "../lib/Network.hpp"
 
 #include <cstring>
 #include <string>
 
-NetworkManager::NetworkManager(): clientSocket(-1), connected(false)
+Network::Network(): clientSocket(-1), connected(false)
 {
     memset(&serverAddr, 0, sizeof(serverAddr));
 }
 
-NetworkManager::~NetworkManager()
+Network::~Network()
 {
     disconnect();
 }
 
 
-void NetworkManager::connect(std::string ip, int port)
+void Network::connect(std::string ip, int port)
 {
 
     if (connected)
@@ -43,7 +43,7 @@ void NetworkManager::connect(std::string ip, int port)
     connected = true;
 }
 
-void NetworkManager::disconnect()
+void Network::disconnect()
 {
     if (!connected)
         throw Error("Not connected");
@@ -51,7 +51,7 @@ void NetworkManager::disconnect()
     connected = false;
 }
 
-void NetworkManager::send(const std::string &message)
+void Network::send(const std::string &message)
 {
     if (!connected)
         throw Error("Not connected");
@@ -60,7 +60,7 @@ void NetworkManager::send(const std::string &message)
         throw Error("Failed to send message");
 }
 
-std::string NetworkManager::receive(size_t size)
+std::string Network::receive(size_t size)
 {
     if (!connected)
         throw Error("Not connected");
@@ -71,7 +71,7 @@ std::string NetworkManager::receive(size_t size)
     buffer[bytesR] = '\0';
     return std::string(buffer);
 }
-bool NetworkManager::isConnected() const
+bool Network::isConnected() const
 {
     return connected;
 }

@@ -2,8 +2,8 @@
 // Created by aureldsk on 15/06/25.
 //
 
-#ifndef NETWORKMANAGER_HPP
-#define NETWORKMANAGER_HPP
+#ifndef NETWORK_HPP
+#define NETWORK_HPP
 #include <string>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -11,10 +11,10 @@
 #include <arpa/inet.h>
 #include "Exceptions.hpp"
 
-class NetworkManager {
+class Network {
 public:
-    NetworkManager();
-    ~NetworkManager();
+    Network();
+    ~Network();
     void connect(std::string, int);
     void disconnect();
     void send(const std::string &message);
@@ -26,4 +26,4 @@ private:
     bool connected;
 };
 
-#endif //NETWORKMANAGER_HPP
+#endif //NETWORK_HPP
