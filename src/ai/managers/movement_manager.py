@@ -187,7 +187,7 @@ class MovementManager:
         """
         try:
             response = self.protocol.forward()
-            if response == "ok":
+            if response:
                 x, y = self.player.get_position()
                 direction = self.player.get_direction()
                 
@@ -204,7 +204,7 @@ class MovementManager:
                 self.last_move_time = time.time()
                 self.logger.debug(f"Déplacement vers {self.player.get_position()}")
                 return True
-            self.logger.debug(f"Échec de l'avancement: {response}")
+            self.logger.debug(f"Échec de l'avancement")
             return False
         except Exception as e:
             self.logger.error(f"Erreur lors du déplacement: {str(e)}")
@@ -218,13 +218,13 @@ class MovementManager:
         """
         try:
             response = self.protocol.left()
-            if response == "ok":
+            if response:
                 direction = (self.player.get_direction() - 1) % 4
                 self.player.set_direction(direction)
                 self.last_move_time = time.time()
                 self.logger.debug(f"Rotation vers la gauche: {direction}")
                 return True
-            self.logger.debug(f"Échec de la rotation gauche: {response}")
+            self.logger.debug(f"Échec de la rotation gauche")
             return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la rotation: {str(e)}")
@@ -238,13 +238,13 @@ class MovementManager:
         """
         try:
             response = self.protocol.right()
-            if response == "ok":
+            if response:
                 direction = (self.player.get_direction() + 1) % 4
                 self.player.set_direction(direction)
                 self.last_move_time = time.time()
                 self.logger.debug(f"Rotation vers la droite: {direction}")
                 return True
-            self.logger.debug(f"Échec de la rotation droite: {response}")
+            self.logger.debug(f"Échec de la rotation droite")
             return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la rotation: {str(e)}")

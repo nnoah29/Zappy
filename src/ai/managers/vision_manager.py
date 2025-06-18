@@ -27,6 +27,8 @@ class VisionManager:
         self.level = 1
         self.last_vision_update = 0
         self.vision_cooldown = 7
+        self.vision_cache = {}  # Cache pour les positions connues
+        self.cache_duration = 30  # Durée de vie du cache en secondes
 
     def update_vision(self) -> bool:
         """Met à jour la vision du joueur.
@@ -35,15 +37,51 @@ class VisionManager:
             bool: True si la mise à jour a réussi
         """
         try:
+            # Vérifie le cooldown
+            if time.time() - self.last_vision_update < self.vision_cooldown:
+                return True  # Utilise le cache si disponible
+                
             response = self.protocol.look()
             self.vision = self._parse_vision(response)
-            self.vision_data = self.vision  # Mise à jour des données de vision
+            self.vision_data = self.vision
             self.last_vision_update = time.time()
+            
+            # Met à jour le cache
+            self._update_vision_cache()
+            
             self.logger.debug(f"Vision mise à jour: {self.vision}")
             return True
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de la vision: {str(e)}")
             return False
+
+    def _update_vision_cache(self) -> None:
+        """Met à jour le cache de vision."""
+        try:
+            current_time = time.time()
+            player_pos = self.player.get_position()
+            
+            # Nettoie le cache expiré
+            expired_keys = []
+            for key, (timestamp, _) in self.vision_cache.items():
+                if current_time - timestamp > self.cache_duration:
+                    expired_keys.append(key)
+                    
+            for key in expired_keys:
+                del self.vision_cache[key]
+                
+            # Met à jour le cache avec les nouvelles données
+            for y in range(-self.level, self.level + 1):
+                for x in range(-self.level, self.level + 1):
+                    case_content = self.get_case_content(x, y)
+                    if case_content:
+                        cache_x = (player_pos[0] + x) % self.map.width
+                        cache_y = (player_pos[1] + y) % self.map.height
+                        cache_key = (cache_x, cache_y)
+                        self.vision_cache[cache_key] = (current_time, case_content)
+                        
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour du cache: {str(e)}")
 
     def _parse_vision(self, response: str) -> List[List[str]]:
         """Parse la réponse de la commande Look.
@@ -143,6 +181,7 @@ class VisionManager:
             nearest = None
             min_distance = float('inf')
             
+            # Cherche d'abord dans la vision actuelle
             for y in range(-self.level, self.level + 1):
                 for x in range(-self.level, self.level + 1):
                     case = self.get_case_content(x, y)
@@ -152,9 +191,50 @@ class VisionManager:
                             min_distance = distance
                             nearest = (x, y)
                             
+            # Si pas trouvé dans la vision actuelle, cherche dans le cache
+            if not nearest:
+                nearest = self._find_in_cache(object_type)
+                            
             return nearest
         except Exception as e:
             self.logger.error(f"Erreur lors de la recherche d'objet: {str(e)}")
+            return None
+
+    def _find_in_cache(self, object_type: str) -> Optional[Tuple[int, int]]:
+        """Trouve un objet dans le cache de vision.
+        
+        Args:
+            object_type (str): Type d'objet à chercher
+            
+        Returns:
+            Optional[Tuple[int, int]]: Position relative de l'objet
+        """
+        try:
+            player_pos = self.player.get_position()
+            nearest = None
+            min_distance = float('inf')
+            
+            for (cache_x, cache_y), (timestamp, case_content) in self.vision_cache.items():
+                if object_type in case_content:
+                    # Calcule la distance relative
+                    rel_x = (cache_x - player_pos[0]) % self.map.width
+                    rel_y = (cache_y - player_pos[1]) % self.map.height
+                    
+                    # Ajuste pour les coordonnées relatives
+                    if rel_x > self.map.width // 2:
+                        rel_x -= self.map.width
+                    if rel_y > self.map.height // 2:
+                        rel_y -= self.map.height
+                        
+                    distance = abs(rel_x) + abs(rel_y)
+                    if distance < min_distance:
+                        min_distance = distance
+                        nearest = (rel_x, rel_y)
+                        
+            return nearest
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la recherche dans le cache: {str(e)}")
             return None
 
     def get_players_in_vision(self) -> List[Tuple[int, int]]:

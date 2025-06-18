@@ -1,7 +1,7 @@
 import logging
 import time
 import random
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 from core.protocol import ZappyProtocol
 from managers.movement_manager import MovementManager
 from managers.vision_manager import VisionManager
@@ -87,30 +87,82 @@ class AI:
         """Met à jour l'état de l'IA."""
         try:
             if self.inventory_manager.inventory['food'] < 5:
-                self.logger.debug("État changé: collecting food")
+                self.logger.debug("État changé: collecting food (critique)")
                 self.state = "collecting"
                 self.target_resource = "food"
                 return
-                
-            if self.elevation_manager.can_elevate():
+                te():
                 self.logger.debug("État changé: elevating")
                 self.state = "elevating"
                 return
                 
             needed_resources = self.elevation_manager.get_needed_resources()
             if needed_resources:
-                self.logger.debug(f"État changé: collecting {needed_resources[0]}")
+                prioritized_resources = self._prioritize_resources(needed_resources)
+                self.logger.debug(f"État changé: collecting {prioritized_resources[0]} (priorité)")
                 self.state = "collecting"
-                self.target_resource = needed_resources[0]
+                self.target_resource = prioritized_resources[0]
                 return
                 
-            self.logger.debug("État changé: exploring")
+            if self.inventory_manager.inventory['food'] < 10:
+                self.logger.debug("État changé: collecting food (maintenance)")
+                self.state = "collecting"
+                self.target_resource = "food"
+                return
+                
+            self.logger.debug("Exploration intelligente")
             self.state = "exploring"
             self.target_resource = None
             
+            if not self.target_position:
+                best_target = self._find_best_exploration_target()
+                if best_target:
+                    self.target_position = best_target
+                    self.logger.debug(f"Cible d'exploration intelligente: {self.target_position}")
+                else:
+                    self.target_position = self._generate_smart_exploration_target()
+                    self.logger.debug(f"Nouvelle cible d'exploration aléatoire: {self.target_position}")
+                
+            if not self.movement_manager.move_to(self.target_position):
+                self.target_position = None
+                return True
+                
+            self.target_position = None
+            return True
+                
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de l'état: {str(e)}")
             self.state = "exploring"
+
+    def _prioritize_resources(self, resources: List[str]) -> List[str]:
+        """Priorise les ressources selon leur importance et rareté.
+        
+        Args:
+            resources (List[str]): Liste des ressources nécessaires
+            
+        Returns:
+            List[str]: Liste des ressources priorisées
+        """
+        priority_order = [
+            'thystame',
+            'phiras',
+            'mendiane',
+            'sibur',
+            'deraumere',
+            'linemate',
+            'food'
+        ]
+        
+        prioritized = []
+        for resource in priority_order:
+            if resource in resources:
+                prioritized.append(resource)
+                
+        for resource in resources:
+            if resource not in prioritized:
+                prioritized.append(resource)
+                
+        return prioritized
 
     def _execute_action(self) -> bool:
         """Exécute l'action correspondante à l'état actuel.
@@ -119,19 +171,57 @@ class AI:
             bool: True si l'action a réussi
         """
         try:
-            if self.movement_manager.collision_manager.check_collision():
-                self.logger.debug("Collision détectée dans la boucle principale, tentative de résolution")
-                if self.movement_manager.collision_manager.eject_other_players():
-                    self.logger.debug("Éjection réussie dans la boucle principale")
-                    return True
+            # DÉSACTIVATION TEMPORAIRE DES COLLISIONS POUR PERMETTRE LE DÉPLACEMENT
+            # Vérifie d'abord s'il y a des collisions à gérer (limité à 2 tentatives)
+            # if not hasattr(self, '_ejection_attempts'):
+            #     self._ejection_attempts = 0
+            #     
+            # if self.movement_manager.collision_manager.check_collision() and self._ejection_attempts < 2:
+            #     self.logger.debug("Collision détectée dans la boucle principale, tentative de résolution")
+            #     if self.movement_manager.collision_manager.eject_other_players():
+            #         self.logger.debug("Éjection réussie dans la boucle principale")
+            #         self._ejection_attempts += 1
+            #         return True
+            #     else:
+            #         self.logger.debug("Éjection échouée dans la boucle principale")
+            #         self._ejection_attempts += 1
+            # else:
+            #     # Reset le compteur d'éjection si pas de collision
+            #     self._ejection_attempts = 0
+            
+            if self._collect_available_resources():
+                self.logger.debug("Ressources disponibles ramassées")
+                return True
+            
+            if self._move_to_nearest_resource():
+                self.logger.debug("Déplacement vers la ressource la plus proche")
+                if self._collect_available_resources():
+                    self.logger.debug("Ressources collectées après déplacement")
+                return True
+            
+            if self.inventory_manager.inventory['linemate'] < 1:
+                self.logger.info("🔍 Recherche spécifique de linemate pour l'élévation")
+                target = self.vision_manager.find_nearest_object("linemate")
+                if target:
+                    self.logger.info(f"🎯 Linemate trouvé à {target}, déplacement en cours...")
+                    if self.movement_manager.move_to(target):
+                        if self._collect_available_resources():
+                            self.logger.info("✅ Linemate collecté après déplacement")
+                        return True
+            else:
+                self.logger.info("🚀 Tentative d'élévation avec le linemate disponible")
+                if self.elevation_manager.can_elevate():
+                    self.logger.info("✅ Conditions d'élévation remplies, démarrage de l'élévation")
+                    return self.elevation_manager.start_elevation()
                 else:
-                    self.logger.debug("Éjection échouée dans la boucle principale")
+                    self.logger.info("❌ Conditions d'élévation non remplies, collecte d'autres ressources")
             
             if self.inventory_manager.inventory['food'] < 10:
                 self.logger.debug("Niveau de nourriture critique, recherche de nourriture")
                 target = self.vision_manager.find_nearest_object("food")
                 if target:
                     if target == (0, 0):
+                        self.logger.debug("Nourriture trouvée sur la case actuelle, tentative de ramassage")
                         if not self.protocol.take("food"):
                             self.logger.debug("Impossible de prendre la nourriture")
                             return False
@@ -142,6 +232,7 @@ class AI:
                         if self.inventory_manager.inventory['food'] < 10:
                             return self._execute_action()
                         return True
+                    
                     if not self.movement_manager.move_to(target):
                         self.logger.debug("Impossible d'atteindre la nourriture, tentative de déplacement aléatoire")
                         if self.inventory_manager.inventory['food'] < 5:
@@ -181,6 +272,17 @@ class AI:
                 if not target:
                     self.logger.debug(f"Pas de {self.target_resource} en vue, exploration")
                     self.state = "exploring"
+                    return True
+                
+                if target == (0, 0):
+                    self.logger.debug(f"{self.target_resource} trouvé sur la case actuelle, tentative de ramassage")
+                    if not self.protocol.take(self.target_resource):
+                        self.logger.debug(f"Impossible de prendre {self.target_resource}")
+                        return False
+                    self.logger.debug(f"{self.target_resource} ramassé avec succès")
+                    if not self.inventory_manager.update_inventory():
+                        self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
+                        return False
                     return True
                     
                 if not self.movement_manager.move_to(target):
@@ -294,29 +396,24 @@ class AI:
             self.logger.debug("Aucune nourriture trouvée, exploration...")
             self._explore()
 
-    def _collect_resource(self, resource: str) -> None:
-        """Tente de collecter une ressource spécifique.
-        
-        Args:
-            resource (str): Type de ressource à collecter
-        """
-        target = self.vision_manager.find_nearest_object(resource)
-        if target:
-            self.target_position = target
-            self.logger.debug(f"Cible {resource} définie: {self.target_position}")
+    def _collect_resource(self, resource: str) -> bool:
+        """Collecte une ressource spécifique."""
+        try:
+            position = self.player.get_position()
+            self.logger.debug(f"Tentative de collecte de {resource} à la position {position}")
+            success = self.protocol.take(resource)
             
-            if (self.player.x, self.player.y) == target:
-                self.protocol.take(resource)
-                self.inventory_manager.update_inventory()
-                self.logger.debug(f"{resource} pris")
-                self.target_position = None
+            if success:
+                self.logger.info(f"✅ Ressource {resource} collectée avec succès à la position {position}")
+                self.inventory_manager.inventory[resource] += 1
+                self.logger.info(f"📦 Inventaire après collecte: {self.inventory_manager.inventory}")
+                return True
             else:
-                if not self.movement_manager.move_to_target(target):
-                    self.logger.debug(f"Impossible d'atteindre {resource}, nouvelle cible...")
-                    self._explore()
-        else:
-            self.logger.debug(f"Aucune {resource} trouvée, exploration...")
-            self._explore()
+                self.logger.debug(f"❌ Échec de la collecte de {resource} à la position {position}")
+                return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la collecte de {resource}: {str(e)}")
+            return False
 
     def _explore(self) -> None:
         """Explore la carte pour trouver des ressources."""
@@ -366,3 +463,161 @@ class AI:
         else:
             self.logger.debug("Échec de l'incantation")
             self._explore()
+
+    def _find_best_exploration_target(self) -> Optional[Tuple[int, int]]:
+        """Trouve la meilleure cible d'exploration dans la vision.
+        
+        Returns:
+            Optional[Tuple[int, int]]: Meilleure cible d'exploration
+        """
+        try:
+            best_target = None
+            best_score = -1
+            
+            resource_priority = {
+                'thystame': 100,
+                'phiras': 80,
+                'mendiane': 60,
+                'sibur': 40,
+                'deraumere': 20,
+                'linemate': 10,
+                'food': 5
+            }
+            
+            for y in range(-self.vision_manager.level, self.vision_manager.level + 1):
+                for x in range(-self.vision_manager.level, self.vision_manager.level + 1):
+                    if (x, y) == (0, 0):
+                        continue
+                        
+                    case_content = self.vision_manager.get_case_content(x, y)
+                    if not case_content:
+                        continue
+                        
+                    score = 0
+                    for resource in case_content:
+                        if resource in resource_priority:
+                            score += resource_priority[resource]
+                            
+                    distance = abs(x) + abs(y)
+                    score = score / (distance + 1)
+                    
+                    if score > best_score:
+                        best_score = score
+                        best_target = (x, y)
+                        
+            return best_target
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la recherche de cible d'exploration: {str(e)}")
+            return None
+
+    def _generate_smart_exploration_target(self) -> Tuple[int, int]:
+        """Génère une cible d'exploration aléatoire intelligente.
+        
+        Returns:
+            Tuple[int, int]: Cible d'exploration
+        """
+        try:
+            max_radius = min(5, self.vision_manager.level + 2)
+            
+            directions = [
+                (1, 0),
+                (0, -1),
+                (-1, 0),
+                (0, 1),
+                (1, 1),
+                (-1, 1),
+                (1, -1),
+                (-1, -1)
+            ]
+            
+            random.shuffle(directions)
+            
+            for dx, dy in directions:
+                radius = random.randint(1, max_radius)
+                x = dx * radius
+                y = dy * radius
+                
+                if abs(x) <= max_radius and abs(y) <= max_radius:
+                    return (x, y)
+                    
+            x = random.randint(-max_radius, max_radius)
+            y = random.randint(-max_radius, max_radius)
+            if (x, y) == (0, 0):
+                x, y = 1, 0
+                
+            return (x, y)
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la génération de cible d'exploration: {str(e)}")
+            return (1, 0)
+    def _collect_available_resources(self) -> bool:
+        """Collecte toutes les ressources disponibles sur la case actuelle."""
+        try:
+            vision_data = self.vision_manager.vision_data
+            if not vision_data or len(vision_data) == 0:
+                return False
+                
+            current_case = vision_data[0]
+            if not current_case:
+                return False
+                
+            if isinstance(current_case, list):
+                items = current_case
+            else:
+                items = current_case.split()
+                
+            resources_to_collect = []
+            
+            for item in items:
+                if item != 'player' and item in ['food', 'linemate', 'deraumere', 'sibur', 'mendiane', 'phiras', 'thystame']:
+                    resources_to_collect.append(item)
+            
+            collected = False
+            for resource in resources_to_collect:
+                if self._collect_resource(resource):
+                    collected = True
+                    self.logger.debug(f"Ressource {resource} collectée depuis la case actuelle")
+            
+            return collected
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la collecte des ressources: {str(e)}")
+            return False
+
+    def _move_to_nearest_resource(self) -> bool:
+        """Déplace le joueur vers la ressource la plus proche."""
+        try:
+            self.logger.debug("Recherche de la ressource la plus proche...")
+            resources = ["linemate", "food", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
+            nearest_target = None
+            min_distance = float('inf')
+            nearest_resource = None
+
+            for resource in resources:
+                target = self.vision_manager.find_nearest_object(resource)
+                if target:
+                    distance = abs(target[0]) + abs(target[1])
+                    self.logger.debug(f"Ressource {resource} trouvée à {target} (distance: {distance})")
+                    if distance < min_distance:
+                        min_distance = distance
+                        nearest_target = target
+                        nearest_resource = resource
+                        self.logger.debug(f"Nouvelle ressource la plus proche: {resource} à {target}")
+
+            if nearest_target:
+                current_pos = self.player.get_position()
+                self.logger.info(f"🎯 Déplacement vers {nearest_resource} à {nearest_target} depuis {current_pos}")
+                success = self.movement_manager.move_to(nearest_target)
+                if success:
+                    new_pos = self.player.get_position()
+                    self.logger.info(f"✅ Déplacement réussi vers {nearest_resource}: {current_pos} → {new_pos}")
+                else:
+                    self.logger.warning(f"❌ Échec du déplacement vers {nearest_resource} à {nearest_target}")
+                return success
+            else:
+                self.logger.debug("Aucune ressource trouvée, exploration...")
+                self._explore()
+                return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la recherche de ressource: {str(e)}")
+            return False
