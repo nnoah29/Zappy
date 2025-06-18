@@ -258,29 +258,4 @@ class MovementManager:
         self.stuck_count = 0
         self.last_position = None
         self.position_history = []
-        self.collision_manager.reset()
-
-    def take_object(self, object_type: str) -> bool:
-        """Prend un objet sur la case actuelle.
-        
-        Args:
-            object_type (str): Type d'objet à prendre
-            
-        Returns:
-            bool: True si l'objet a été pris
-        """
-        try:
-            if not self.can_move():
-                self.logger.debug("Cooldown de déplacement actif")
-                return False
-                
-            response = self.protocol.take(object_type)
-            if response == "ok":
-                self.last_move_time = time.time()
-                self.logger.debug(f"{object_type} pris avec succès")
-                return True
-            self.logger.debug(f"Échec de la prise de {object_type}: {response}")
-            return False
-        except Exception as e:
-            self.logger.error(f"Erreur lors de la prise d'objet: {str(e)}")
-            return False 
+        self.collision_manager.reset() 

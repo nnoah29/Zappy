@@ -91,7 +91,8 @@ class AI:
                 self.state = "collecting"
                 self.target_resource = "food"
                 return
-                te():
+                
+            if self.elevation_manager.can_elevate():
                 self.logger.debug("État changé: elevating")
                 self.state = "elevating"
                 return
@@ -144,13 +145,13 @@ class AI:
             List[str]: Liste des ressources priorisées
         """
         priority_order = [
+            'food',
             'thystame',
             'phiras',
             'mendiane',
             'sibur',
             'deraumere',
-            'linemate',
-            'food'
+            'linemate'
         ]
         
         prioritized = []
@@ -191,7 +192,35 @@ class AI:
             
             if self._collect_available_resources():
                 self.logger.debug("Ressources disponibles ramassées")
+                # Si on vient de collecter du linemate, on essaie immédiatement l'élévation
+                if self.inventory_manager.inventory['linemate'] >= 1:
+                    self.logger.info("🚀 Linemate collecté, tentative d'élévation immédiate")
+                    if self.elevation_manager.can_elevate():
+                        self.logger.info("✅ Conditions d'élévation remplies, démarrage de l'élévation")
+                        return self.elevation_manager.start_elevation()
+                    else:
+                        self.logger.info("❌ Conditions d'élévation non remplies, collecte d'autres ressources")
                 return True
+            
+            # Priorité absolue : maintenir la nourriture au-dessus de 5
+            if self.inventory_manager.inventory['food'] < 5:
+                self.logger.warning("🚨 Nourriture critique, recherche prioritaire de nourriture")
+                target = self.vision_manager.find_nearest_object("food")
+                if target:
+                    self.logger.info(f"🍽️ Nourriture trouvée à {target}, déplacement prioritaire")
+                    if self.movement_manager.move_to(target):
+                        # Après le déplacement, essaie de ramasser la nourriture
+                        if self._collect_available_resources():
+                            self.logger.info("✅ Nourriture collectée en priorité")
+                        return True
+                else:
+                    self.logger.error("❌ Aucune nourriture en vue, exploration d'urgence")
+                    # Exploration d'urgence pour trouver de la nourriture
+                    exploration_target = self._generate_linemate_exploration_target()
+                    if exploration_target:
+                        self.logger.info(f"🚨 Exploration d'urgence vers {exploration_target}")
+                        if self.movement_manager.move_to(exploration_target):
+                            return True
             
             if self._move_to_nearest_resource():
                 self.logger.debug("Déplacement vers la ressource la plus proche")
@@ -205,10 +234,21 @@ class AI:
                 if target:
                     self.logger.info(f"🎯 Linemate trouvé à {target}, déplacement en cours...")
                     if self.movement_manager.move_to(target):
+                        # Après le déplacement, essaie de ramasser le linemate
                         if self._collect_available_resources():
                             self.logger.info("✅ Linemate collecté après déplacement")
                         return True
+                else:
+                    # Si pas de linemate en vue, exploration active pour en trouver
+                    self.logger.info("🔍 Pas de linemate en vue, exploration active...")
+                    exploration_target = self._generate_linemate_exploration_target()
+                    if exploration_target:
+                        self.logger.info(f"🎯 Exploration vers {exploration_target} pour trouver du linemate")
+                        if self.movement_manager.move_to(exploration_target):
+                            self.logger.info("✅ Déplacement d'exploration réussi")
+                            return True
             else:
+                # Si on a le linemate, on essaie de s'élever
                 self.logger.info("🚀 Tentative d'élévation avec le linemate disponible")
                 if self.elevation_manager.can_elevate():
                     self.logger.info("✅ Conditions d'élévation remplies, démarrage de l'élévation")
@@ -222,7 +262,7 @@ class AI:
                 if target:
                     if target == (0, 0):
                         self.logger.debug("Nourriture trouvée sur la case actuelle, tentative de ramassage")
-                        if not self.protocol.take("food"):
+                        if not self.inventory_manager.take_object("food"):
                             self.logger.debug("Impossible de prendre la nourriture")
                             return False
                         self.logger.debug("Nourriture prise avec succès")
@@ -234,24 +274,8 @@ class AI:
                         return True
                     
                     if not self.movement_manager.move_to(target):
-                        self.logger.debug("Impossible d'atteindre la nourriture, tentative de déplacement aléatoire")
-                        if self.inventory_manager.inventory['food'] < 5:
-                            self.logger.debug("Nourriture très basse, déplacement aléatoire forcé")
-                            for _ in range(3):
-                                x = random.randint(-1, 1)
-                                y = random.randint(-1, 1)
-                                if (x, y) != (0, 0):
-                                    if self.movement_manager.move_to((x, y)):
-                                        self.logger.debug("Déplacement aléatoire réussi")
-                                        return True
-                        else:
-                            x = random.randint(-1, 1)
-                            y = random.randint(-1, 1)
-                            if (x, y) != (0, 0):
-                                if not self.movement_manager.move_to((x, y)):
-                                    self.logger.debug("Impossible de se déplacer aléatoirement")
-                                    return False
-                        return True
+                        self.logger.debug("Impossible d'atteindre la nourriture, nouvelle cible...")
+                        self._explore()
                     return True
                 else:
                     self.logger.debug("Pas de nourriture en vue, exploration")
@@ -276,7 +300,7 @@ class AI:
                 
                 if target == (0, 0):
                     self.logger.debug(f"{self.target_resource} trouvé sur la case actuelle, tentative de ramassage")
-                    if not self.protocol.take(self.target_resource):
+                    if not self.inventory_manager.take_object(self.target_resource):
                         self.logger.debug(f"Impossible de prendre {self.target_resource}")
                         return False
                     self.logger.debug(f"{self.target_resource} ramassé avec succès")
@@ -290,7 +314,7 @@ class AI:
                     self.state = "exploring"
                     return True
                     
-                if not self.protocol.take(self.target_resource):
+                if not self.inventory_manager.take_object(self.target_resource):
                     self.logger.debug(f"Impossible de prendre {self.target_resource}")
                     return False
 
@@ -384,12 +408,12 @@ class AI:
             self.logger.debug(f"Cible nourriture définie: {self.target_position}")
             
             if (self.player.x, self.player.y) == target:
-                self.protocol.take("food")
+                self.inventory_manager.take_object("food")
                 self.inventory_manager.update_inventory()
                 self.logger.debug("Nourriture prise")
                 self.target_position = None
             else:
-                if not self.movement_manager.move_to_target(target):
+                if not self.movement_manager.move_to(target):
                     self.logger.debug("Impossible d'atteindre la nourriture, nouvelle cible...")
                     self._explore()
         else:
@@ -401,11 +425,10 @@ class AI:
         try:
             position = self.player.get_position()
             self.logger.debug(f"Tentative de collecte de {resource} à la position {position}")
-            success = self.protocol.take(resource)
+            success = self.inventory_manager.take_object(resource)
             
             if success:
                 self.logger.info(f"✅ Ressource {resource} collectée avec succès à la position {position}")
-                self.inventory_manager.inventory[resource] += 1
                 self.logger.info(f"📦 Inventaire après collecte: {self.inventory_manager.inventory}")
                 return True
             else:
@@ -432,30 +455,15 @@ class AI:
         if nearest_target:
             self.target_position = nearest_target
             self.logger.debug(f"Cible exploration définie: {self.target_position}")
-            if not self.movement_manager.move_to_target(self.target_position):
+            if not self.movement_manager.move_to(self.target_position):
                 self.logger.debug("Impossible d'atteindre la cible, nouvelle cible...")
-                self._generate_new_exploration_target()
+                self.target_position = self._generate_smart_exploration_target()
         else:
-            self._generate_new_exploration_target()
-
-    def _generate_new_exploration_target(self) -> None:
-        """Génère une nouvelle cible d'exploration aléatoire."""
-        max_radius = 5
-        while True:
-            x = random.randint(-max_radius, max_radius)
-            y = random.randint(-max_radius, max_radius)
-            if (x, y) != (0, 0):
-                target_x = (self.player.x + x) % self.map.width
-                target_y = (self.player.y + y) % self.map.height
-                self.target_position = (target_x, target_y)
-                self.logger.debug(f"Nouvelle cible d'exploration aléatoire: {self.target_position}")
-                if self.movement_manager.move_to_target(self.target_position):
-                    break
-                continue
+            self.target_position = self._generate_smart_exploration_target()
 
     def _try_elevation(self) -> None:
         """Tente de monter de niveau."""
-        result = self.protocol.incantation()
+        result = self.inventory_manager.take_object("elevation")
         if result > 0:
             self.level = result
             self.vision_manager.set_level(result)
@@ -464,60 +472,24 @@ class AI:
             self.logger.debug("Échec de l'incantation")
             self._explore()
 
-    def _find_best_exploration_target(self) -> Optional[Tuple[int, int]]:
-        """Trouve la meilleure cible d'exploration dans la vision.
-        
-        Returns:
-            Optional[Tuple[int, int]]: Meilleure cible d'exploration
-        """
-        try:
-            best_target = None
-            best_score = -1
-            
-            resource_priority = {
-                'thystame': 100,
-                'phiras': 80,
-                'mendiane': 60,
-                'sibur': 40,
-                'deraumere': 20,
-                'linemate': 10,
-                'food': 5
-            }
-            
-            for y in range(-self.vision_manager.level, self.vision_manager.level + 1):
-                for x in range(-self.vision_manager.level, self.vision_manager.level + 1):
-                    if (x, y) == (0, 0):
-                        continue
-                        
-                    case_content = self.vision_manager.get_case_content(x, y)
-                    if not case_content:
-                        continue
-                        
-                    score = 0
-                    for resource in case_content:
-                        if resource in resource_priority:
-                            score += resource_priority[resource]
-                            
-                    distance = abs(x) + abs(y)
-                    score = score / (distance + 1)
-                    
-                    if score > best_score:
-                        best_score = score
-                        best_target = (x, y)
-                        
-            return best_target
-            
-        except Exception as e:
-            self.logger.error(f"Erreur lors de la recherche de cible d'exploration: {str(e)}")
-            return None
-
     def _generate_smart_exploration_target(self) -> Tuple[int, int]:
-        """Génère une cible d'exploration aléatoire intelligente.
+        """Génère une cible d'exploration intelligente.
         
         Returns:
             Tuple[int, int]: Cible d'exploration
         """
         try:
+            # Priorité au linemate si nécessaire pour l'élévation
+            if self.elevation_manager.get_needed_resources() and 'linemate' in self.elevation_manager.get_needed_resources():
+                self.logger.debug("🎯 Génération de cible d'exploration prioritaire pour linemate")
+                max_radius = 5
+                x = random.randint(-max_radius, max_radius)
+                y = random.randint(-max_radius, max_radius)
+                if (x, y) == (0, 0):
+                    x, y = 1, 0
+                return (x, y)
+            
+            # Exploration intelligente basée sur la vision
             max_radius = min(5, self.vision_manager.level + 2)
             
             directions = [
@@ -551,6 +523,20 @@ class AI:
         except Exception as e:
             self.logger.error(f"Erreur lors de la génération de cible d'exploration: {str(e)}")
             return (1, 0)
+
+    def _generate_linemate_exploration_target(self) -> Optional[Tuple[int, int]]:
+        """Génère une cible d'exploration spécifique pour trouver du linemate."""
+        try:
+            max_radius = 5
+            x = random.randint(-max_radius, max_radius)
+            y = random.randint(-max_radius, max_radius)
+            if (x, y) == (0, 0):
+                x, y = 1, 0
+            return (x, y)
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la génération de cible d'exploration spécifique: {str(e)}")
+            return None
+
     def _collect_available_resources(self) -> bool:
         """Collecte toutes les ressources disponibles sur la case actuelle."""
         try:
@@ -588,7 +574,11 @@ class AI:
         """Déplace le joueur vers la ressource la plus proche."""
         try:
             self.logger.debug("Recherche de la ressource la plus proche...")
-            resources = ["linemate", "food", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
+            # Priorité absolue : nourriture d'abord, puis linemate pour l'élévation
+            if self.inventory_manager.inventory['food'] < 8:
+                resources = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
+            else:
+                resources = ["linemate", "food", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
             nearest_target = None
             min_distance = float('inf')
             nearest_resource = None
