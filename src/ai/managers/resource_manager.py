@@ -9,7 +9,6 @@ from models.map import Map
 class ResourceManager:
     """Gère les ressources et l'inventaire du joueur."""
     
-    # Ressources nécessaires pour chaque niveau
     ELEVATION_REQUIREMENTS = {
         1: {'players': 1, 'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
         2: {'players': 2, 'linemate': 1, 'deraumere': 1, 'sibur': 1, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
@@ -76,11 +75,9 @@ class ResourceManager:
             Dict[str, int]: Inventaire du joueur
         """
         try:
-            # Enlève les crochets et sépare les ressources
             response = response.strip('[]')
             resources = response.split(',')
             
-            # Parse chaque ressource
             inventory = {}
             for resource in resources:
                 name, count = resource.strip().split()
@@ -122,11 +119,9 @@ class ResourceManager:
         if level >= 8:
             return None
 
-        # Priorité : nourriture si moins de 5 unités
         if self.inventory.get('food') < 5:
             return "food"
             
-        # Ensuite, priorité aux ressources manquantes
         requirements = self.ELEVATION_REQUIREMENTS[level]
         for resource in ['linemate', 'deraumere', 'sibur', 'mendiane', 'phiras', 'thystame']:
             if self.inventory.get(resource) < requirements[resource]:
@@ -142,7 +137,7 @@ class ResourceManager:
         Returns:
             bool: True si des ressources sont nécessaires
         """
-        if level >= 8:  # Niveau maximum
+        if level >= 8:
             return False
 
         requirements = self.ELEVATION_REQUIREMENTS[level]
@@ -171,8 +166,7 @@ class ResourceManager:
                 continue
             if self.inventory.get(resource) < count:
                 return False
-        # Vérifier la nourriture
-        if self.inventory.get('food') < 5:  # Garder une réserve de nourriture
+        if self.inventory.get('food') < 5:
             return False
         return True
 

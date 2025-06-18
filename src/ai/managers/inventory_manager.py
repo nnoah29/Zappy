@@ -39,7 +39,6 @@ class InventoryManager:
                 self.logger.error("Pas de réponse du serveur pour l'inventaire")
                 return False
                 
-            # Parse la réponse
             items = response.strip('[]').split(',')
             for item in items:
                 name, count = item.strip().split()
@@ -63,7 +62,6 @@ class InventoryManager:
         try:
             response = self.protocol.take(object_type)
             if response == "ok":
-                # Met à jour l'inventaire après avoir pris l'objet
                 if not self.update_inventory():
                     self.logger.error("Erreur lors de la mise à jour de l'inventaire après prise")
                     return False

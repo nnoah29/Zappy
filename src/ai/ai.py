@@ -119,31 +119,47 @@ class AI:
             bool: True si l'action a réussi
         """
         try:
-            # Vérifie d'abord la nourriture (seuil critique à 5)
-            if self.inventory_manager.inventory['food'] < 5:
+            if self.movement_manager.collision_manager.check_collision():
+                self.logger.debug("Collision détectée dans la boucle principale, tentative de résolution")
+                if self.movement_manager.collision_manager.eject_other_players():
+                    self.logger.debug("Éjection réussie dans la boucle principale")
+                    return True
+                else:
+                    self.logger.debug("Éjection échouée dans la boucle principale")
+            
+            if self.inventory_manager.inventory['food'] < 10:
                 self.logger.debug("Niveau de nourriture critique, recherche de nourriture")
                 target = self.vision_manager.find_nearest_object("food")
                 if target:
-                    # Si on est déjà sur la nourriture, on la prend directement
                     if target == (0, 0):
-                        if not self.movement_manager.take_object("food"):
+                        if not self.protocol.take("food"):
                             self.logger.debug("Impossible de prendre la nourriture")
                             return False
                         self.logger.debug("Nourriture prise avec succès")
-                        # Met à jour l'inventaire après avoir pris la nourriture
                         if not self.inventory_manager.update_inventory():
                             self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
                             return False
+                        if self.inventory_manager.inventory['food'] < 10:
+                            return self._execute_action()
                         return True
-                    # Sinon on essaie de se déplacer vers la nourriture
                     if not self.movement_manager.move_to(target):
                         self.logger.debug("Impossible d'atteindre la nourriture, tentative de déplacement aléatoire")
-                        # Si on ne peut pas atteindre la nourriture, on essaie de se déplacer aléatoirement
-                        x = random.randint(-1, 1)
-                        y = random.randint(-1, 1)
-                        if not self.movement_manager.move_to((x, y)):
-                            self.logger.debug("Impossible de se déplacer aléatoirement")
-                            return False
+                        if self.inventory_manager.inventory['food'] < 5:
+                            self.logger.debug("Nourriture très basse, déplacement aléatoire forcé")
+                            for _ in range(3):
+                                x = random.randint(-1, 1)
+                                y = random.randint(-1, 1)
+                                if (x, y) != (0, 0):
+                                    if self.movement_manager.move_to((x, y)):
+                                        self.logger.debug("Déplacement aléatoire réussi")
+                                        return True
+                        else:
+                            x = random.randint(-1, 1)
+                            y = random.randint(-1, 1)
+                            if (x, y) != (0, 0):
+                                if not self.movement_manager.move_to((x, y)):
+                                    self.logger.debug("Impossible de se déplacer aléatoirement")
+                                    return False
                         return True
                     return True
                 else:
@@ -151,54 +167,47 @@ class AI:
                     self.state = "exploring"
                     return True
 
-            # Vérifie si on peut s'élever
             if self.elevation_manager.can_elevate():
                 self.logger.debug("Démarrage de l'élévation")
                 return self.elevation_manager.start_elevation()
                 
-            # Vérifie si on a besoin de ressources
             needed_resources = self.elevation_manager.get_needed_resources()
             if needed_resources:
                 self.logger.debug(f"Recherche de {needed_resources[0]}")
                 self.state = "collecting"
                 self.target_resource = needed_resources[0]
                 
-                # Cherche la ressource la plus proche
                 target = self.vision_manager.find_nearest_object(self.target_resource)
                 if not target:
                     self.logger.debug(f"Pas de {self.target_resource} en vue, exploration")
                     self.state = "exploring"
                     return True
                     
-                # Se déplace vers la ressource
                 if not self.movement_manager.move_to(target):
                     self.logger.debug(f"Impossible d'atteindre {self.target_resource}, exploration")
                     self.state = "exploring"
                     return True
                     
-                # Ramasse la ressource
-                if not self.movement_manager.take_object(self.target_resource):
+                if not self.protocol.take(self.target_resource):
                     self.logger.debug(f"Impossible de prendre {self.target_resource}")
                     return False
 
                 self.logger.debug(f"{self.target_resource} ramassé avec succès")
-                # Met à jour l'inventaire après avoir pris la ressource
                 if not self.inventory_manager.update_inventory():
                     self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
                     return False
                 return True
 
-            # Par défaut, on explore
             self.logger.debug("Exploration")
             self.state = "exploring"
             self.target_resource = None
             
-            # Se déplace aléatoirement
             if not self.target_position:
                 x = random.randint(-1, 1)
                 y = random.randint(-1, 1)
-                self.target_position = (x, y)
-                self.logger.debug(f"Nouvelle cible d'exploration: {self.target_position}")
+                if (x, y) != (0, 0):
+                    self.target_position = (x, y)
+                    self.logger.debug(f"Nouvelle cible d'exploration: {self.target_position}")
                 
             if not self.movement_manager.move_to(self.target_position):
                 self.target_position = None
@@ -235,7 +244,6 @@ class AI:
             target_x = (self.player.x + x) % self.map.width
             target_y = (self.player.y + y) % self.map.height
             
-            # Met à jour la case
             tile = self.map.get_tile(target_x, target_y)
             tile.resources = resources
 

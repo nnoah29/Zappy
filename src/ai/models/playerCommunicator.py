@@ -1,5 +1,6 @@
 import logging
 from typing import Optional, Dict, Any
+from core.protocol import ZappyProtocol
 
 class PlayerCommunicator:
     """
@@ -7,7 +8,7 @@ class PlayerCommunicator:
     Utilise le protocole du projet pour envoyer et recevoir des messages.
     """
 
-    def __init__(self, protocol, player, logger: Optional[logging.Logger] = None):
+    def __init__(self, protocol: ZappyProtocol, player, logger: Optional[logging.Logger] = None):
         """
         Args:
             protocol: Instance du protocole de communication (ex: ZappyProtocol)

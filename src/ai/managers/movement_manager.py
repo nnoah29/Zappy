@@ -58,26 +58,27 @@ class MovementManager:
             dx = target[0]
             dy = target[1]
             
-            # Si on est sur la cible
             if dx == 0 and dy == 0:
                 return True
                 
-            # Vérifie les collisions avant de se déplacer
             if self.collision_manager.check_collision():
-                self.logger.debug("Collision détectée, tentative d'évitement")
-                if not self.collision_manager.avoid_collision():
-                    self.logger.debug("Impossible d'éviter la collision")
-                    # Si on ne peut pas éviter la collision, on essaie de se déplacer aléatoirement
-                    x = random.randint(-1, 1)
-                    y = random.randint(-1, 1)
-                    if (x, y) != (0, 0):
-                        return self.move_to((x, y))
-                    return False
+                self.logger.debug("Collision détectée, tentative d'éjection")
+                if self.collision_manager.eject_other_players():
+                    self.logger.debug("Éjection réussie, tentative de déplacement")
+                    time.sleep(0.1)
+                else:
+                    self.logger.debug("Éjection échouée, tentative d'évitement")
+                    if not self.collision_manager.avoid_collision():
+                        self.logger.debug("Impossible d'éviter la collision")
+                        x = random.randint(-1, 1)
+                        y = random.randint(-1, 1)
+                        if (x, y) != (0, 0):
+                            return self.move_to((x, y))
+                        return False
                     
             current_direction = self.player.get_direction()
             target_direction = self._get_direction_to_target(dx, dy)
             
-            # Calcule le chemin le plus court pour la rotation
             diff = (target_direction - current_direction) % 4
             if diff == 1 or diff == 2:
                 if not self.turn_right():
@@ -143,15 +144,32 @@ class MovementManager:
             self.logger.debug("Joueur sévèrement bloqué, réinitialisation")
             self.reset()
         else:
-            # Change de direction aléatoirement
-            if random.random() < 0.5:
-                self.turn_left()
-            else:
-                self.turn_right()
-            # Réinitialise l'historique des positions
+            self.logger.warning(f"Joueur bloqué (tentative {self.stuck_count}/{self.max_stuck_count}). Tentative de déblocage.")
+            
+            actions = [
+                lambda: self.turn_right(),
+                lambda: self.turn_left(),
+                lambda: self.turn_right() and self.turn_right(),
+                lambda: self.turn_left() and self.turn_left(),
+                lambda: self.turn_right() and self.move_forward(),
+                lambda: self.turn_left() and self.move_forward()
+            ]
+            
+            random.shuffle(actions)
+            
+            for action in actions:
+                try:
+                    if action():
+                        self.logger.info("Déblocage réussi")
+                        self.position_history = []
+                        self.stuck_count = 0
+                        return
+                except Exception as e:
+                    self.logger.debug(f"Action de déblocage échouée: {e}")
+                    continue
+            
             self.position_history = []
-            # Attend un peu avant de réessayer
-            time.sleep(0.1)
+            self.logger.error("Impossible de se débloquer après plusieurs tentatives")
 
     def can_move(self) -> bool:
         """Vérifie si le joueur peut se déplacer.
@@ -252,7 +270,6 @@ class MovementManager:
             bool: True si l'objet a été pris
         """
         try:
-            # Vérifie le cooldown
             if not self.can_move():
                 self.logger.debug("Cooldown de déplacement actif")
                 return False

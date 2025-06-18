@@ -40,10 +40,8 @@ class ElevationManager:
             bool: True si le joueur peut s'élever
         """
         try:
-            # Vérifie si on a les ressources nécessaires
             requirements = self.ELEVATION_REQUIREMENTS[self.vision_manager.player.level + 1]
             
-            # Vérifie les ressources dans l'inventaire
             for resource, count in requirements.items():
                 if resource == 'players':
                     continue
@@ -51,7 +49,6 @@ class ElevationManager:
                     self.logger.debug(f"Pas assez de {resource} pour l'élévation")
                     return False
                     
-            # Vérifie les ressources sur la case
             current_tile = self.vision_manager.get_current_tile()
             if not current_tile:
                 return False
@@ -78,12 +75,10 @@ class ElevationManager:
         try:
             self.logger.debug(f"Démarrage de l'élévation au niveau {self.vision_manager.player.level + 1}")
             
-            # Vérifie si on a les ressources nécessaires
             if not self.can_elevate():
                 self.logger.debug("Pas assez de ressources pour l'élévation")
                 return False
                 
-            # Pose les ressources nécessaires
             requirements = self.ELEVATION_REQUIREMENTS[self.vision_manager.player.level + 1]
             for resource, count in requirements.items():
                 if resource == 'players':
@@ -93,16 +88,13 @@ class ElevationManager:
                         self.logger.error(f"Erreur lors du dépôt de {resource}")
                         return False
                         
-            # Démarre l'incantation
             response = self.protocol.incantation()
             if response == "ko":
                 self.logger.error("Échec de l'incantation")
                 return False
                 
-            # Attend la fin de l'incantation
-            time.sleep(300 / 1000)  # 300ms
+            time.sleep(300 / 1000)
             
-            # Vérifie si l'élévation a réussi
             if response == "elevation underway":
                 self.logger.info(f"Élévation réussie au niveau {self.vision_manager.player.level + 1}")
                 self.vision_manager.player.level += 1
@@ -208,7 +200,6 @@ class ElevationManager:
         if not self.ritual_in_progress:
             return False
 
-        # Vérifie si les conditions sont toujours remplies
         if not self.check_elevation_conditions():
             self.ritual_in_progress = False
             return False
@@ -224,12 +215,10 @@ class ElevationManager:
         if not self.ritual_in_progress:
             return False
 
-        # Vérifie les conditions une dernière fois avant la fin
         if not self.check_elevation_conditions():
             self.ritual_in_progress = False
             return False
 
-        # Vérifie si l'élévation a réussi
         response = self.protocol.incantation()
         if response:
             self.vision_manager.player.level += 1

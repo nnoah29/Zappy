@@ -23,10 +23,10 @@ class VisionManager:
         self.map = map
         self.logger = logger
         self.vision = []
-        self.vision_data = []  # Données de vision actuelles
-        self.level = 1  # Niveau initial
+        self.vision_data = []
+        self.level = 1
         self.last_vision_update = 0
-        self.vision_cooldown = 7  # Temps entre chaque mise à jour de la vision
+        self.vision_cooldown = 7
 
     def update_vision(self) -> bool:
         """Met à jour la vision du joueur.
@@ -59,11 +59,9 @@ class VisionManager:
             List[List[str]]: Liste des cases vues
         """
         try:
-            # Enlève les crochets et sépare les cases
             response = response.strip('[]')
             cases = response.split(',')
             
-            # Parse chaque case
             vision = []
             for case in cases:
                 items = case.strip().split()
@@ -85,7 +83,6 @@ class VisionManager:
             List[str]: Contenu de la case
         """
         try:
-            # Calcule l'index dans la vision
             index = self._get_vision_index(x, y)
             if 0 <= index < len(self.vision):
                 return self.vision[index]
@@ -112,27 +109,26 @@ class VisionManager:
             int: Index dans la vision
         """
         if x == 0 and y == 0:
-            return 0  # Case du joueur
+            return 0
             
-        # Calcule l'index selon la position relative
         if x == 1 and y == 0:
-            return 1  # Droite
+            return 1
         elif x == 1 and y == 1:
-            return 2  # Diagonale bas-droite
+            return 2
         elif x == 0 and y == 1:
-            return 3  # Bas
+            return 3
         elif x == -1 and y == 1:
-            return 4  # Diagonale bas-gauche
+            return 4
         elif x == -1 and y == 0:
-            return 5  # Gauche
+            return 5
         elif x == -1 and y == -1:
-            return 6  # Diagonale haut-gauche
+            return 6
         elif x == 0 and y == -1:
-            return 7  # Haut
+            return 7
         elif x == 1 and y == -1:
-            return 8  # Diagonale haut-droite
+            return 8
             
-        return -1  # Position invalide
+        return -1
 
     def find_nearest_object(self, object_type: str) -> Optional[Tuple[int, int]]:
         """Trouve l'objet le plus proche d'un type donné.
@@ -147,7 +143,6 @@ class VisionManager:
             nearest = None
             min_distance = float('inf')
             
-            # Parcourt toutes les cases visibles
             for y in range(-self.level, self.level + 1):
                 for x in range(-self.level, self.level + 1):
                     case = self.get_case_content(x, y)
@@ -242,14 +237,13 @@ class VisionManager:
         """
         pos = self.get_case_position(index)
         
-        # Vérifie la position en fonction de la direction
-        if self.current_direction == 0:  # Nord
+        if self.current_direction == 0:
             return pos[1] < 0
-        elif self.current_direction == 1:  # Est
+        elif self.current_direction == 1:
             return pos[0] > 0
-        elif self.current_direction == 2:  # Sud
+        elif self.current_direction == 2:
             return pos[1] > 0
-        else:  # Ouest
+        else:
             return pos[0] < 0
 
     def get_players_in_range(self, max_distance: int = 2) -> List[Tuple[int, int]]:
@@ -354,12 +348,10 @@ class VisionManager:
         if not target:
             return []
             
-        # Implémentation simple du chemin
         path = []
         current_x, current_y = 0, 0
         target_x, target_y = target
         
-        # Déplacement horizontal
         while current_x != target_x:
             if current_x < target_x:
                 current_x += 1
@@ -367,7 +359,6 @@ class VisionManager:
                 current_x -= 1
             path.append((current_x, current_y))
             
-        # Déplacement vertical
         while current_y != target_y:
             if current_y < target_y:
                 current_y += 1

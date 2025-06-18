@@ -29,7 +29,7 @@ class CollisionManager:
         self.max_stuck_count = 3
         self.position_history_size = 5
         self.last_collision_time = 0
-        self.collision_cooldown = 7  # Temps entre chaque vérification de collision
+        self.collision_cooldown = 7
 
     def check_collision(self) -> bool:
         """Vérifie s'il y a une collision avec un autre joueur.
@@ -38,24 +38,47 @@ class CollisionManager:
             bool: True si une collision est détectée
         """
         try:
-            # Vérifie le cooldown
             if time.time() - self.last_collision_time < self.collision_cooldown:
                 return False
                 
-            # Récupère les joueurs dans la vision
             players = self.vision_manager.get_players_in_vision()
             if not players:
                 return False
                 
-            # Vérifie si un joueur est sur la même case
             for player_pos in players:
-                if player_pos == (0, 0):  # Même case que le joueur
+                if player_pos == (0, 0):
                     self.last_collision_time = time.time()
                     return True
                     
             return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la vérification des collisions: {str(e)}")
+            return False
+
+    def eject_other_players(self) -> bool:
+        """Éjecte les autres joueurs de la case actuelle.
+        
+        Returns:
+            bool: True si l'éjection a réussi
+        """
+        try:
+            vision_data = self.vision_manager.vision_data
+            if not vision_data or len(vision_data) == 0:
+                return False
+                
+            current_tile = vision_data[0] if vision_data else ""
+            if current_tile.count('player') > 1:
+                self.logger.info("Autre joueur détecté sur la même case. Tentative d'éjection.")
+                response = self.protocol.eject()
+                if response == "ok":
+                    self.logger.debug("Éjection réussie")
+                    return True
+                else:
+                    self.logger.debug(f"Échec de l'éjection: {response}")
+                    return False
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'éjection: {str(e)}")
             return False
 
     def avoid_collision(self) -> bool:
@@ -65,21 +88,17 @@ class CollisionManager:
             bool: True si l'évitement a réussi
         """
         try:
-            # Vérifie le cooldown
             if not self.can_check_collision():
                 return False
                 
-            # Récupère les joueurs dans la vision
             players = self.vision_manager.get_players_in_vision()
             if not players:
                 return False
                 
-            # Trouve une direction libre
-            directions = [0, 1, 2, 3]  # Nord, Est, Sud, Ouest
-            random.shuffle(directions)  # Mélange les directions pour plus de variété
+            directions = [0, 1, 2, 3]
+            random.shuffle(directions)
             
             for direction in directions:
-                # Tourne dans la direction
                 current_direction = self.vision_manager.player.get_direction()
                 diff = (direction - current_direction) % 4
                 
@@ -90,14 +109,12 @@ class CollisionManager:
                     if not self.movement_manager.turn_left():
                         continue
                         
-                # Vérifie si la case devant est libre
                 case = self.vision_manager.get_case_content(1, 0)
                 if "player" not in case:
                     if self.movement_manager.move_forward():
                         self.logger.debug(f"Collision évitée en se déplaçant vers {direction}")
                         return True
                         
-            # Si aucune direction n'est libre, essaie de reculer
             self.logger.debug("Aucune direction libre, tentative de recul")
             if not self.movement_manager.turn_right():
                 return False
@@ -124,21 +141,19 @@ class CollisionManager:
             bool: True si la collision a été résolue
         """
         if not self.check_collision():
-            self.escape_attempts = 0  # Réinitialise les tentatives si pas de collision
+            self.escape_attempts = 0
             return True
 
-        # Si trop de tentatives d'évasion, on essaie une autre stratégie
         if self.escape_attempts >= self.max_escape_attempts:
             success = self._handle_severe_collision()
             if success:
-                self.escape_attempts = 0  # Réinitialise les tentatives si succès
+                self.escape_attempts = 0
             return success
 
-        # Stratégie d'évasion basique
         self.escape_attempts += 1
         success = self._basic_escape_strategy()
         if success:
-            self.escape_attempts = 0  # Réinitialise les tentatives si succès
+            self.escape_attempts = 0
         return success
 
     def _basic_escape_strategy(self) -> bool:
@@ -147,17 +162,14 @@ class CollisionManager:
         Returns:
             bool: True si l'évasion a réussi
         """
-        # Tourne à droite et avance
         if not self.protocol.right():
             return False
         if not self.protocol.forward():
             return False
 
-        # Vérifie si la collision persiste
         if not self.check_collision():
             return True
 
-        # Si toujours bloqué, essaie de tourner à gauche
         if not self.protocol.left():
             return False
         if not self.protocol.left():
@@ -173,8 +185,7 @@ class CollisionManager:
         Returns:
             bool: True si la collision a été résolue
         """
-        # Essaie de se déplacer dans une direction aléatoire
-        for _ in range(4):  # Essaie les 4 directions
+        for _ in range(4):
             if not self.protocol.right():
                 return False
             if not self.protocol.forward():
