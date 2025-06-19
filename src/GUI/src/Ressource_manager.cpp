@@ -25,19 +25,19 @@ bool ResourceManager::initialize()
     };
     
     TextureInfo textures[] = {
-        {ResourceType::FOOD, "../assets/food.png"},
-        {ResourceType::LINEMATE, "../assets/linemate.png"},
-        {ResourceType::DERAUMERE, "../assets/deraumere.png"},
-        {ResourceType::SIBUR, "../assets/sibur.png"},
-        {ResourceType::MENDIANE, "../assets/mendiane.png"},
-        {ResourceType::PHIRAS, "../assets/phiras.png"},
-        {ResourceType::THYSTAME, "../assets/thystame.png"},
-        {ResourceType::PLAYER_NORTH, "../assets/player_north.png"},
-        {ResourceType::PLAYER_EAST, "../assets/player_east.png"},
-        {ResourceType::PLAYER_SOUTH, "../assets/player_south.png"},
-        {ResourceType::PLAYER_WEST, "../assets/player_west.png"},
-        {ResourceType::EGG, "../assets/egg.png"},
-        {ResourceType::TILE_EMPTY, "../assets/tile_empty.png"}
+        {ResourceType::FOOD, "assets/food.png"},
+        {ResourceType::LINEMATE, "assets/linemate.png"},
+        {ResourceType::DERAUMERE, "assets/deraumere.png"},
+        {ResourceType::SIBUR, "assets/sibur.png"},
+        {ResourceType::MENDIANE, "assets/mendiane.png"},
+        {ResourceType::PHIRAS, "assets/phiras.png"},
+        {ResourceType::THYSTAME, "assets/thystame.png"},
+        {ResourceType::PLAYER_NORTH, "assets/player_north.png"},
+        {ResourceType::PLAYER_EAST, "assets/player_east.png"},
+        {ResourceType::PLAYER_SOUTH, "assets/player_south.png"},
+        {ResourceType::PLAYER_WEST, "assets/player_west.png"},
+        {ResourceType::EGG, "/assets/egg.png"},
+        {ResourceType::TILE_EMPTY, "assets/tile_empty.png"}
     };
     
     int totalTextures = sizeof(textures) / sizeof(TextureInfo);
