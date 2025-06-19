@@ -1,0 +1,2256 @@
+import socket
+import logging
+from typing import Tuple, Optional
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+class ZappyClient:
+    TIMEOUTS = {
+        "Forward": 7,
+        "Right": 7,
+        "Left": 7,
+        "Look": 7,
+        "Inventory": 1,
+        "Broadcast": 7,
+        "Connect_nbr": 42,
+        "Fork": 42,
+        "Eject": 7,
+        "Take": 7,
+        "Set": 7,
+        "Incantation": 300
+    }
+
+    def __init__(self, hostname: str, port: int, team_name: str):
+        """Initialise le client Zappy.
+        
+        Args:
+            hostname (str): Nom d'hôte du serveur
+            port (int): Port du serveur
+            team_name (str): Nom de l'équipe
+        """
+        self.hostname = hostname
+        self.port = port
+        self.team_name = team_name
+        self.socket = None
+        self.logger = logging.getLogger(__name__)
+        self.map_size = None
+        self.client_num = None
+        self.ai = None
+
+    def connect(self):
+        """Établit la connexion avec le serveur et effectue le protocole d'authentification."""
+        try:
+            self.logger.info(f"Tentative de connexion à {self.hostname}:{self.port}")
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.socket.settimeout(7.0)
+            self.socket.connect((self.hostname, self.port))
+            self.logger.info("Socket connecté avec succès")
+
+            self.logger.info("En attente du message de bienvenue...")
+            welcome = self._receive()
+            self.logger.info(f"Message reçu: {welcome}")
+            if welcome != "WELCOME":
+                raise Exception(f"Message de bienvenue invalide: {welcome}")
+
+            self.logger.info(f"Envoi du nom d'équipe: {self.team_name}")
+            self._send(self.team_name + "\n")
+
+            self.logger.info("En attente de la réponse du serveur...")
+            response = self._receive()
+            self.logger.info(f"Réponse reçue: {response}")
+            lines = response.strip().split('\n')
+
+            try:
+                self.client_num = int(lines[0])
+                self.logger.info(f"Numéro de client reçu: {self.client_num}")
+            except ValueError:
+                raise Exception(f"Numéro de client invalide: {lines[0]}")
+
+            if len(lines) > 1:
+                map_size = lines[1]
+                self.logger.info(f"Dimensions de la carte reçues dans la même réponse: {map_size}")
+            else:
+                self.logger.info("En attente des dimensions de la carte...")
+                map_size = self._receive()
+                self.logger.info(f"Dimensions de la carte reçues: {map_size}")
+
+            try:
+                dimensions = map_size.strip().split()
+                if len(dimensions) != 2:
+                    raise Exception(f"Format de dimensions invalide: {map_size}")
+                self.map_size = (int(dimensions[0]), int(dimensions[1]))
+                self.logger.info(f"Dimensions de la carte parsées: {self.map_size}")
+            except ValueError:
+                raise Exception(f"Dimensions invalides: {map_size}")
+
+            self.logger.info(f"Connecté au serveur. Client #{self.client_num}, Carte: {self.map_size[0]}x{self.map_size[1]}")
+
+        except Exception as e:
+            self.logger.error(f"Erreur de connexion: {e}")
+            if self.socket:
+                self.socket.close()
+                self.socket = None
+            raise
+
+    def _get_timeout(self, command: str) -> float:
+        """Récupère le timeout pour une commande donnée.
+        
+        Args:
+            command (str): Nom de la commande
+            
+        Returns:
+            float: Timeout en secondes
+        """
+        cmd_name = command.split()[0]
+        return self.TIMEOUTS.get(cmd_name, 7.0)
+
+    def _send(self, message: str):
+        """Envoie un message au serveur.
+        
+        Args:
+            message (str): Message à envoyer
+            
+        Raises:
+            socket.error: Si l'envoi échoue
+            TimeoutError: Si le timeout est dépassé
+        """
+        if not self.socket:
+            raise ConnectionError("Non connecté au serveur")
+            
+        try:
+            timeout = self._get_timeout(message)
+            self.socket.settimeout(timeout)
+            
+            self.socket.send(message.encode())
+            self.logger.debug(f"Envoyé ({timeout}s): {message.strip()}")
+            
+        except socket.timeout:
+            error_msg = f"Timeout d'envoi après {timeout}s pour: {message.strip()}"
+            self.logger.error(error_msg)
+            raise TimeoutError(error_msg)
+        except socket.error as e:
+            error_msg = f"Erreur d'envoi: {str(e)}"
+            self.logger.error(error_msg)
+            raise socket.error(error_msg)
+        finally:
+            self.socket.settimeout(None)
+
+    def _receive(self) -> str:
+        """Reçoit une réponse du serveur."""
+        if not self.socket:
+            raise Exception("Socket non connecté")
+        
+        try:
+            self.logger.debug("En attente de données du serveur...")
+            data = self.socket.recv(4096)
+            if not data:
+                raise Exception("Connexion fermée par le serveur")
+            
+            response = data.decode('utf-8').strip()
+            self.logger.debug(f"Données reçues: {response}")
+            return response
+        except socket.timeout:
+            self.logger.error("Timeout lors de la réception des données")
+            raise
+        except socket.error as e:
+            self.logger.error(f"Erreur lors de la réception: {e}")
+            raise socket.error("Erreur de réception")
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la réception: {e}")
+            raise
+
+    def run(self) -> bool:
+        """Exécute une itération de l'IA.
+        
+        Returns:
+            bool: True si l'IA continue de fonctionner, False si elle doit s'arrêter
+        """
+        try:
+            return self.ai.update()
+        except Exception as e:
+            self.logger.error(f"Erreur dans l'exécution de l'IA: {e}")
+            return False
+
+    def close(self):
+        """Ferme la connexion avec le serveur."""
+        if self.socket:
+            self.socket.close()
+            self.socket = Noneimport logging
+import time
+from typing import Optional, List, Dict, Any
+from .client import ZappyClient
+
+class ZappyProtocol:
+    def __init__(self, client: ZappyClient):
+        """Initialise le protocole avec un client.
+        
+        Args:
+            client (ZappyClient): Client connecté au serveur
+        """
+        self.client = client
+        self.logger = logging.getLogger(__name__)
+        self.last_response: Optional[str] = None
+        self.last_error: Optional[str] = None
+
+    def _handle_response(self, response: str) -> bool:
+        """Gère la réponse du serveur.
+        
+        Args:
+            response (str): Réponse du serveur
+            
+        Returns:
+            bool: True si la commande a réussi, False sinon
+        """
+        self.last_response = response
+        if response == "ok":
+            self.last_error = None
+            return True
+        elif response == "ko":
+            self.last_error = "Commande refusée par le serveur"
+            return False
+        else:
+            self.last_error = f"Réponse invalide du serveur: {response}"
+            raise ValueError(self.last_error)
+
+    def forward(self) -> bool:
+        """Avance d'une case.
+        
+        Returns:
+            bool: True si le mouvement a réussi, False sinon
+        """
+        try:
+            self.client._send("Forward\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors du déplacement: {e}"
+            raise
+
+    def right(self) -> bool:
+        """Tourne à droite.
+        
+        Returns:
+            bool: True si la rotation a réussi, False sinon
+        """
+        try:
+            self.client._send("Right\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors de la rotation: {e}"
+            raise
+
+    def left(self) -> bool:
+        """Tourne à gauche.
+        
+        Returns:
+            bool: True si la rotation a réussi, False sinon
+        """
+        try:
+            self.client._send("Left\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors de la rotation: {e}"
+            raise
+
+    def look(self) -> str:
+        """Regarde autour du joueur.
+        
+        Returns:
+            str: Réponse brute du serveur
+        """
+        try:
+            self.client._send("Look\n")
+            response = self.client._receive().strip()
+            self.last_response = response
+            return response
+        except Exception as e:
+            self.last_error = f"Erreur lors de la vision: {e}"
+            raise
+
+    def inventory(self) -> str:
+        """Consulte l'inventaire.
+        
+        Returns:
+            str: Réponse brute du serveur
+        """
+        try:
+            self.client._send("Inventory\n")
+            response = self.client._receive().strip()
+            self.last_response = response
+            return response
+        except Exception as e:
+            self.last_error = f"Erreur lors de la consultation de l'inventaire: {e}"
+            raise
+
+    def broadcast(self, message: str) -> bool:
+        """Envoie un message à tous les joueurs.
+        
+        Args:
+            message (str): Message à envoyer
+            
+        Returns:
+            bool: True si le message a été envoyé, False sinon
+        """
+        try:
+            self.client._send(f"Broadcast {message}\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors de l'envoi du message: {e}"
+            raise
+
+    def connect_nbr(self) -> int:
+        """Demande le nombre de places disponibles dans l'équipe.
+        
+        Returns:
+            int: Nombre de places disponibles
+        """
+        try:
+            self.client._send("Connect_nbr\n")
+            response = self.client._receive().strip()
+            self.last_response = response
+            return int(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors de la demande de places: {e}"
+            raise
+
+    def fork(self) -> bool:
+        """Pond un œuf.
+        
+        Returns:
+            bool: True si l'action a réussi, False sinon
+        """
+        try:
+            self.client._send("Fork\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors de la ponte: {e}"
+            raise
+
+    def eject(self) -> bool:
+        """Expulse les joueurs de la case.
+        
+        Returns:
+            bool: True si l'action a réussi, False sinon
+        """
+        try:
+            self.client._send("Eject\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors de l'expulsion: {e}"
+            raise
+
+    def take(self, object_name: str) -> bool:
+        """Prend un objet.
+        
+        Args:
+            object_name (str): Nom de l'objet à prendre
+            
+        Returns:
+            bool: True si l'action a réussi, False sinon
+        """
+        try:
+            self.client._send(f"Take {object_name}\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors de la prise d'objet: {e}"
+            raise
+
+    def set(self, object_name: str) -> bool:
+        """Pose un objet.
+        
+        Args:
+            object_name (str): Nom de l'objet à poser
+            
+        Returns:
+            bool: True si l'action a réussi, False sinon
+        """
+        try:
+            self.client._send(f"Set {object_name}\n")
+            response = self.client._receive().strip()
+            return self._handle_response(response)
+        except Exception as e:
+            self.last_error = f"Erreur lors du dépôt d'objet: {e}"
+            raise
+
+    def incantation(self) -> int:
+        """Commence un rituel d'élévation.
+        
+        Returns:
+            int: Niveau atteint après l'élévation, -1 si échec
+        """
+        try:
+            self.client._send("Incantation\n")
+            response = self.client._receive().strip()
+            if response != "Elevation underway":
+                self.last_error = "Échec du début de l'élévation"
+                return -1
+                
+            level_response = self.client._receive().strip()
+            self.last_response = level_response
+            return int(level_response.split(": ")[1])
+        except Exception as e:
+            self.last_error = f"Erreur lors de l'élévation: {e}"
+            raise 
+
+    def parse_look_response(self, response: str) -> list:
+        """Parse la réponse de la commande Look.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            list: Liste des cases vues avec leurs objets
+        """
+        try:
+            # Enlève les crochets et sépare les cases
+            response = response.strip('[]')
+            cases = [case.strip() for case in response.split(',')]
+            return cases
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing de la vision: {e}"
+            raise
+
+    def parse_inventory_response(self, response: str) -> dict:
+        """Parse la réponse de la commande Inventory.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            dict: Inventaire avec les quantités
+        """
+        try:
+            # Enlève les crochets et sépare les objets
+            response = response.strip('[]')
+            items = [item.strip() for item in response.split(',')]
+            inventory = {}
+            for item in items:
+                if item:
+                    name, quantity = item.split()
+                    inventory[name] = int(quantity)
+            return inventory
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing de l'inventaire: {e}"
+            raise
+
+    def parse_broadcast_response(self, response: str) -> tuple:
+        """Parse la réponse d'un broadcast.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            tuple: (direction, message)
+        """
+        try:
+            # Format: "message K, text"
+            parts = response.split(',', 1)
+            direction = int(parts[0].split()[1])
+            message = parts[1].strip()
+            return (direction, message)
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing du broadcast: {e}"
+            raise
+
+    def parse_eject_response(self, response: str) -> int:
+        """Parse la réponse d'un eject.
+        
+        Args:
+            response (str): Réponse brute du serveur
+            
+        Returns:
+            int: Direction de l'éjection
+        """
+        try:
+            # Format: "eject: K"
+            return int(response.split(':')[1].strip())
+        except Exception as e:
+            self.last_error = f"Erreur lors du parsing de l'éjection: {e}"
+            raise from typing import Tuple, Optional, Any
+import logging
+from core.protocol import ZappyProtocol
+from managers.vision_manager import VisionManager
+import time
+import random
+
+class CollisionManager:
+    """Gère les collisions et les interactions entre joueurs."""
+    
+    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager, movement_manager: Any, logger: logging.Logger):
+        """Initialise le gestionnaire de collision.
+        
+        Args:
+            protocol (ZappyProtocol): Protocole de communication
+            vision_manager (VisionManager): Gestionnaire de vision
+            movement_manager (Any): Gestionnaire de déplacement
+            logger (Logger): Logger pour les messages
+        """
+        self.protocol = protocol
+        self.vision_manager = vision_manager
+        self.movement_manager = movement_manager
+        self.logger = logger
+        self.collision_count = 0
+        self.last_collision_pos: Optional[Tuple[int, int]] = None
+        self.escape_attempts = 0
+        self.max_escape_attempts = 3
+        self.stuck_count = 0
+        self.max_stuck_count = 3
+        self.position_history_size = 5
+        self.last_collision_time = 0
+        self.collision_cooldown = 7
+
+    def check_collision(self) -> bool:
+        """Vérifie s'il y a une collision avec un autre joueur.
+        
+        Returns:
+            bool: True si une collision est détectée
+        """
+        try:
+            if time.time() - self.last_collision_time < self.collision_cooldown:
+                return False
+                
+            players = self.vision_manager.get_players_in_vision()
+            if not players:
+                return False
+                
+            for player_pos in players:
+                if player_pos == (0, 0):
+                    self.last_collision_time = time.time()
+                    return True
+                    
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la vérification des collisions: {str(e)}")
+            return False
+
+    def eject_other_players(self) -> bool:
+        """Éjecte les autres joueurs de la case actuelle.
+        
+        Returns:
+            bool: True si l'éjection a réussi
+        """
+        try:
+            vision_data = self.vision_manager.vision_data
+            if not vision_data or len(vision_data) == 0:
+                return False
+                
+            current_tile = vision_data[0] if vision_data else ""
+            if current_tile.count('player') > 1:
+                self.logger.info("Autre joueur détecté sur la même case. Tentative d'éjection.")
+                response = self.protocol.eject()
+                if response == "ok":
+                    self.logger.debug("Éjection réussie")
+                    return True
+                else:
+                    self.logger.debug(f"Échec de l'éjection: {response}")
+                    return False
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'éjection: {str(e)}")
+            return False
+
+    def avoid_collision(self) -> bool:
+        """Évite une collision en se déplaçant.
+        
+        Returns:
+            bool: True si l'évitement a réussi
+        """
+        try:
+            if not self.can_check_collision():
+                return False
+                
+            players = self.vision_manager.get_players_in_vision()
+            if not players:
+                return False
+                
+            directions = [0, 1, 2, 3]
+            random.shuffle(directions)
+            
+            for direction in directions:
+                current_direction = self.vision_manager.player.get_direction()
+                diff = (direction - current_direction) % 4
+                
+                if diff == 1 or diff == 2:
+                    if not self.movement_manager.turn_right():
+                        continue
+                elif diff == 3:
+                    if not self.movement_manager.turn_left():
+                        continue
+                        
+                case = self.vision_manager.get_case_content(1, 0)
+                if "player" not in case:
+                    if self.movement_manager.move_forward():
+                        self.logger.debug(f"Collision évitée en se déplaçant vers {direction}")
+                        return True
+                        
+            self.logger.debug("Aucune direction libre, tentative de recul")
+            if not self.movement_manager.turn_right():
+                return False
+            if not self.movement_manager.turn_right():
+                return False
+            return self.movement_manager.move_forward()
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'évitement de collision: {str(e)}")
+            return False
+
+    def can_check_collision(self) -> bool:
+        """Vérifie si on peut vérifier les collisions.
+        
+        Returns:
+            bool: True si on peut vérifier les collisions
+        """
+        return time.time() - self.last_collision_time >= self.collision_cooldown
+
+    def handle_collision(self) -> bool:
+        """Gère une collision détectée.
+        
+        Returns:
+            bool: True si la collision a été résolue
+        """
+        if not self.check_collision():
+            self.escape_attempts = 0
+            return True
+
+        if self.escape_attempts >= self.max_escape_attempts:
+            success = self._handle_severe_collision()
+            if success:
+                self.escape_attempts = 0
+            return success
+
+        self.escape_attempts += 1
+        success = self._basic_escape_strategy()
+        if success:
+            self.escape_attempts = 0
+        return success
+
+    def _basic_escape_strategy(self) -> bool:
+        """Stratégie basique d'évasion de collision.
+        
+        Returns:
+            bool: True si l'évasion a réussi
+        """
+        if not self.protocol.right():
+            return False
+        if not self.protocol.forward():
+            return False
+
+        if not self.check_collision():
+            return True
+
+        if not self.protocol.left():
+            return False
+        if not self.protocol.left():
+            return False
+        if not self.protocol.forward():
+            return False
+
+        return not self.check_collision()
+
+    def _handle_severe_collision(self) -> bool:
+        """Gère une collision sévère (après plusieurs tentatives d'évasion).
+        
+        Returns:
+            bool: True si la collision a été résolue
+        """
+        for _ in range(4):
+            if not self.protocol.right():
+                return False
+            if not self.protocol.forward():
+                return False
+            if not self.check_collision():
+                return True
+
+        return False
+
+    def reset(self) -> None:
+        """Réinitialise l'état du gestionnaire de collisions."""
+        self.collision_count = 0
+        self.last_collision_pos = None
+        self.escape_attempts = 0
+        self.stuck_count = 0
+        self.position_history_size = 5
+
+    def get_stuck_count(self) -> int:
+        """Récupère le nombre de fois que le joueur est resté bloqué.
+        
+        Returns:
+            int: Nombre de blocages
+        """
+        return self.stuck_count
+
+    def is_severely_stuck(self) -> bool:
+        """Vérifie si le joueur est sévèrement bloqué.
+        
+        Returns:
+            bool: True si le joueur est sévèrement bloqué
+        """
+        return self.stuck_count > self.max_stuck_count from typing import Dict, List
+from core.protocol import ZappyProtocol
+import logging
+import time
+from managers.vision_manager import VisionManager
+from managers.movement_manager import MovementManager
+
+class ElevationManager:
+    """Gère la logique d'élévation et les rituels."""
+
+    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager, movement_manager: MovementManager, logger: logging.Logger):
+        """Initialise le gestionnaire d'élévation.
+        
+        Args:
+            protocol (ZappyProtocol): Protocole de communication
+            vision_manager (VisionManager): Gestionnaire de vision
+            movement_manager (MovementManager): Gestionnaire de déplacement
+            logger (Logger): Logger pour les messages
+        """
+        self.protocol = protocol
+        self.vision_manager = vision_manager
+        self.movement_manager = movement_manager
+        self.logger = logger
+        self.last_elevation_time = 0
+        self.elevation_cooldown = 300
+        self.ELEVATION_REQUIREMENTS = {
+            1: {'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
+            2: {'linemate': 1, 'deraumere': 1, 'sibur': 1, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
+            3: {'linemate': 2, 'deraumere': 0, 'sibur': 1, 'mendiane': 0, 'phiras': 2, 'thystame': 0},
+            4: {'linemate': 1, 'deraumere': 1, 'sibur': 2, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
+            5: {'linemate': 1, 'deraumere': 2, 'sibur': 1, 'mendiane': 3, 'phiras': 0, 'thystame': 0},
+            6: {'linemate': 1, 'deraumere': 2, 'sibur': 3, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
+            7: {'linemate': 2, 'deraumere': 2, 'sibur': 2, 'mendiane': 2, 'phiras': 2, 'thystame': 1}
+        }
+
+    def can_elevate(self) -> bool:
+        """Vérifie si le joueur peut s'élever.
+        
+        Returns:
+            bool: True si le joueur peut s'élever
+        """
+        try:
+            if time.time() - self.last_elevation_time < self.elevation_cooldown:
+                return False
+                
+            current_level = self.vision_manager.player.level
+            if current_level >= 8:
+                return False
+                
+            next_level = current_level + 1
+            if next_level not in self.ELEVATION_REQUIREMENTS:
+                return False
+                
+            requirements = self.ELEVATION_REQUIREMENTS[next_level]
+            
+            for resource, count in requirements.items():
+                if resource == 'players':
+                    continue
+                if self.vision_manager.player.inventory.inventory[resource] < count:
+                    self.logger.debug(f"Pas assez de {resource} dans l'inventaire pour l'élévation")
+                    return False
+            
+            current_tile = self.vision_manager.get_case_content(0, 0)
+            if not current_tile:
+                return False
+                
+            for resource, count in requirements.items():
+                if resource == 'players':
+                    continue
+                if current_tile.count(resource) < count:
+                    self.logger.debug(f"Pas assez de {resource} sur la case pour l'élévation")
+                    return False
+                    
+            required_players = self._get_required_players(next_level)
+            player_count = current_tile.count('player')
+            if player_count < required_players:
+                self.logger.debug(f"Pas assez de joueurs sur la case ({player_count}/{required_players})")
+                return False
+                
+            self.logger.debug(f"Conditions d'élévation remplies pour le niveau {next_level}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la vérification de l'élévation: {str(e)}")
+            return False
+
+    def start_elevation(self) -> bool:
+        """Démarre une élévation en suivant le plan stratégique.
+        
+        Returns:
+            bool: True si l'élévation a réussi
+        """
+        try:
+            current_level = self.vision_manager.player.level
+            next_level = current_level + 1
+            
+            self.logger.info(f"🚀 Démarrage de l'élévation au niveau {next_level}")
+            
+            if not self.can_elevate():
+                self.logger.debug("❌ Conditions d'élévation non remplies")
+                return False
+            
+            requirements = self.ELEVATION_REQUIREMENTS[next_level]
+            self.logger.info(f"📦 Préparation du rituel : pose des pierres sur la case")
+            
+            for resource, count in requirements.items():
+                if resource == 'players':
+                    continue
+                for _ in range(count):
+                    if not self.protocol.set(resource):
+                        self.logger.error(f"❌ Erreur lors du dépôt de {resource}")
+                        return False
+                    self.logger.debug(f"✅ {resource} déposé sur la case")
+                    time.sleep(0.1)
+            
+            self.vision_manager.force_update_vision()
+            current_tile = self.vision_manager.get_case_content(0, 0)
+            self.logger.info(f"🔍 Vérification finale : case contient {current_tile}")
+            
+            self.logger.info("🌟 Lancement de l'incantation...")
+            response = self.protocol.incantation()
+            
+            if response == "ko":
+                self.logger.error("❌ Échec de l'incantation")
+                return False
+                
+            self.logger.info(f"✅ Incantation lancée: {response}")
+            
+            if response == "elevation underway":
+                self.logger.info("⏳ Rituel en cours... (300 secondes)")
+                time.sleep(300 / 1000)
+                
+                final_response = self.protocol.look()
+                if final_response and "player" in final_response:
+                    self.vision_manager.player.level = next_level
+                    self.vision_manager.set_level(next_level)
+                    self.last_elevation_time = time.time()
+                    self.logger.info(f"🎉 Élévation réussie au niveau {next_level}!")
+                    return True
+                else:
+                    self.logger.error("❌ Échec de l'élévation après l'incantation")
+                    return False
+            else:
+                self.logger.error(f"❌ Réponse inattendue lors de l'incantation: {response}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"❌ Erreur lors de l'élévation: {str(e)}")
+            return False
+
+    def _get_required_players(self, level: int) -> int:
+        """Récupère le nombre de joueurs requis pour l'élévation.
+        
+        Args:
+            level (int): Niveau actuel
+            
+        Returns:
+            int: Nombre de joueurs requis
+        """
+        requirements = {
+            1: 1,
+            2: 2,
+            3: 2,
+            4: 4,
+            5: 4,
+            6: 6,
+            7: 6
+        }
+        return requirements.get(level, 0)
+
+    def get_needed_resources(self) -> List[str]:
+        """Récupère la liste des ressources nécessaires pour l'élévation.
+        
+        Returns:
+            List[str]: Liste des ressources nécessaires
+        """
+        try:
+            level = self.vision_manager.player.level
+            if level not in self.ELEVATION_REQUIREMENTS:
+                return []
+                
+            needed = []
+            for resource, count in self.ELEVATION_REQUIREMENTS[level].items():
+                if count > 0:
+                    needed.append(resource)
+            return needed
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la récupération des ressources nécessaires: {str(e)}")
+            return []
+
+    def check_elevation_conditions(self) -> bool:
+        """Vérifie si les conditions d'élévation sont remplies.
+        
+        Returns:
+            bool: True si les conditions sont remplies
+        """
+        if self.vision_manager.player.level >= 8:
+            return False
+
+        requirements = self.ELEVATION_REQUIREMENTS[self.vision_manager.player.level]
+        vision = self.vision_manager.look()
+        if not vision:
+            return False
+
+        player_count = sum(1 for case in vision if "player" in case)
+        if player_count < self._get_required_players(self.vision_manager.player.level):
+            return False
+
+        current_case = vision[0]
+        for resource, count in requirements.items():
+            if resource == "player":
+                continue
+            if current_case.count(resource) < count:
+                return False
+
+        return True
+
+    def start_ritual(self) -> bool:
+        """Démarre le rituel d'élévation.
+        
+        Returns:
+            bool: True si le rituel a démarré avec succès
+        """
+        if self.ritual_in_progress:
+            return False
+
+        if not self.check_elevation_conditions():
+            return False
+
+        if not self.protocol.incantation():
+            return False
+
+        self.ritual_in_progress = True
+        return True
+
+    def check_ritual_status(self) -> bool:
+        """Vérifie le statut du rituel en cours.
+        
+        Returns:
+            bool: True si le rituel est toujours en cours
+        """
+        if not self.ritual_in_progress:
+            return False
+
+        if not self.check_elevation_conditions():
+            self.ritual_in_progress = False
+            return False
+
+        return True
+
+    def complete_ritual(self) -> bool:
+        """Termine le rituel d'élévation.
+        
+        Returns:
+            bool: True si le rituel a été complété avec succès
+        """
+        if not self.ritual_in_progress:
+            return False
+
+        if not self.check_elevation_conditions():
+            self.ritual_in_progress = False
+            return False
+
+        response = self.protocol.incantation()
+        if response:
+            self.vision_manager.player.level += 1
+            self.ritual_in_progress = False
+            return True
+
+        return False
+
+    def get_current_level(self) -> int:
+        """Récupère le niveau actuel.
+        
+        Returns:
+            int: Niveau actuel du joueur
+        """
+        return self.vision_manager.player.level
+
+    def get_requirements(self) -> Dict[str, int]:
+        """Récupère les conditions d'élévation pour le niveau actuel.
+        
+        Returns:
+            Dict[str, int]: Conditions d'élévation
+        """
+        return self.ELEVATION_REQUIREMENTS[self.vision_manager.player.level].copy()
+
+    def reset(self) -> None:
+        """Réinitialise l'état du gestionnaire."""
+        self.ritual_in_progress = False
+        self.ritual_participants.clear()
+
+    def is_ritual_in_progress(self) -> bool:
+        """Vérifie si un rituel est en cours.
+        
+        Returns:
+            bool: True si un rituel est en cours
+        """
+        return self.ritual_in_progress from typing import Any
+from core.protocol import ZappyProtocol
+import logging
+
+class InventoryManager:
+    """Gère l'inventaire du joueur."""
+
+    def __init__(self, protocol: ZappyProtocol, player: Any, logger: logging.Logger):
+        """Initialise le gestionnaire d'inventaire.
+        
+        Args:
+            protocol (ZappyProtocol): Protocole de communication
+            player (Any): Joueur contrôlé
+            logger (Logger): Logger pour les messages
+        """
+        self.protocol = protocol
+        self.player = player
+        self.logger = logger
+        self.inventory = {
+            'food': 0,
+            'linemate': 0,
+            'deraumere': 0,
+            'sibur': 0,
+            'mendiane': 0,
+            'phiras': 0,
+            'thystame': 0
+        }
+        self.logger.info(f"inventory created: {self.inventory}")
+
+    def update_inventory(self) -> bool:
+        """Met à jour l'inventaire.
+        
+        Returns:
+            bool: True si la mise à jour a réussi
+        """
+        try:
+            response = self.protocol.inventory()
+            if not response:
+                self.logger.error("Pas de réponse du serveur pour l'inventaire")
+                return False
+                
+            items = response.strip('[]').split(',')
+            for item in items:
+                name, count = item.strip().split()
+                self.inventory[name] = int(count)
+                
+            self.logger.debug(f"Inventaire mis à jour: {self.inventory}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour de l'inventaire: {str(e)}")
+            return False
+
+    def take_object(self, object_type: str) -> bool:
+        """Prend un objet.
+        
+        Args:
+            object_type (str): Type d'objet à prendre
+            
+        Returns:
+            bool: True si l'objet a été pris
+        """
+        try:
+            success = self.protocol.take(object_type)
+            if success:
+                if not self.update_inventory():
+                    self.logger.error("Erreur lors de la mise à jour de l'inventaire après prise")
+                    return False
+                self.logger.debug(f"✅ {object_type} pris avec succès, inventaire: {self.inventory}")
+                return True
+            self.logger.debug(f"❌ Impossible de prendre {object_type}: échec de la commande")
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la prise d'objet: {str(e)}")
+            return False
+
+    def drop_object(self, object_type: str) -> bool:
+        """Pose un objet.
+        
+        Args:
+            object_type (str): Type d'objet à poser
+            
+        Returns:
+            bool: True si l'objet a été posé
+        """
+        try:
+            response = self.protocol.set(object_type)
+            if response == "ok":
+                self.inventory[object_type] -= 1
+                return True
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors du dépôt d'objet: {str(e)}")
+            return False from typing import Tuple, Optional
+import logging
+import time
+import random
+from managers.vision_manager import VisionManager
+from managers.collision_manager import CollisionManager
+from core.protocol import ZappyProtocol
+from models.player import Player
+from models.map import Map
+
+class MovementManager:
+    """Gère les déplacements et les collisions du joueur."""
+
+    def __init__(self, protocol: ZappyProtocol, player: Player, map: Map, vision_manager: VisionManager, logger: logging.Logger):
+        """Initialise le gestionnaire de mouvement.
+        
+        Args:
+            protocol (ZappyProtocol): Protocole de communication
+            player (Player): Joueur à déplacer
+            map (Map): Carte du jeu
+            vision_manager (VisionManager): Gestionnaire de vision
+            logger (Logger): Logger pour les messages
+        """
+        self.protocol = protocol
+        self.player = player
+        self.map = map
+        self.vision_manager = vision_manager
+        self.collision_manager = CollisionManager(protocol, vision_manager, self, logger)
+        self.logger = logger
+        self.last_move_time = 0
+        self.move_cooldown = 0.1
+        self.current_direction = 0
+        self.target_position: Optional[Tuple[int, int]] = None
+        self.stuck_count = 0
+        self.max_stuck_count = 3
+        self.last_position: Optional[Tuple[int, int]] = None
+        self.position_history = []
+        self.position_history_size = 5
+        self.target: Optional[Tuple[int, int]] = None
+        self.stuck_counter = 0
+        self.max_stuck = 3
+        self.exploration_radius = 5
+
+    def move_to(self, target: Tuple[int, int]) -> bool:
+        """Déplace le joueur vers une position cible de manière itérative.
+        
+        Args:
+            target (Tuple[int, int]): Position cible relative
+            
+        Returns:
+            bool: True si le déplacement a réussi
+        """
+        try:
+            current_x, current_y = self.player.get_position()
+            target_x = (current_x + target[0]) % self.map.width
+            target_y = (current_y + target[1]) % self.map.height
+            
+            self.logger.debug(f"🎯 Déplacement itératif vers ({target_x}, {target_y}) depuis ({current_x}, {current_y})")
+            
+            return self.move_to_absolute(target_x, target_y)
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors du déplacement vers la cible: {str(e)}")
+            return False
+
+    def move_to_absolute(self, target_x: int, target_y: int) -> bool:
+        """Déplace le joueur vers des coordonnées absolues de manière itérative.
+        
+        Args:
+            target_x (int): Coordonnée X absolue de la cible
+            target_y (int): Coordonnée Y absolue de la cible
+            
+        Returns:
+            bool: True si le déplacement a réussi
+        """
+        try:
+            max_attempts = 10
+            attempts = 0
+            
+            while attempts < max_attempts:
+                current_x, current_y = self.player.get_position()
+                
+                # Vérifier si on est arrivé à destination
+                if (current_x, current_y) == (target_x, target_y):
+                    self.logger.info(f"✅ Arrivé à la destination ({target_x}, {target_y})")
+                    return True
+                
+                # Vérifier si on est bloqué
+                if self._is_stuck():
+                    self.logger.warning("Joueur bloqué pendant le déplacement.")
+                    self._handle_stuck()
+                    return False
+                
+                if not self.can_move():
+                    self.logger.debug("Cooldown de déplacement actif, attente...")
+                    time.sleep(0.1)
+                    attempts += 1
+                    continue
+                
+                # Gestion des collisions
+                if self.collision_manager.check_collision():
+                    self.logger.debug("Collision détectée, tentative d'éjection")
+                    if self.collision_manager.eject_other_players():
+                        self.logger.debug("Éjection réussie, tentative de déplacement")
+                        time.sleep(0.1)
+                    else:
+                        self.logger.debug("Éjection échouée, tentative d'évitement")
+                        if not self.collision_manager.avoid_collision():
+                            self.logger.debug("Impossible d'éviter la collision")
+                            return False
+                
+                rel_x, rel_y = self._calculate_shortest_path(current_x, current_y, target_x, target_y)
+                
+                self.logger.debug(f"Position actuelle: ({current_x}, {current_y}), Cible: ({target_x}, {target_y}), Relatif: ({rel_x}, {rel_y})")
+                
+                if rel_x == 0 and rel_y == 0:
+                    self.logger.info(f"✅ Arrivé à la destination ({target_x}, {target_y})")
+                    return True
+                
+                current_direction = self.player.get_direction()
+                target_direction = -1
+                
+                if rel_y < 0:
+                    target_direction = 0
+                elif rel_y > 0:
+                    target_direction = 2
+                elif rel_x < 0:
+                    target_direction = 3
+                elif rel_x > 0:
+                    target_direction = 1
+                
+                if target_direction == -1:
+                    self.logger.info(f"✅ Arrivé à la destination ({target_x}, {target_y})")
+                    return True
+                
+                if current_direction != target_direction:
+                    if not self.orient_towards(target_direction):
+                        self.logger.debug("Échec de l'orientation")
+                        return False
+                
+                if not self.move_forward():
+                    self.logger.debug("Échec de l'avancement, un obstacle est probablement apparu.")
+                    return False
+                
+                if self._check_for_better_opportunities(target_x, target_y):
+                    self.logger.info("🎯 Meilleure opportunité détectée, changement de cap !")
+                    return True
+                
+                time.sleep(0.1)
+                attempts += 1
+            
+            self.logger.warning(f"Nombre maximum de tentatives atteint ({max_attempts})")
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors du déplacement itératif: {str(e)}")
+            return False
+
+    def _calculate_shortest_path(self, current_x: int, current_y: int, target_x: int, target_y: int) -> Tuple[int, int]:
+        """Calcule le chemin le plus court sur un monde torique.
+        
+        Args:
+            current_x (int): Position X actuelle
+            current_y (int): Position Y actuelle
+            target_x (int): Position X cible
+            target_y (int): Position Y cible
+            
+        Returns:
+            Tuple[int, int]: Vecteur relatif (dx, dy) vers la cible
+        """
+        dx = target_x - current_x
+        dy = target_y - current_y
+        
+        if abs(dx) > self.map.width // 2:
+            dx = dx - self.map.width if dx > 0 else dx + self.map.width
+        
+        if abs(dy) > self.map.height // 2:
+            dy = dy - self.map.height if dy > 0 else dy + self.map.height
+        
+        return dx, dy
+
+    def _get_direction_to_target(self, dx: int, dy: int) -> int:
+        """Calcule la direction vers une cible.
+        
+        Args:
+            dx (int): Différence en X
+            dy (int): Différence en Y
+            
+        Returns:
+            int: Direction (0: Nord, 1: Est, 2: Sud, 3: Ouest)
+        """
+        if abs(dx) > abs(dy):
+            return 1 if dx > 0 else 3
+        else:
+            return 0 if dy < 0 else 2
+
+    def _is_stuck(self) -> bool:
+        """Vérifie si le joueur est bloqué.
+        
+        Returns:
+            bool: True si le joueur est bloqué
+        """
+        current_pos = self.player.get_position()
+        
+        self.position_history.append(current_pos)
+        if len(self.position_history) > self.position_history_size:
+            self.position_history.pop(0)
+            
+        if len(self.position_history) == self.position_history_size:
+            if all(pos == current_pos for pos in self.position_history):
+                return True
+                
+        return False
+
+    def _handle_stuck(self) -> None:
+        """Gère le blocage du joueur."""
+        self.stuck_count += 1
+        if self.stuck_count >= self.max_stuck_count:
+            self.logger.debug("Joueur sévèrement bloqué, réinitialisation")
+            self.reset()
+        else:
+            self.logger.warning(f"Joueur bloqué (tentative {self.stuck_count}/{self.max_stuck_count}). Tentative de déblocage.")
+            
+            actions = [
+                lambda: self.turn_right(),
+                lambda: self.turn_left(),
+                lambda: self.turn_right() and self.turn_right(),
+                lambda: self.turn_left() and self.turn_left(),
+                lambda: self.turn_right() and self.move_forward(),
+                lambda: self.turn_left() and self.move_forward()
+            ]
+            
+            random.shuffle(actions)
+            
+            for action in actions:
+                try:
+                    if action():
+                        self.logger.info("Déblocage réussi")
+                        self.position_history = []
+                        self.stuck_count = 0
+                        return
+                except Exception as e:
+                    self.logger.debug(f"Action de déblocage échouée: {e}")
+                    continue
+            
+            self.position_history = []
+            self.logger.error("Impossible de se débloquer après plusieurs tentatives")
+
+    def can_move(self) -> bool:
+        """Vérifie si le joueur peut se déplacer.
+        
+        Returns:
+            bool: True si le joueur peut se déplacer
+        """
+        return time.time() - self.last_move_time >= self.move_cooldown
+
+    def move_forward(self) -> bool:
+        """Fait avancer le joueur d'une case.
+        
+        Returns:
+            bool: True si le déplacement a réussi
+        """
+        try:
+            response = self.protocol.forward()
+            if response:
+                x, y = self.player.get_position()
+                direction = self.player.get_direction()
+                
+                if direction == 0:
+                    y = (y - 1) % self.map.height
+                elif direction == 1:
+                    x = (x + 1) % self.map.width
+                elif direction == 2:
+                    y = (y + 1) % self.map.height
+                else:
+                    x = (x - 1) % self.map.width
+                    
+                self.player.set_position(x, y)
+                self.last_move_time = time.time()
+                self.logger.debug(f"Déplacement vers {self.player.get_position()}")
+                return True
+            self.logger.debug(f"Échec de l'avancement")
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors du déplacement: {str(e)}")
+            return False
+
+    def turn_left(self) -> bool:
+        """Fait tourner le joueur vers la gauche.
+        
+        Returns:
+            bool: True si la rotation a réussi
+        """
+        try:
+            response = self.protocol.left()
+            if response:
+                direction = (self.player.get_direction() - 1) % 4
+                self.player.set_direction(direction)
+                self.last_move_time = time.time()
+                self.logger.debug(f"Rotation vers la gauche: {direction}")
+                return True
+            self.logger.debug(f"Échec de la rotation gauche")
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la rotation: {str(e)}")
+            return False
+
+    def turn_right(self) -> bool:
+        """Fait tourner le joueur vers la droite.
+        
+        Returns:
+            bool: True si la rotation a réussi
+        """
+        try:
+            response = self.protocol.right()
+            if response:
+                direction = (self.player.get_direction() + 1) % 4
+                self.player.set_direction(direction)
+                self.last_move_time = time.time()
+                self.logger.debug(f"Rotation vers la droite: {direction}")
+                return True
+            self.logger.debug(f"Échec de la rotation droite")
+            return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la rotation: {str(e)}")
+            return False
+
+    def reset(self) -> None:
+        """Réinitialise l'état du gestionnaire."""
+        self.last_move_time = 0
+        self.current_direction = 0
+        self.target_position = None
+        self.stuck_count = 0
+        self.last_position = None
+        self.position_history = []
+        self.collision_manager.reset()
+
+    def orient_towards(self, target_direction: int) -> bool:
+        """Oriente le joueur vers une direction spécifique de manière optimale.
+        
+        Args:
+            target_direction (int): Direction cible (0: Nord, 1: Est, 2: Sud, 3: Ouest)
+            
+        Returns:
+            bool: True si l'orientation a réussi
+        """
+        try:
+            current_direction = self.player.get_direction()
+            
+            if current_direction == target_direction:
+                return True
+            
+            diff = (target_direction - current_direction) % 4
+            
+            if diff == 1 or diff == 2:
+                if not self.turn_right():
+                    return False
+            elif diff == 3:
+                if not self.turn_left():
+                    return False
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de l'orientation: {str(e)}")
+            return False
+
+    def _check_for_better_opportunities(self, target_x: int, target_y: int) -> bool:
+        """Vérifie s'il y a de meilleures opportunités (ressources plus proches) après un déplacement.
+        
+        Args:
+            target_x (int): Coordonnée X de la cible actuelle
+            target_y (int): Coordonnée Y de la cible actuelle
+            
+        Returns:
+            bool: True si une meilleure opportunité a été détectée
+        """
+        try:
+            if not self.vision_manager.force_update_vision():
+                return False
+            
+            current_x, current_y = self.player.get_position()
+            current_distance = abs(target_x - current_x) + abs(target_y - current_y)
+            
+            for y in range(-self.vision_manager.level, self.vision_manager.level + 1):
+                for x in range(-self.vision_manager.level, self.vision_manager.level + 1):
+                    case_content = self.vision_manager.get_case_content(x, y)
+                    
+                    if 'food' in case_content:
+                        food_distance = abs(x) + abs(y)
+                        
+                        if food_distance < current_distance:
+                            self.logger.info(f"🎯 Nourriture trouvée à ({x}, {y}) - distance {food_distance} vs {current_distance}")
+                            return True
+            
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la vérification des opportunités: {str(e)}")
+            return False
+from typing import Dict, List, Tuple, Optional
+import logging
+from core.protocol import ZappyProtocol
+import time
+from models.player import Player
+from models.map import Map
+
+class VisionManager:
+    """Gère la vision du joueur selon les règles du jeu."""
+
+    def __init__(self, protocol: ZappyProtocol, player: Player, map: Map, logger: logging.Logger):
+        """Initialise le gestionnaire de vision.
+        
+        Args:
+            protocol (ZappyProtocol): Protocole de communication
+            player (Player): Joueur contrôlé
+            map (Map): Carte du jeu
+            logger (Logger): Logger pour les messages
+        """
+        self.protocol = protocol
+        self.player = player
+        self.map = map
+        self.logger = logger
+        self.vision = []
+        self.vision_data = []
+        self.level = 1
+        self.last_vision_update = 0
+        self.vision_cooldown = 7
+        self.vision_cache = {}
+        self.cache_duration = 30
+
+    def update_vision(self) -> bool:
+        """Met à jour la vision du joueur.
+        
+        Returns:
+            bool: True si la mise à jour a réussi
+        """
+        try:
+            if time.time() - self.last_vision_update < self.vision_cooldown:
+                return True
+                
+            response = self.protocol.look()
+            self.vision = self._parse_vision(response)
+            self.vision_data = self.vision
+            self.last_vision_update = time.time()
+            
+            self._update_vision_cache()
+            
+            self.logger.debug(f"Vision mise à jour: {self.vision}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour de la vision: {str(e)}")
+            return False
+
+    def force_update_vision(self) -> bool:
+        """Force la mise à jour de la vision en ignorant le cooldown.
+        
+        Returns:
+            bool: True si la mise à jour a réussi
+        """
+        try:
+            self.logger.debug("🔄 Mise à jour forcée de la vision (ignorant le cooldown)")
+            response = self.protocol.look()
+            self.vision = self._parse_vision(response)
+            self.vision_data = self.vision
+            self.last_vision_update = time.time()
+            
+            self._update_vision_cache()
+            
+            self.logger.debug(f"Vision forcée mise à jour: {self.vision}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour forcée de la vision: {str(e)}")
+            return False
+
+    def _update_vision_cache(self) -> None:
+        """Met à jour le cache de vision."""
+        try:
+            current_time = time.time()
+            player_pos = self.player.get_position()
+            
+            expired_keys = []
+            for key, (timestamp, _) in self.vision_cache.items():
+                if current_time - timestamp > self.cache_duration:
+                    expired_keys.append(key)
+                    
+            for key in expired_keys:
+                del self.vision_cache[key]
+                
+            for y in range(-self.level, self.level + 1):
+                for x in range(-self.level, self.level + 1):
+                    case_content = self.get_case_content(x, y)
+                    if case_content:
+                        cache_x = (player_pos[0] + x) % self.map.width
+                        cache_y = (player_pos[1] + y) % self.map.height
+                        cache_key = (cache_x, cache_y)
+                        self.vision_cache[cache_key] = (current_time, case_content)
+                        
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour du cache: {str(e)}")
+
+    def _parse_vision(self, response: str) -> List[List[str]]:
+        """Parse la réponse de la commande Look.
+        
+        Format: [player, object-on-tile1, ..., object-on-tileP,...]
+        Les objets sur une même case sont séparés par un espace.
+        Les cases sont séparées par une virgule.
+        
+        Args:
+            response (str): Réponse du serveur
+            
+        Returns:
+            List[List[str]]: Liste des cases vues
+        """
+        try:
+            response = response.strip('[]')
+            cases = response.split(',')
+            
+            vision = []
+            for case in cases:
+                items = case.strip().split()
+                vision.append(items)
+                
+            return vision
+        except Exception as e:
+            self.logger.error(f"Erreur lors du parsing de la vision: {str(e)}")
+            raise
+
+    def get_case_content(self, x: int, y: int) -> List[str]:
+        """Récupère le contenu d'une case dans la vision.
+        
+        Args:
+            x (int): Position X relative
+            y (int): Position Y relative
+            
+        Returns:
+            List[str]: Contenu de la case
+        """
+        try:
+            index = self._get_vision_index(x, y)
+            if 0 <= index < len(self.vision):
+                return self.vision[index]
+            return []
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la récupération du contenu de la case: {str(e)}")
+            return []
+
+    def _get_vision_index(self, x: int, y: int) -> int:
+        """Calcule l'index dans la vision pour une position relative.
+        
+        Pour le niveau 1, la vision est de 1 case dans chaque direction.
+        Format: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        Où 0 est la case du joueur, et les autres sont autour dans le sens horaire:
+        7 0 1
+        6   2
+        5 4 3
+        
+        Args:
+            x (int): Position X relative
+            y (int): Position Y relative
+            
+        Returns:
+            int: Index dans la vision
+        """
+        if x == 0 and y == 0:
+            return 0
+            
+        if x == 1 and y == 0:
+            return 1
+        elif x == 1 and y == 1:
+            return 2
+        elif x == 0 and y == 1:
+            return 3
+        elif x == -1 and y == 1:
+            return 4
+        elif x == -1 and y == 0:
+            return 5
+        elif x == -1 and y == -1:
+            return 6
+        elif x == 0 and y == -1:
+            return 7
+        elif x == 1 and y == -1:
+            return 8
+            
+        return -1
+
+    def find_nearest_object(self, object_type: str) -> Optional[Tuple[int, int]]:
+        """Trouve l'objet le plus proche d'un type donné.
+        
+        Args:
+            object_type (str): Type d'objet à chercher (food, linemate, deraumere, etc.)
+            
+        Returns:
+            Optional[Tuple[int, int]]: Position relative de l'objet le plus proche
+        """
+        try:
+            nearest = None
+            min_distance = float('inf')
+            
+            for y in range(-self.level, self.level + 1):
+                for x in range(-self.level, self.level + 1):
+                    case = self.get_case_content(x, y)
+                    if object_type in case:
+                        distance = abs(x) + abs(y)
+                        if distance < min_distance:
+                            min_distance = distance
+                            nearest = (x, y)
+                            
+            if not nearest:
+                nearest = self._find_in_cache(object_type)
+                            
+            return nearest
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la recherche d'objet: {str(e)}")
+            return None
+
+    def _find_in_cache(self, object_type: str) -> Optional[Tuple[int, int]]:
+        """Trouve un objet dans le cache de vision.
+        
+        Args:
+            object_type (str): Type d'objet à chercher
+            
+        Returns:
+            Optional[Tuple[int, int]]: Position relative de l'objet
+        """
+        try:
+            player_pos = self.player.get_position()
+            nearest = None
+            min_distance = float('inf')
+            
+            for (cache_x, cache_y), (timestamp, case_content) in self.vision_cache.items():
+                if object_type in case_content:
+                    rel_x = (cache_x - player_pos[0]) % self.map.width
+                    rel_y = (cache_y - player_pos[1]) % self.map.height
+                    
+                    if rel_x > self.map.width // 2:
+                        rel_x -= self.map.width
+                    if rel_y > self.map.height // 2:
+                        rel_y -= self.map.height
+                        
+                    distance = abs(rel_x) + abs(rel_y)
+                    if distance < min_distance:
+                        min_distance = distance
+                        nearest = (rel_x, rel_y)
+                        
+            return nearest
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la recherche dans le cache: {str(e)}")
+            return None
+
+    def get_players_in_vision(self) -> List[Tuple[int, int]]:
+        """Récupère la liste des joueurs visibles.
+        
+        Returns:
+            List[Tuple[int, int]]: Liste des positions relatives des joueurs
+        """
+        players = []
+        for y in range(-self.level, self.level + 1):
+            for x in range(-self.level, self.level + 1):
+                case = self.get_case_content(x, y)
+                if "player" in case:
+                    players.append((x, y))
+        return players
+
+    def get_vision_range(self) -> int:
+        """Retourne la portée de vision selon le niveau.
+        
+        Returns:
+            int: Portée de vision
+        """
+        return self.level
+
+    def get_current_position(self) -> Tuple[int, int]:
+        """Retourne la position actuelle du joueur.
+        
+        Returns:
+            Tuple[int, int]: Position (x, y)
+        """
+        return self.vision.get_current_position()
+
+    def find_nearest_resource(self, resource_type: str) -> Optional[Tuple[int, int]]:
+        """Trouve la ressource la plus proche d'un type donné.
+        
+        Args:
+            resource_type (str): Type de ressource à chercher
+            
+        Returns:
+            Optional[Tuple[int, int]]: Position de la ressource la plus proche
+        """
+        if not self.vision_data:
+            if not self.update_vision():
+                return None
+                
+        pos = self.find_nearest_object(resource_type)
+        return pos if pos != (-1, -1) else None
+
+    def get_case_index(self, x: int, y: int) -> int:
+        """
+        Récupère l'index d'une case à partir de sa position.
+        
+        Args:
+            x (int): Position X
+            y (int): Position Y
+            
+        Returns:
+            int: Index de la case
+        """
+        return self.vision.get_case_index(x, y)
+
+    def get_expected_vision_size(self) -> int:
+        """
+        Calcule la taille attendue du champ de vision.
+        
+        Returns:
+            int: Nombre de cases visibles
+        """
+        return self.vision.get_expected_vision_size()
+
+    def is_case_in_front(self, index: int) -> bool:
+        """
+        Vérifie si une case est devant le joueur.
+        
+        Args:
+            index (int): Index de la case
+            
+        Returns:
+            bool: True si la case est devant, False sinon
+        """
+        pos = self.get_case_position(index)
+        
+        if self.current_direction == 0:
+            return pos[1] < 0
+        elif self.current_direction == 1:
+            return pos[0] > 0
+        elif self.current_direction == 2:
+            return pos[1] > 0
+        else:
+            return pos[0] < 0
+
+    def get_players_in_range(self, max_distance: int = 2) -> List[Tuple[int, int]]:
+        """Trouve tous les joueurs dans un rayon donné.
+        
+        Args:
+            max_distance (int): Distance maximale de recherche
+            
+        Returns:
+            List[Tuple[int, int]]: Liste des positions des joueurs
+        """
+        if not self.vision_data:
+            if not self.update_vision():
+                return []
+                
+        return self.vision.get_players_in_range(max_distance)
+
+    def can_update_vision(self) -> bool:
+        """Vérifie si la vision peut être mise à jour.
+        
+        Returns:
+            bool: True si la vision peut être mise à jour
+        """
+        return time.time() - self.last_vision_update >= self.vision_cooldown
+
+    def get_case_position(self, index: int) -> Tuple[int, int]:
+        """
+        Récupère la position d'une case à partir de son index.
+        
+        Args:
+            index (int): Index de la case
+            
+        Returns:
+            Tuple[int, int]: Position (x, y) de la case
+        """
+        return self.vision.get_case_position(index)
+
+    def set_level(self, level: int) -> None:
+        """Met à jour le niveau du joueur.
+        
+        Args:
+            level (int): Nouveau niveau
+        """
+        self.level = level
+        self.vision.set_level(level)
+        self.vision_range = self.vision.get_vision_range()
+
+    def get_resources_in_range(self, max_distance: int = 2) -> Dict[str, List[Tuple[int, int]]]:
+        """Récupère toutes les ressources dans un rayon donné.
+        
+        Args:
+            max_distance (int): Distance maximale de recherche
+            
+        Returns:
+            Dict[str, List[Tuple[int, int]]]: Dictionnaire des ressources et leurs positions
+        """
+        if not self.vision_data:
+            if not self.update_vision():
+                return {}
+                
+        env = self.vision.analyze_environment()
+        resources = {}
+        
+        for resource_type in ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]:
+            resources[resource_type] = [
+                pos for pos in env[resource_type]
+                if abs(pos[0]) + abs(pos[1]) <= max_distance
+            ]
+            
+        return resources
+
+    def is_position_safe(self, position: Tuple[int, int]) -> bool:
+        """Vérifie si une position est sûre (pas de joueurs hostiles).
+        
+        Args:
+            position (Tuple[int, int]): Position à vérifier
+            
+        Returns:
+            bool: True si la position est sûre, False sinon
+        """
+        if not self.vision_data:
+            if not self.update_vision():
+                return False
+                
+        index = self.vision.get_case_index(position[0], position[1])
+        return self.vision.is_case_safe(index)
+
+    def get_best_path_to_resource(self, resource_type: str) -> List[Tuple[int, int]]:
+        """Trouve le meilleur chemin vers une ressource.
+        
+        Args:
+            resource_type (str): Type de ressource à atteindre
+            
+        Returns:
+            List[Tuple[int, int]]: Liste des positions à suivre
+        """
+        if not self.vision_data:
+            if not self.update_vision():
+                return []
+                
+        target = self.find_nearest_resource(resource_type)
+        if not target:
+            return []
+            
+        path = []
+        current_x, current_y = 0, 0
+        target_x, target_y = target
+        
+        while current_x != target_x:
+            if current_x < target_x:
+                current_x += 1
+            else:
+                current_x -= 1
+            path.append((current_x, current_y))
+            
+        while current_y != target_y:
+            if current_y < target_y:
+                current_y += 1
+            else:
+                current_y -= 1
+            path.append((current_x, current_y))
+            
+        return path
+
+    def get_players_in_range(self, range: int) -> List[Tuple[int, int]]:
+        """Récupère la liste des joueurs dans un certain rayon.
+        
+        Args:
+            range (int): Rayon de recherche
+            
+        Returns:
+            List[Tuple[int, int]]: Liste des positions des joueurs
+        """
+        players = []
+        for i, case in enumerate(self.vision):
+            if "player" in case:
+                pos = self.get_case_position(i)
+                if abs(pos[0]) + abs(pos[1]) <= range:
+                    players.append(pos)
+        return players
+
+    def set_level(self, level: int) -> None:
+        """Définit le niveau du joueur.
+        
+        Args:
+            level (int): Niveau du joueur
+        """
+        self.vision.set_level(level) import logging
+
+class Tile:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.resources = {
+            "food": 0,
+            "linemate": 0,
+            "deraumere": 0,
+            "sibur": 0,
+            "mendiane": 0,
+            "phiras": 0,
+            "thystame": 0,
+        }
+        self.players = []
+        self.logger = logging.getLogger(__name__)
+        self.logger.info(f"map tile created: {self.resources} {self.players}")
+
+class Map:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.grid = [[Tile(x, y) for x in range(width)] for y in range(height)]
+
+    def get_tile(self, x, y):
+        return self.grid[y % self.height][x % self.width]
+import logging
+from typing import Optional, Dict, Any
+from core.protocol import ZappyProtocol
+
+class PlayerCommunicator:
+    """
+    Gère la communication entre joueurs (broadcast, réception, parsing).
+    Utilise le protocole du projet pour envoyer et recevoir des messages.
+    """
+
+    def __init__(self, protocol: ZappyProtocol, player, logger: Optional[logging.Logger] = None):
+        """
+        Args:
+            protocol: Instance du protocole de communication (ex: ZappyProtocol)
+            player: Instance du joueur courant
+            logger: Logger optionnel
+        """
+        self.protocol = protocol
+        self.player = player
+        self.logger = logger or logging.getLogger(__name__)
+
+    def broadcast(self, message: str) -> bool:
+        """
+        Envoie un message à tous les joueurs via le protocole broadcast.
+
+        Args:
+            message (str): Message à envoyer
+
+        Retour type:
+            bool: True si l'envoi a réussi, False sinon
+        """
+        try:
+            response = self.protocol.broadcast(message)
+            if response == "ok":
+                self.logger.info(f"Broadcast envoyé: {message}")
+                return True
+            else:
+                self.logger.warning(f"Broadcast échoué: {response}")
+                return False
+        except Exception as e:
+            self.logger.error(f"Erreur lors du broadcast: {e}")
+            return False
+
+    def receive_broadcast(self) -> Optional[Dict[str, Any]]:
+        """
+        Récupère et parse un message broadcast reçu via le protocole (si disponible).
+
+        Retour type:
+            dict: Dictionnaire contenant les informations du message, ou None si aucun message
+        """
+        try:
+            # Supposons que le protocole a une méthode pour récupérer le dernier broadcast reçu
+            response = self.protocol.get_last_broadcast()
+            if response:
+                parsed = self.parse_message(response)
+                self.logger.info(f"Message reçu: {parsed}")
+                return parsed
+            return None
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la réception du message: {e}")
+            return None
+
+    def parse_message(self, raw_message: str) -> Dict[str, Any]:
+        """
+        Parse un message brut reçu (format: "team:action:data" ou JSON).
+
+        Arguments:
+            raw_message (str): Message brut
+
+        Retour type:
+            dict: Dictionnaire avec les champs extraits
+        """
+        try:
+            if raw_message.startswith("{") and raw_message.endswith("}"):
+                # Format JSON
+                import json
+                return json.loads(raw_message)
+            else:
+                # Format string: "team:action:data"
+                parts = raw_message.split(":", 2)
+                if len(parts) == 3:
+                    return {"team": parts[0], "action": parts[1], "data": parts[2]}
+                elif len(parts) == 2:
+                    return {"team": parts[0], "action": parts[1], "data": ""}
+                else:
+                    return {"raw": raw_message}
+        except Exception as e:
+            self.logger.error(f"Erreur lors du parsing du message: {e}")
+            return {"raw": raw_message}
+
+    def send_team_message(self, action: str, data: str = "") -> bool:
+        """
+        Envoie un message structuré à l'équipe (format: "team:action:data").
+
+        Args:
+            action (str): Action à communiquer
+            data (str): Données additionnelles
+
+        Returns:
+            bool: True si succès, False sinon
+        """
+        team = getattr(self.player, "team", "unknown")
+        message = f"{team}:{action}:{data}"
+        return self.broadcast(message)
+
+    def handle_incoming_messages(self, callback=None):
+        """
+        Vérifie s'il y a un message reçu et exécute un callback si besoin.
+
+        Args:
+            callback (callable): Fonction à appeler avec le message parsé
+        """
+        msg = self.receive_broadcast()
+        if msg and callback:
+            callback(msg)import logging
+from typing import Tuple, Dict
+from core.protocol import ZappyProtocol
+from managers.inventory_manager import InventoryManager
+
+class Player:
+    """Représente un joueur dans le jeu."""
+
+    def __init__(self, id: int, team: str, x: int, y: int, protocol: ZappyProtocol, logger: logging.Logger):
+        """Initialise un joueur.
+        
+        Args:
+            id (int): Identifiant du joueur
+            team (str): Nom de l'équipe
+            x (int): Position X initiale
+            y (int): Position Y initiale
+            protocol (ZappyProtocol): Protocole de communication
+            logger (Logger): Logger pour les messages
+        """
+        self.id = id
+        self.team = team
+        self.position = (x, y)
+        self.direction = 0
+        self.level = 1
+        self.inventory = InventoryManager(protocol, self, logger)
+        self.logger = logger
+        self.logger.info(f"player {id} created on team {team} at {self.position}")
+
+    def get_position(self) -> Tuple[int, int]:
+        """Récupère la position actuelle du joueur.
+        
+        Returns:
+            Tuple[int, int]: Position (x, y)
+        """
+        return self.position
+
+    def set_position(self, x: int, y: int) -> None:
+        """Met à jour la position du joueur.
+        
+        Args:
+            x (int): Nouvelle position X
+            y (int): Nouvelle position Y
+        """
+        self.position = (x, y)
+        self.logger.debug(f"Position mise à jour: {self.position}")
+
+    def get_direction(self) -> int:
+        """Récupère la direction actuelle du joueur.
+        
+        Returns:
+            int: Direction (0: Nord, 1: Est, 2: Sud, 3: Ouest)
+        """
+        return self.direction
+
+    def set_direction(self, direction: int) -> None:
+        """Met à jour la direction du joueur.
+        
+        Args:
+            direction (int): Nouvelle direction
+        """
+        self.direction = direction % 4
+        self.logger.debug(f"Direction mise à jour: {self.direction}")
+
+    def get_level(self) -> int:
+        """Récupère le niveau actuel du joueur.
+        
+        Returns:
+            int: Niveau
+        """
+        return self.level
+
+    def set_level(self, level: int) -> None:
+        """Met à jour le niveau du joueur.
+        
+        Args:
+            level (int): Nouveau niveau
+        """
+        self.level = level
+        self.logger.info(f"Niveau mis à jour: {self.level}")
+
+    def get_inventory(self) -> Dict[str, int]:
+        """Récupère l'inventaire du joueur.
+        
+        Returns:
+            Dict[str, int]: Inventaire
+        """
+        return self.inventory
+
+    def set_inventory(self, inventory: Dict[str, int]) -> None:
+        """Met à jour l'inventaire du joueur.
+        
+        Args:
+            inventory (Dict[str, int]): Nouvel inventaire
+        """
+        self.inventory = inventory
+        self.logger.debug(f"Inventaire mis à jour: {self.inventory}")
+
+    def get_resource_count(self, resource: str) -> int:
+        """Récupère le nombre d'une ressource.
+        
+        Args:
+            resource (str): Type de ressource
+            
+        Returns:
+            int: Nombre de ressources
+        """
+        return self.inventory.get(resource, 0)
+
+    def add_resource(self, resource: str, count: int = 1) -> None:
+        """Ajoute des ressources à l'inventaire.
+        
+        Args:
+            resource (str): Type de ressource
+            count (int): Nombre à ajouter
+        """
+        self.inventory[resource] = self.inventory.get(resource, 0) + count
+        self.logger.debug(f"Ressource ajoutée: {resource} x{count}")
+
+    def remove_resource(self, resource: str, count: int = 1) -> bool:
+        """Retire des ressources de l'inventaire.
+        
+        Args:
+            resource (str): Type de ressource
+            count (int): Nombre à retirer
+            
+        Returns:
+            bool: True si les ressources ont été retirées
+        """
+        if self.inventory.get(resource, 0) >= count:
+            self.inventory[resource] -= count
+            self.logger.debug(f"Ressource retirée: {resource} x{count}")
+            return True
+        return False
+
+    def move_forward(self, map_width, map_height):
+        if self.direction == 0:
+            self.position = (self.position[0], (self.position[1] - 1) % map_height)
+        elif self.direction == 2:
+            self.position = (self.position[0], (self.position[1] + 1) % map_height)
+        elif self.direction == 1:
+            self.position = ((self.position[0] + 1) % map_width, self.position[1])
+        elif self.direction == 3:
+            self.position = ((self.position[0] - 1) % map_width, self.position[1])
+        self.logger.info(f"player {self.id} moved from {self.position} to {self.position} facing {self.direction}")
