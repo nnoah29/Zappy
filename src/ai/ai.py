@@ -13,16 +13,6 @@ from managers.inventory_manager import InventoryManager
 class AI:
     """Classe principale de l'IA."""
     
-    ELEVATION_REQUIREMENTS = {
-        1: {'players': 1, 'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
-        2: {'players': 2, 'linemate': 1, 'deraumere': 1, 'sibur': 1, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
-        3: {'players': 2, 'linemate': 2, 'deraumere': 0, 'sibur': 1, 'mendiane': 0, 'phiras': 2, 'thystame': 0},
-        4: {'players': 4, 'linemate': 1, 'deraumere': 1, 'sibur': 2, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
-        5: {'players': 4, 'linemate': 1, 'deraumere': 2, 'sibur': 1, 'mendiane': 3, 'phiras': 0, 'thystame': 0},
-        6: {'players': 6, 'linemate': 1, 'deraumere': 2, 'sibur': 3, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
-        7: {'players': 6, 'linemate': 2, 'deraumere': 2, 'sibur': 2, 'mendiane': 2, 'phiras': 2, 'thystame': 1}
-    }
-
     def __init__(self, protocol: ZappyProtocol, player: Player, map: Map, logger: logging.Logger):
         """Initialise l'IA.
         
@@ -36,52 +26,75 @@ class AI:
         self.player = player
         self.map = map
         self.logger = logger
+        self.state = "exploring"
+        self.target_resource = None
+        self.target_position = None
+        self.level = 1
         
+        # Réduction drastique du cooldown pour réactivité maximale
+        self.update_cooldown = 1  # Réduit de 7 à 1 seconde
+        
+        # Seuils de nourriture pour le mode urgence
+        self.FOOD_CRITICAL_LEVEL = 10  # Seuil critique pour le mode urgence
+        self.FOOD_SAFE_LEVEL = 25      # Niveau de sécurité pour désactiver le mode urgence
+        
+        # Initialisation des gestionnaires
         self.vision_manager = VisionManager(protocol, player, map, logger)
-        self.movement_manager = MovementManager(protocol, player, map, self.vision_manager, logger)
         self.inventory_manager = InventoryManager(protocol, player, logger)
+        self.movement_manager = MovementManager(protocol, player, map, self.vision_manager, logger)
         self.elevation_manager = ElevationManager(protocol, self.vision_manager, self.movement_manager, logger)
         
-        self.state = "exploring"
-        self.target_position: Optional[Tuple[int, int]] = None
-        self.target_resource: Optional[str] = None
         self.last_update = 0
-        self.update_cooldown = 7
 
         self.logger.info(f"Joueur initialisé: ID={player.id}, Équipe={player.team}, Position={player.position}")
         self.logger.info(f"Carte initialisée: {map.width}x{map.height}")
         self.logger.info("IA initialisée avec succès")
 
     def update(self) -> bool:
-        """Met à jour l'état de l'IA.
+        """Met à jour l'IA et exécute une action.
         
         Returns:
-            bool: True si la mise à jour a réussi
+            bool: True si l'IA continue de fonctionner
         """
         try:
-            if time.time() - self.last_update < self.update_cooldown:
-                return True
-                
-            if not self.vision_manager.update_vision():
-                return False
+            current_time = time.time()
             
+            # Cooldown dynamique : plus rapide en mode urgence
+            if self.state == "EMERGENCY_FOOD_SEARCH":
+                # En mode urgence, pas de cooldown pour une réactivité maximale
+                cooldown = 0.1
+            else:
+                cooldown = self.update_cooldown
+            
+            if current_time - self.last_update < cooldown:
+                return True
+            
+            self.last_update = current_time
+            
+            # Mise à jour de la vision
+            if not self.vision_manager.update_vision():
+                self.logger.warning("Échec de la mise à jour de la vision")
+                return True
+            
+            # Mise à jour de l'inventaire
             if not self.inventory_manager.update_inventory():
-                return False
-                
+                self.logger.warning("Échec de la mise à jour de l'inventaire")
+                return True
+            
+            # Vérification de la mort
             if self.inventory_manager.inventory['food'] <= 0:
                 self.logger.error("Le joueur est mort de faim")
                 return False
-                
+            
+            # Mise à jour de l'état
             self._update_state()
             
-            if not self._execute_action():
-                return False
-                
-            self.last_update = time.time()
-            return True
+            # Exécution de l'action
+            return self._execute_action()
+            
         except Exception as e:
-            self.logger.error(f"Erreur lors de la mise à jour: {str(e)}")
-            return False
+            self.logger.error(f"Erreur lors de la mise à jour de l'IA: {str(e)}")
+            return True
 
     def _update_state(self) -> None:
         """Met à jour l'état de l'IA."""
@@ -166,88 +179,101 @@ class AI:
         return prioritized
 
     def _execute_action(self) -> bool:
-        """Exécute l'action correspondante à l'état actuel.
-        
-        Returns:
-            bool: True si l'action a réussi
-        """
+        """Exécute l'action appropriée selon l'état actuel."""
         try:
-            # DÉSACTIVATION TEMPORAIRE DES COLLISIONS POUR PERMETTRE LE DÉPLACEMENT
-            # Vérifie d'abord s'il y a des collisions à gérer (limité à 2 tentatives)
-            # if not hasattr(self, '_ejection_attempts'):
-            #     self._ejection_attempts = 0
-            #     
-            # if self.movement_manager.collision_manager.check_collision() and self._ejection_attempts < 2:
-            #     self.logger.debug("Collision détectée dans la boucle principale, tentative de résolution")
-            #     if self.movement_manager.collision_manager.eject_other_players():
-            #         self.logger.debug("Éjection réussie dans la boucle principale")
-            #         self._ejection_attempts += 1
-            #         return True
-            #     else:
-            #         self.logger.debug("Éjection échouée dans la boucle principale")
-            #         self._ejection_attempts += 1
-            # else:
-            #     # Reset le compteur d'éjection si pas de collision
-            #     self._ejection_attempts = 0
+            # --- DÉBUT DE LA NOUVELLE LOGIQUE DE DÉCISION ---
+            food_level = self.inventory_manager.inventory['food']
             
-            if self._collect_available_resources():
-                self.logger.debug("Ressources disponibles ramassées")
-                # Si on vient de collecter du linemate, on essaie immédiatement l'élévation
-                if self.inventory_manager.inventory['linemate'] >= 1:
-                    self.logger.info("🚀 Linemate collecté, tentative d'élévation immédiate")
-                    if self.elevation_manager.can_elevate():
-                        self.logger.info("✅ Conditions d'élévation remplies, démarrage de l'élévation")
-                        return self.elevation_manager.start_elevation()
-                    else:
-                        self.logger.info("❌ Conditions d'élévation non remplies, collecte d'autres ressources")
-                return True
-            
-            # Priorité absolue : maintenir la nourriture au-dessus de 5
-            if self.inventory_manager.inventory['food'] < 8:
-                self.logger.warning("🚨 Nourriture critique, recherche prioritaire de nourriture")
+            # 1. ÉTAT D'URGENCE ABSOLUE (la survie se joue à quelques secondes)
+            if food_level < 10:
+                self.state = "EMERGENCY_FOOD_SEARCH"
+                self.logger.critical("🚨🚨 MODE URGENCE : Survie immédiate prioritaire.")
+                
+                self.logger.critical("🚨 MODE URGENCE : Recherche prioritaire de nourriture")
                 target = self.vision_manager.find_nearest_object("food")
                 if target:
-                    self.logger.info(f"🍽️ Nourriture trouvée à {target}, déplacement prioritaire")
+                    self.logger.critical(f"🚨 NOURRITURE TROUVÉE À {target}, DÉPLACEMENT URGENT")
                     if self.movement_manager.move_to(target):
-                        # MISE À JOUR FORCÉE DE LA VISION APRÈS DÉPLACEMENT
-                        self.logger.debug("🔄 Mise à jour forcée de la vision après déplacement")
-                        if not self.vision_manager.force_update_vision():
-                            self.logger.warning("❌ Échec de la mise à jour de la vision après déplacement")
-                        
-                        # COLLECTE IMMÉDIATE APRÈS DÉPLACEMENT
-                        self.logger.info("✅ Déplacement vers nourriture réussi, collecte immédiate")
-                        if self._collect_available_resources():
-                            self.logger.info("✅ Nourriture collectée en priorité")
+                        self.logger.critical("✅ DÉPLACEMENT URGENT RÉUSSI, COLLECTE IMMÉDIATE")
+                        if self._collect_resource_intensively("food"):
+                            self.logger.critical("✅ NOURRITURE COLLECTÉE EN MODE URGENCE")
                         else:
-                            self.logger.warning("❌ Échec de la collecte de nourriture après déplacement")
+                            self.logger.critical("❌ ÉCHEC DE LA COLLECTE EN MODE URGENCE")
                         return True
                 else:
-                    self.logger.error("❌ Aucune nourriture en vue, exploration d'urgence")
-                    # Exploration d'urgence pour trouver de la nourriture
-                    exploration_target = self._generate_smart_exploration_target()
+                    self.logger.critical("🚨 AUCUNE NOURRITURE EN VUE, EXPLORATION D'URGENCE")
+                    exploration_target = self._generate_emergency_exploration_target()
                     if exploration_target:
-                        self.logger.info(f"🚨 Exploration d'urgence vers {exploration_target}")
+                        self.logger.critical(f"🚨 EXPLORATION D'URGENCE VERS {exploration_target}")
                         if self.movement_manager.move_to(exploration_target):
-                            # COLLECTE APRÈS EXPLORATION D'URGENCE
+                            self.vision_manager.force_update_vision()
                             if self._collect_available_resources():
-                                self.logger.info("✅ Ressources collectées après exploration d'urgence")
+                                self.logger.critical("✅ RESSOURCES TROUVÉES EN EXPLORATION D'URGENCE")
                             return True
+                    else:
+                        self.logger.critical("🚨 MOUVEMENT ALÉATOIRE D'URGENCE")
+                        random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
+                        if self.movement_manager.move_to(random_direction):
+                            self.vision_manager.force_update_vision()
+                            if self._collect_available_resources():
+                                self.logger.critical("✅ RESSOURCES TROUVÉES EN MOUVEMENT ALÉATOIRE")
+                            return True
+                
+                return True  # On ne fait RIEN d'autre ce tour-ci
             
-            if self._move_to_nearest_resource():
-                self.logger.debug("Déplacement vers la ressource la plus proche")
-                if self._collect_available_resources():
-                    self.logger.debug("Ressources collectées après déplacement")
-                return True
+            # 2. ÉTAT DE CONSTITUTION DE RÉSERVES (la survie n'est pas garantie)
+            if food_level < 25:
+                self.state = "SURVIVAL_BUFFERING"
+                self.logger.warning(f"⚠️ MODE SÉCURITÉ : Constitution des réserves de nourriture (actuel: {food_level}). Objectifs secondaires suspendus.")
+                
+                target = self.vision_manager.find_nearest_object("food")
+                if target:
+                    self.logger.info(f"🎯 Cible de sécurité : nourriture à {target}.")
+                    if self.movement_manager.move_to(target):
+                        if self._collect_resource_intensively("food"):
+                            self.logger.info("✅ Nourriture collectée pour les réserves")
+                        else:
+                            self.logger.warning("❌ Échec de la collecte de sécurité")
+                        return True
+                else:
+                    # Si pas de nourriture en vue, exploration ciblée pour la nourriture
+                    self.logger.info("🔍 Exploration ciblée pour la nourriture.")
+                    exploration_target = self._generate_emergency_exploration_target()
+                    if exploration_target:
+                        self.logger.info(f"🎯 Exploration vers {exploration_target} pour trouver de la nourriture")
+                        if self.movement_manager.move_to(exploration_target):
+                            self.vision_manager.force_update_vision()
+                            if self._collect_available_resources():
+                                self.logger.info("✅ Ressources trouvées lors de l'exploration de sécurité")
+                            return True
+                
+                return True  # On ne s'occupe QUE de la nourriture
             
+            # 3. OPÉRATIONS NORMALES (la survie est assurée, on peut progresser)
+            self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}). Reprise des opérations normales.")
+            self.state = "NORMAL_OPERATIONS"
+            
+            # C'est SEULEMENT ICI que vous vérifiez les besoins pour l'élévation
+            if self.inventory_manager.inventory['linemate'] >= 1:
+                if self.elevation_manager.can_elevate():
+                    self.logger.info("🚀 Conditions d'élévation remplies, démarrage de l'élévation")
+                    return self.elevation_manager.start_elevation()
+                else:
+                    self.logger.info("❌ Conditions d'élévation non remplies, collecte d'autres ressources")
+            
+            # Collecte de linemate si nécessaire pour l'élévation
             if self.inventory_manager.inventory['linemate'] < 1:
                 self.logger.info("🔍 Recherche spécifique de linemate pour l'élévation")
                 target = self.vision_manager.find_nearest_object("linemate")
                 if target:
                     self.logger.info(f"🎯 Linemate trouvé à {target}, déplacement en cours...")
                     if self.movement_manager.move_to(target):
-                        # Après le déplacement, essaie de ramasser le linemate
-                        if self._collect_available_resources():
-                            self.logger.info("✅ Linemate collecté après déplacement")
+                        # Le déplacement itératif garantit qu'on est sur la case du linemate
+                        self.logger.info("✅ Arrivé sur la case du linemate, collecte en cours...")
+                        if self._collect_resource("linemate"):
+                            self.logger.info("✅ Linemate collecté avec succès")
+                        else:
+                            self.logger.warning("❌ Le linemate a disparu avant la collecte")
                         return True
                 else:
                     # Si pas de linemate en vue, exploration active pour en trouver
@@ -258,83 +284,15 @@ class AI:
                         if self.movement_manager.move_to(exploration_target):
                             self.logger.info("✅ Déplacement d'exploration réussi")
                             return True
-            else:
-                # Si on a le linemate, on essaie de s'élever
-                self.logger.info("🚀 Tentative d'élévation avec le linemate disponible")
-                if self.elevation_manager.can_elevate():
-                    self.logger.info("✅ Conditions d'élévation remplies, démarrage de l'élévation")
-                    return self.elevation_manager.start_elevation()
-                else:
-                    self.logger.info("❌ Conditions d'élévation non remplies, collecte d'autres ressources")
             
-            if self.inventory_manager.inventory['food'] < 10:
-                self.logger.debug("Niveau de nourriture critique, recherche de nourriture")
-                target = self.vision_manager.find_nearest_object("food")
-                if target:
-                    if target == (0, 0):
-                        self.logger.debug("Nourriture trouvée sur la case actuelle, tentative de ramassage")
-                        if not self.inventory_manager.take_object("food"):
-                            self.logger.debug("Impossible de prendre la nourriture")
-                            return False
-                        self.logger.debug("Nourriture prise avec succès")
-                        if not self.inventory_manager.update_inventory():
-                            self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
-                            return False
-                        if self.inventory_manager.inventory['food'] < 10:
-                            return self._execute_action()
-                        return True
-                    
-                    if not self.movement_manager.move_to(target):
-                        self.logger.debug("Impossible d'atteindre la nourriture, nouvelle cible...")
-                        self._explore()
-                    return True
-                else:
-                    self.logger.debug("Pas de nourriture en vue, exploration")
-                    self.state = "exploring"
-                    return True
-
-            if self.elevation_manager.can_elevate():
-                self.logger.debug("Démarrage de l'élévation")
-                return self.elevation_manager.start_elevation()
-                
-            needed_resources = self.elevation_manager.get_needed_resources()
-            if needed_resources:
-                self.logger.debug(f"Recherche de {needed_resources[0]}")
-                self.state = "collecting"
-                self.target_resource = needed_resources[0]
-                
-                target = self.vision_manager.find_nearest_object(self.target_resource)
-                if not target:
-                    self.logger.debug(f"Pas de {self.target_resource} en vue, exploration")
-                    self.state = "exploring"
-                    return True
-                
-                if target == (0, 0):
-                    self.logger.debug(f"{self.target_resource} trouvé sur la case actuelle, tentative de ramassage")
-                    if not self.inventory_manager.take_object(self.target_resource):
-                        self.logger.debug(f"Impossible de prendre {self.target_resource}")
-                        return False
-                    self.logger.debug(f"{self.target_resource} ramassé avec succès")
-                    if not self.inventory_manager.update_inventory():
-                        self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
-                        return False
-                    return True
-                    
-                if not self.movement_manager.move_to(target):
-                    self.logger.debug(f"Impossible d'atteindre {self.target_resource}, exploration")
-                    self.state = "exploring"
-                    return True
-                    
-                if not self.inventory_manager.take_object(self.target_resource):
-                    self.logger.debug(f"Impossible de prendre {self.target_resource}")
-                    return False
-
-                self.logger.debug(f"{self.target_resource} ramassé avec succès")
-                if not self.inventory_manager.update_inventory():
-                    self.logger.debug("Erreur lors de la mise à jour de l'inventaire")
-                    return False
+            # Collecte générale de ressources
+            if self._move_to_nearest_resource():
+                self.logger.debug("Déplacement vers la ressource la plus proche")
+                if self._collect_available_resources():
+                    self.logger.debug("Ressources collectées après déplacement")
                 return True
-
+            
+            # Exploration si aucune ressource trouvée
             self.logger.debug("Exploration")
             self.state = "exploring"
             self.target_resource = None
@@ -548,64 +506,59 @@ class AI:
             return None
 
     def _collect_available_resources(self) -> bool:
-        """Collecte toutes les ressources disponibles sur la case actuelle."""
+        """Collecte toutes les ressources disponibles sur la case actuelle.
+        
+        Returns:
+            bool: True si au moins une ressource a été collectée
+        """
         try:
-            if not self.vision_manager.force_update_vision():
-                self.logger.warning("❌ Impossible de mettre à jour la vision pour la collecte")
-                return False
-                
-            vision_data = self.vision_manager.vision_data
-            if not vision_data or len(vision_data) == 0:
-                self.logger.warning("❌ Aucune donnée de vision disponible pour la collecte")
-                return False
-                
-            current_case = vision_data[0]
-            if not current_case:
-                self.logger.debug("Case actuelle vide, aucune ressource à collecter")
-                return False
-                
-            if isinstance(current_case, list):
-                items = current_case
-            else:
-                items = current_case.split()
-                
-            self.logger.debug(f"Contenu de la case actuelle: {items}")
+            position = self.player.get_position()
+            self.logger.debug(f"🔍 Collecte de toutes les ressources à la position {position}")
             
-            resources_to_collect = []
+            collected_anything = False
+            resources_to_collect = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
             
-            for item in items:
-                if item != 'player' and item in ['food', 'linemate', 'deraumere', 'sibur', 'mendiane', 'phiras', 'thystame']:
-                    resources_to_collect.append(item)
+            # En mode urgence, priorité absolue à la nourriture
+            if self.state == "EMERGENCY_FOOD_SEARCH":
+                resources_to_collect = ["food"] + [r for r in resources_to_collect if r != "food"]
             
-            if self.inventory_manager.inventory['food'] < 5 and 'food' in resources_to_collect:
-                self.logger.info("🚨 Priorité absolue : collecte de nourriture critique")
-                resources_to_collect.remove('food')
-                resources_to_collect.insert(0, 'food')
-            
-            self.logger.debug(f"Ressources à collecter: {resources_to_collect}")
-            
-            collected = False
             for resource in resources_to_collect:
-                if self._collect_resource(resource):
-                    collected = True
-                    self.logger.debug(f"Ressource {resource} collectée depuis la case actuelle")
+                if self.inventory_manager.take_object(resource):
+                    self.logger.info(f"✅ {resource} collecté(e)")
+                    collected_anything = True
+                    
+                    # En mode urgence, forcer la mise à jour de la vision après chaque collecte
+                    if self.state == "EMERGENCY_FOOD_SEARCH":
+                        self.vision_manager.force_update_vision()
+                    
+                    time.sleep(0.1)  # Petite pause entre les collectes
             
-            return collected
+            if collected_anything:
+                self.logger.info(f"📦 Collecte terminée à {position}")
+            else:
+                self.logger.debug(f"❌ Aucune ressource trouvée à {position}")
+            
+            return collected_anything
+            
         except Exception as e:
-            self.logger.error(f"Erreur lors de la collecte des ressources: {str(e)}")
+            self.logger.error(f"Erreur lors de la collecte de ressources: {str(e)}")
             return False
 
     def _move_to_nearest_resource(self) -> bool:
         """Déplace le joueur vers la ressource la plus proche."""
         try:
             self.logger.debug("Recherche de la ressource la plus proche...")
-            if self.inventory_manager.inventory['food'] < 8:
+            
+            # Priorité absolue : nourriture d'abord si critique, puis linemate pour l'élévation
+            if self.inventory_manager.inventory['food'] < 20:
                 self.logger.warning("🚨 Nourriture critique, priorité absolue à la nourriture")
                 resources = ["food"]
-            elif self.inventory_manager.inventory['food'] < 10:
+            elif self.inventory_manager.inventory['food'] < 25:
+                self.logger.info("⚠️ Nourriture faible, priorité élevée")
                 resources = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
             else:
                 resources = ["linemate", "food", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
+                
             nearest_target = None
             min_distance = float('inf')
             nearest_resource = None
@@ -637,6 +590,7 @@ class AI:
                         self.logger.info(f"✅ Ressources collectées après déplacement vers {nearest_resource}")
                     else:
                         self.logger.warning(f"❌ Aucune ressource collectée après déplacement vers {nearest_resource}")
+                        # Tentative de collecte directe de la ressource ciblée
                         self.logger.info(f"🔄 Tentative de collecte directe de {nearest_resource}")
                         if self._collect_resource(nearest_resource):
                             self.logger.info(f"✅ {nearest_resource} collecté directement")
@@ -652,3 +606,67 @@ class AI:
         except Exception as e:
             self.logger.error(f"Erreur lors de la recherche de ressource: {str(e)}")
             return False
+
+    def _collect_resource_intensively(self, resource: str) -> bool:
+        """Collecte intensivement une ressource spécifique jusqu'à ce qu'il n'y en ait plus.
+        
+        Args:
+            resource (str): Type de ressource à collecter
+            
+        Returns:
+            bool: True si au moins une ressource a été collectée
+        """
+        try:
+            position = self.player.get_position()
+            self.logger.info(f"🔄 Collecte intensive de {resource} à la position {position}")
+            
+            # VÉRIFICATION DE DERNIÈRE MINUTE
+            self.logger.info("🕵️ Vérification finale de la présence de la ressource...")
+            self.vision_manager.force_update_vision()
+            tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
+            if resource not in tile_content:
+                self.logger.warning(f"❌ La ressource {resource} a disparu juste avant la collecte !")
+                return False
+            
+            collected_count = 0
+            
+            # Boucle de collecte intensive
+            while True:
+                if self.inventory_manager.take_object(resource):
+                    collected_count += 1
+                    self.logger.info(f"✅ {resource} #{collected_count} collecté(e)")
+                    
+                    # CORRECTION CRITIQUE : Mettre à jour la vision immédiatement
+                    self.logger.info("🔄 Forçage de la mise à jour de la vision post-collecte.")
+                    if not self.vision_manager.force_update_vision():
+                        self.logger.warning("❌ Échec de la mise à jour de la vision post-collecte")
+                    
+                    # Petite pause pour ne pas surcharger le serveur
+                    time.sleep(0.1)
+                else:
+                    # La commande a échoué (réponse "ko"), signifie que la case est vide
+                    if collected_count > 0:
+                        self.logger.info(f"📦 Collecte intensive terminée : {collected_count} {resource} collecté(s)")
+                        self.logger.info(f"📦 Inventaire après collecte intensive : {self.inventory_manager.inventory}")
+                    else:
+                        self.logger.warning(f"❌ Aucun(e) {resource} trouvé(e) sur la case")
+                    break
+            
+            return collected_count > 0
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la collecte intensive de {resource}: {str(e)}")
+            return False
+
+    def _generate_emergency_exploration_target(self) -> Tuple[int, int]:
+        """Génère une cible d'exploration d'urgence."""
+        try:
+            max_radius = 5
+            x = random.randint(-max_radius, max_radius)
+            y = random.randint(-max_radius, max_radius)
+            if (x, y) == (0, 0):
+                x, y = 1, 0
+            return (x, y)
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la génération de cible d'exploration d'urgence: {str(e)}")
+            return (1, 0)

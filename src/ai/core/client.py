@@ -162,16 +162,17 @@ class ZappyClient:
             self.logger.error(f"Erreur lors de la réception: {e}")
             raise
 
-    def run(self) -> None:
-        """Boucle principale du client."""
+    def run(self) -> bool:
+        """Exécute une itération de l'IA.
+        
+        Returns:
+            bool: True si l'IA continue de fonctionner, False si elle doit s'arrêter
+        """
         try:
-            while True:
-                self.ai.update()
+            return self.ai.update()
         except Exception as e:
-            self.logger.error(f"Erreur dans la boucle principale: {e}")
-            raise
-        finally:
-            self.close()
+            self.logger.error(f"Erreur dans l'exécution de l'IA: {e}")
+            return False
 
     def close(self):
         """Ferme la connexion avec le serveur."""

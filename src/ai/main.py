@@ -111,8 +111,15 @@ def main() -> int:
 
         while True:
             try:
-                client.run()
-                time.sleep(0.1)
+                if not client.run():
+                    logger.info("Arrêt de l'IA.")
+                    break
+                
+                if hasattr(client.ai, 'state') and client.ai.state == "EMERGENCY_FOOD_SEARCH":
+                    time.sleep(0.1)
+                else:
+                    time.sleep(0.2)
+                    
             except Exception as e:
                 logger.error(f"Erreur dans la boucle principale: {e}")
                 break

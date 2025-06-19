@@ -59,7 +59,7 @@ class ElevationManager:
                 if self.vision_manager.player.inventory.inventory[resource] < count:
                     self.logger.debug(f"Pas assez de {resource} dans l'inventaire pour l'élévation")
                     return False
-                    
+            
             current_tile = self.vision_manager.get_case_content(0, 0)
             if not current_tile:
                 return False
@@ -85,7 +85,7 @@ class ElevationManager:
             return False
 
     def start_elevation(self) -> bool:
-        """Démarre une élévation.
+        """Démarre une élévation en suivant le plan stratégique.
         
         Returns:
             bool: True si l'élévation a réussi
@@ -94,30 +94,40 @@ class ElevationManager:
             current_level = self.vision_manager.player.level
             next_level = current_level + 1
             
-            self.logger.info(f"Démarrage de l'élévation au niveau {next_level}")
+            self.logger.info(f"🚀 Démarrage de l'élévation au niveau {next_level}")
             
             if not self.can_elevate():
-                self.logger.debug("Conditions d'élévation non remplies")
+                self.logger.debug("❌ Conditions d'élévation non remplies")
                 return False
-                
+            
             requirements = self.ELEVATION_REQUIREMENTS[next_level]
+            self.logger.info(f"📦 Préparation du rituel : pose des pierres sur la case")
+            
             for resource, count in requirements.items():
                 if resource == 'players':
                     continue
                 for _ in range(count):
                     if not self.protocol.set(resource):
-                        self.logger.error(f"Erreur lors du dépôt de {resource}")
+                        self.logger.error(f"❌ Erreur lors du dépôt de {resource}")
                         return False
-                    self.logger.debug(f"{resource} déposé sur la case")
-                        
+                    self.logger.debug(f"✅ {resource} déposé sur la case")
+                    time.sleep(0.1)
+            
+            self.vision_manager.force_update_vision()
+            current_tile = self.vision_manager.get_case_content(0, 0)
+            self.logger.info(f"🔍 Vérification finale : case contient {current_tile}")
+            
+            self.logger.info("🌟 Lancement de l'incantation...")
             response = self.protocol.incantation()
+            
             if response == "ko":
-                self.logger.error("Échec de l'incantation")
+                self.logger.error("❌ Échec de l'incantation")
                 return False
                 
-            self.logger.info(f"Incantation lancée: {response}")
+            self.logger.info(f"✅ Incantation lancée: {response}")
             
             if response == "elevation underway":
+                self.logger.info("⏳ Rituel en cours... (300 secondes)")
                 time.sleep(300 / 1000)
                 
                 final_response = self.protocol.look()
@@ -128,14 +138,14 @@ class ElevationManager:
                     self.logger.info(f"🎉 Élévation réussie au niveau {next_level}!")
                     return True
                 else:
-                    self.logger.error("Échec de l'élévation après l'incantation")
+                    self.logger.error("❌ Échec de l'élévation après l'incantation")
                     return False
             else:
-                self.logger.error(f"Réponse inattendue lors de l'incantation: {response}")
+                self.logger.error(f"❌ Réponse inattendue lors de l'incantation: {response}")
                 return False
                 
         except Exception as e:
-            self.logger.error(f"Erreur lors de l'élévation: {str(e)}")
+            self.logger.error(f"❌ Erreur lors de l'élévation: {str(e)}")
             return False
 
     def _get_required_players(self, level: int) -> int:
