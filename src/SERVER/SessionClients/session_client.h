@@ -51,31 +51,4 @@ void sbp_f(server_t *server, session_client_t *client, const command_t *cmd);
 void pnw_f(server_t *server, session_client_t *client, const command_t *cmd);
 
 
-static const option_cmd_t gui_cmds[] = {
-    {"msz", msz_f},
-    {"bct", bct_f},
-    {"mct", mct_f},
-    {"tna", tna_f},
-    {"ppo", ppo_f},
-    {"plv", plv_f},
-    {"pin", pin_f},
-    {"sgt", sgt_f},
-    {"sst", sst_f},
-};
-
-static const option_cmd_t ai_cmds[] = {
-    {"Forward", forward_f},
-    {"Right", right_f},
-    {"Left", left_f},
-    {"Look", look_f},
-    {"Inventory", inventory_f},
-    {"Broadcast", broadcast_f},
-    {"Connect_nbr", connect_nbr_f},
-    {"Fork", fork_f},
-    {"Eject", eject_f},
-    {"Take", take_object_f},
-    {"Set", set_object_f},
-};
-
-
 #endif //SESSIONCLIENT_H

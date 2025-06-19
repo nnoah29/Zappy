@@ -34,26 +34,6 @@ void connec_t(server_t *server, session_client_t *client, const command_t *cmd)
     assign_team(server, client_idx, team_name);
 }
 
-
-void handle_command_gui(server_t *server, session_client_t *client, const command_t *cmd)
-{
-    size_t len = 0;
-    if (!cmd || !cmd->raw_cmd)
-        return;
-
-    for (size_t i = 0; i < sizeof(gui_cmds) / sizeof(gui_cmds[0]); ++i) {
-        len = strlen(gui_cmds[i].cmd);
-        if (strncasecmp(cmd->raw_cmd, gui_cmds[i].cmd, len) == 0) {
-            gui_cmds[i].func(server, client, cmd);
-            return;
-        }
-    }
-
-    printf("Commande inconnue (GUI) : %s\n", cmd->raw_cmd);
-    // send_to_client(client, "sbp\n"); // commande inconnue pour un GUI
-}
-
-
 void spawn_ressources(server_t *server)
 {
     struct timespec now;

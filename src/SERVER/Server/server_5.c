@@ -13,6 +13,19 @@
 #include "../my.h"
 #include "../SessionClients/session_client.h"
 
+const option_cmd_t ai_cmds[] = {
+    {"Forward", forward_f},
+    {"Right", right_f},
+    {"Left", left_f},
+    {"Look", look_f},
+    {"Inventory", inventory_f},
+    {"Broadcast", broadcast_f},
+    {"Connect_nbr", connect_nbr_f},
+    {"Fork", fork_f},
+    {"Eject", eject_f},
+    {"Take", take_object_f},
+    {"Set", set_object_f},
+};
 
 /**
  * @brief Traite les données reçues d'un client spécifique.

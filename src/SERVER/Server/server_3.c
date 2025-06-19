@@ -79,10 +79,6 @@ void handle_command(server_t *server, session_client_t *client, const command_t 
         connec_t(server, client, cmd);
         return;
     }
-    if (client->is_gui) {
-        handle_command_gui(server, client, cmd);
-        return;
-    }
     handle_command_ai(server, client, cmd);
 }
 
