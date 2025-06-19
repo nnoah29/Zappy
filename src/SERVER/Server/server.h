@@ -68,7 +68,6 @@ typedef struct server {
     struct pollfd fds[MAX_CLIENTS];
     session_client_t clients[MAX_CLIENTS];
     teams_t teams[MAX_TEAMS];
-    my_clock_t *clock;
     int idsGui[MAX_CLIENTS];
     config_server_t *config;
     struct timespec next_respawn_time;

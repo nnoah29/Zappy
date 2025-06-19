@@ -65,7 +65,6 @@ server_t *setup_server(config_server_t *config)
     server->map = map_create(config->map_w, config->map_h);
     put_online(server);
     map_spawn_resources(server);
-    server->clock = create_clock(config->freq);
     re_spawn_ressources_duration(server);
     signal(SIGINT, handle_signal);
     printf("Serveur en attente de connexions sur le port %d\n", server->port);
@@ -81,8 +80,6 @@ void cleanup_server(server_t *server)
         if (server->fds[i].fd >= 0)
             close(server->fds[i].fd);
     }
-    if (server->clock)
-        free(server->clock);
     if (server->config) {
         for (int i = 0; i < server->config->nb_teams; i++)
             free(server->config->names[i]);

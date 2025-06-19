@@ -31,10 +31,6 @@ void parse_names(config_server_t *conf, char **argv, int *i)
     (*i)--;
 }
 
-void get_current_time(struct timespec *ts)
-{
-    clock_gettime(CLOCK_MONOTONIC, ts);
-}
 
 void re_spawn_ressources_duration(server_t *server)
 {
