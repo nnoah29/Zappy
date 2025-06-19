@@ -23,17 +23,19 @@ class ReproductionManager:
             bool: True si la commande Fork est autorisée
         """
         return time.time() - self.last_fork_time > self.cooldown
-
     def reproduce(self) -> bool:
-        """Effectue une commande Fork si possible.
-        Retour type:
-            bool: True si le fork a réussi, False sinon
-        """
+        """Effectue un fork si possible et s'il reste des slots de connexion."""
         if not self.can_fork():
-            self.logger.debug("Cooldown actif, fork non autorisé pour le moment.")
+            self.logger.debug("⏳ Cooldown actif, fork non autorisé pour le moment.")
             return False
+
         try:
-            self.logger.info("Tentative de fork (reproduction)")
+            available_slots = self.protocol.connect_nbr()
+            if available_slots <= 0:
+                self.logger.info("🚫 Aucun slot disponible, fork inutile.")
+                return False
+
+            self.logger.info(f"🧬 Tentative de fork (slots restants: {available_slots})")
             success = self.protocol.fork()
             if success:
                 self.last_fork_time = time.time()
@@ -42,6 +44,7 @@ class ReproductionManager:
             else:
                 self.logger.warning("❌ Fork échoué")
                 return False
+
         except Exception as e:
             self.logger.error(f"Erreur lors du fork: {str(e)}")
             return False
