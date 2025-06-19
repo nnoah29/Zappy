@@ -1,0 +1,92 @@
+/*
+** EPITECH PROJECT, 2024
+** B-YEP-400-COT-4-1-zappy-noah.toffa
+** File description:
+** sessionClient.c
+*/
+
+#include "session_client.h"
+#include <stdio.h>
+
+void forward_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    int x = client->x;
+    int y = client->y;
+
+    switch (client->orientation) {
+        case NORTH:
+            y = (y - 1 + server->config->map_h)
+                % server->config->map_h;
+            break;
+        case EAST:
+            x = (x + 1) % server->config->map_w;
+            break;
+        case SOUTH:
+            y = (y + 1) % server->config->map_h;
+            break;
+        case WEST:
+            x = (x - 1 + server->config->map_w)
+                % server->config->map_w;
+            break;
+        default: ;
+    }
+    map_move_entity(server->map, client, x, y);
+    ppo_f(server, client, cmd);
+    printf("forward\n");
+}
+
+void right_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    client->orientation = (client->orientation + 1) % 4;
+    ppo_f(server, client, cmd);
+    printf("right\n");
+}
+
+void left_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    client->orientation = (client->orientation - 1 + 4) % 4;
+    ppo_f(server, client, cmd);
+    printf("left\n");
+}
+
+void look_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    if (client->orientation == NORTH)
+    printf("look\n");
+}
+
+void inventory_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    printf("inventory\n");
+}
+
+
+void broadcast_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    printf("broadcast\n");
+}
+
+void connect_nbr_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    printf("connect_nbr\n");
+}
+
+void fork_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    printf("fork\n");
+}
+
+void eject_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    printf("eject\n");
+}
+
+void take_object_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    printf("take_object\n");
+}
+
+void set_object_f(server_t *server, session_client_t *client, const command_t *cmd)
+{
+    printf("set_object\n");
+}

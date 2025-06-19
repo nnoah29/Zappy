@@ -12,8 +12,36 @@
     #include <poll.h>
     #include <netinet/in.h>
     #include <poll.h>
+    #include <stdbool.h>
     #include "../Clock/clock.h"
-    #include "../SessionClients/session_client.h"
+    #include "../Commandes/commandes.h"
+    #include "../Map/map.h"
+
+typedef enum {
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST
+} orientation_t;
+
+typedef struct session_client_s {
+    int x;
+    int y;
+    int fd;
+    int id;
+    int idx;
+    int level;
+    bool active;
+    bool is_gui;
+    bool is_egg;
+    int team_idx;
+    int orientation;
+    bool is_elevating;
+    command_queue_t *queue;
+    resource_t inventory[7];
+    struct timespec next_food_time;
+} session_client_t;
+
 
 typedef struct Teams {
     char *name;
@@ -43,7 +71,9 @@ typedef struct server {
     my_clock_t *clock;
     int idsGui[MAX_CLIENTS];
     config_server_t *config;
+    struct timespec next_respawn_time;
     int nfds;
+    tile_t **map;
 } server_t;
 
 
@@ -67,12 +97,6 @@ static const command_info_t command_table[] = {
     {"Incantation", 300},
 };
 
-typedef void (*gui_func_t)(server_t *server, session_client_t *client, const command_t *cmd);
-typedef struct {
-    const char *client;
-    gui_func_t func;
-}gui_protocol_t;
-
 void run_server(server_t *server);
 void handle_signal(int signal);
 server_t *setup_server(config_server_t *config);
@@ -83,13 +107,13 @@ void initialize_teams(server_t *server);
 server_t *setup_server(config_server_t *config);
 void cleanup_server(server_t *server);
 void accept_client_connection(server_t *server);
-void close_client_connection(server_t *server, int i);
+void close_client_connection(server_t *server, int client_idx);
 double get_exec_duration(const char *cmd, int freq);
 void process_command(char *cmd, const session_client_t *client, int freq);
 void receive_client_data(server_t *server, int i);
 void handle_signal(int signal);
-void handle_events(server_t *server, int i);
-void assign_team(server_t *server, int i, char *team);
+void handle_network(server_t *server, int i);
+void assign_team(server_t *server, int i, const char* team);
 void handle_command(server_t *server, session_client_t *client, const command_t *cmd);
 void run_server(server_t *server);
 void connec_t(server_t *server, session_client_t *client, const command_t *cmd);
@@ -99,5 +123,6 @@ void exec_cmd(server_t *server, int i);
 void check_life(server_t *server, int i);
 void handle_server(server_t *server);
 void handle_command_ai(server_t *server, session_client_t *client, const command_t *cmd);
+void handle_network_events(server_t *server);
 
 #endif //SERVER_H

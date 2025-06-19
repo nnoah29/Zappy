@@ -50,18 +50,23 @@ void initialize_teams(server_t *server)
     }
 }
 
+// initialiser le serveur
 server_t *setup_server(config_server_t *config)
 {
     server_t *server = malloc(sizeof(server_t));
 
+    srandom((unsigned int)time(NULL));
     memset(server, 0, sizeof(server_t));
     server->config = config;
     server->port = config->port;
     server->nfds = 0;
     init_clients(server);
     initialize_teams(server);
+    server->map = map_create(config->map_w, config->map_h);
     put_online(server);
+    map_spawn_resources(server);
     server->clock = create_clock(config->freq);
+    re_spawn_ressources_duration(server);
     signal(SIGINT, handle_signal);
     printf("Serveur en attente de connexions sur le port %d\n", server->port);
     s = server;

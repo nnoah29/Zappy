@@ -11,37 +11,56 @@
 #include <string.h>
 #include "../my.h"
 
+void setup_client(server_t *server, int idx, int fd)
+{
+    server->fds[server->nfds].fd = fd;
+    server->fds[server->nfds].events = POLLIN;
+    server->clients[idx].fd = fd;
+    server->clients[idx].idx = idx;
+    server->clients[idx].queue = calloc(1, sizeof(command_queue_t));
+    init_command_queue(server->clients[idx].queue);
+    send(fd, "WELCOME\n", 8, 0);
+    server->nfds++;
+}
+
 void accept_client_connection(server_t *server)
 {
     struct sockaddr_in client_addr;
     socklen_t addr_len = sizeof(client_addr);
     const int client_fd = accept(server->server_fd,
         (struct sockaddr*)&client_addr, &addr_len);
+    const int new_idx = find_free_client_slot(server);
 
     if (client_fd < 0)
         exit_error("accept", 0);
-    if (server->nfds >= MAX_CLIENTS) {
+    if (new_idx == -1) {
         fprintf(stderr, "Trop de clients connectés\n");
         close(client_fd);
         return;
     }
-    server->fds[server->nfds].fd = client_fd;
-    server->fds[server->nfds].events = POLLIN;
-    server->clients[server->nfds].fd = client_fd;
-    server->clients[server->nfds].last_food_tick =
-        get_elapsed_ticks(server->clock);
-    send(client_fd, "WELCOME\n", 8, 0);
-    server->nfds++;
+    setup_client(server, new_idx, client_fd);
 }
 
-void close_client_connection(server_t *server, int i)
+void close_client_connection(server_t *server, int client_idx)
 {
-    if (server->fds[i].fd != -1)
-        close(server->fds[i].fd);
-    server->fds[i].fd = -1;
-    server->clients[i].fd = -1;
-    server->clients[i].active = 0;
-    printf("Client %d supprimé\n", i);
+    int poll_idx = -1;
+
+    for (int i = 0; i < server->nfds; i++) {
+        if (server->fds[i].fd == server->clients[client_idx].fd) {
+            poll_idx = i;
+            break;
+        }
+    }
+    if (server->clients[client_idx].fd != -1)
+        close(server->clients[client_idx].fd);
+    memset(&server->clients[client_idx], 0, sizeof(session_client_t));
+    server->clients[client_idx].fd = -1;
+    server->clients[client_idx].idx = -1;
+    if (poll_idx != -1) {
+        server->fds[poll_idx] = server->fds[server->nfds - 1];
+        server->nfds--;
+    }
+    printf("Client %d supprimé et slot compacté.\n", client_idx);
 }
 
 double get_exec_duration(const char *cmd, int freq)

@@ -35,5 +35,6 @@ int dequeue_command(command_queue_t *queue);
 int get_next_ready_command(command_queue_t *queue, struct timespec *now);
 int remove_command_at(command_queue_t *queue, int index);
 void setup_command(command_queue_t *queue, const char *cmd, int index, double duration);
+void init_command_queue(command_queue_t *queue);
 
 #endif //COMMANDES_H
