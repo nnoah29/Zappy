@@ -9,23 +9,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int dequeue_command(command_queue_t *queue)
-{
-    if (queue->size == 0)
-        return 0;
-    free(queue->commands[queue->head].raw_cmd);
-    queue->commands[queue->head].raw_cmd = NULL;
-    queue->head = (queue->head + 1) % MAX_COMMANDS;
-    queue->size--;
-    return 1;
-}
-
-command_t *peek_command(command_queue_t *queue)
-{
-    if (queue->size == 0)
-        return NULL;
-    return &queue->commands[queue->head];
-}
 
 int is_command_ready(command_t *cmd, struct timespec *now)
 {

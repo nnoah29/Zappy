@@ -128,9 +128,8 @@ int find_free_client_slot(server_t *server)
             return i;
         }
     }
-    return -1; // Plus de place
+    return -1;
 }
-
 
 /**
  * @brief Trouve l'index d'un client dans le tableau server->clients basé sur son file descriptor.

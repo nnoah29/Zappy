@@ -69,13 +69,7 @@ int enqueue_command(command_queue_t *queue, const char *cmd, double duration,
         return 0;
     setup_command(queue, cmd, index, duration);
     queue->commands[index].ready_at = *now;
-    queue->commands[index].ready_at.tv_sec += (time_t)duration;
-    queue->commands[index].ready_at.tv_nsec +=
-        (long)((duration - (int)duration) * 1e9);
-    if (queue->commands[index].ready_at.tv_nsec >= 1e9) {
-        queue->commands[index].ready_at.tv_sec += 1;
-        queue->commands[index].ready_at.tv_nsec -= 1e9;
-    }
+    add_seconds_to_timespec(&queue->commands[index].ready_at, duration);
     queue->tail = (queue->tail + 1) % MAX_COMMANDS;
     queue->size++;
     return 1;
