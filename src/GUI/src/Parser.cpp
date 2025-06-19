@@ -12,13 +12,17 @@ std::vector<std::string> Parser::split(std::string& str, char sep)
     return vec;
 }
 
-Zappycmd Parser::splitCommand(std::string& input) 
+Zappycmd Parser::splitCommand(const std::string& input) 
 {
-        auto part = split(input, ' ');
-        Zappycmd cmd;
-        if (!part.empty()) {
-            cmd.cmd = part[0];
-            cmd.args = std::vector<std::string>(part.begin() + 1, part.end());
-        }
-        return cmd;
+    Zappycmd cmd;
+    std::istringstream iss(input);
+    std::string t;
+    
+    iss >> cmd.cmd;
+    
+    while (iss >> t) {
+        cmd.args.push_back(t);
+    }
+    
+    return cmd;
 }

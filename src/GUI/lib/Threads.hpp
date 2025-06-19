@@ -16,7 +16,7 @@ public:
     ~Threads();
     void start();
     void stop();
-    void setMessage(Message);
+    void setMessage(Threads::Message);
     bool isRunning();
     void processMessages();
 private:

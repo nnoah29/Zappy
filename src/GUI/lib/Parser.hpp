@@ -13,7 +13,7 @@ struct Zappycmd {
 class Parser {
 public:
     std::vector<std::string> split(std::string& str, char delimiter = ' ');
-    Zappycmd splitCommand(std::string& input);
+    static Zappycmd splitCommand(const std::string& input);
 };
 
 #endif

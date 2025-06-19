@@ -3,6 +3,8 @@
 #include "../lib/Exceptions.hpp"
 #include <iostream>
 #include "../lib/Network.hpp"
+#include "../lib/Threads.hpp"
+#include "../lib/Parser.hpp"
 
 static int port = -1;
 static std::string machine;
@@ -64,24 +66,56 @@ bool parseArguments(int argc, char** argv)
     return true;
 }
 
-int main(int argc, char **argv)
+void parseMessage(const std::string& message) 
 {
-    if (!parseArguments(argc, argv)) {
+    std::string messagecl = message;
+    messagecl.erase(std::remove(messagecl.begin(), messagecl.end(), '\r'), messagecl.end());
+    messagecl.erase(std::remove(messagecl.begin(), messagecl.end(), '\n'), messagecl.end());
+    
+    auto command = Parser::splitCommand(messagecl);
+    
+    std::cout << "[" << command.cmd << "] ";
+    for (const auto& arg : command.args) 
+        std::cout << arg << " ";
+    std::cout << "\n";
+    
+    if (command.cmd == "msz" && command.args.size() >= 2)
+        std::cout << ">>> Map size: " << command.args[0] << "x" << command.args[1] << "\n";
+    else if (command.cmd == "bct" && command.args.size() >= 9)
+        std::cout << ">>> Tile content at (" << command.args[0] << "," << command.args[1] << ")\n";
+    else if (command.cmd == "pnw" && command.args.size() >= 6)
+        std::cout << ">>> New player #" << command.args[0] << " from team " << command.args[5] << "\n";
+    else if (command.cmd == "seg")
+        std::cout << "\n>>> WINNING TEAM: " << (command.args.empty() ? "Unknown" : command.args[0]) << "\n\n";
+}
+
+int main(int argc, char **argv) 
+{
+    if (!parseArguments(argc, argv))
         return 84;
-    }
 
     Network network;
     try {
         network.connect(machine, port);
         std::string welcome = network.receive();
+        std::cout << "Server welcome: " << welcome << std::endl;
+        
         network.send("GRAPHIC\n");
         std::string reponse = network.receive();
-    } catch (const Error& e) {
+        Threads threads(network);
+        threads.setMessage(parseMessage);
+        threads.start();
+        std::cout << "\nGUI started. Waiting for server commands...\n";
+        std::cout << "Press Ctrl+C to exit\n\n";
+        while (threads.isRunning()) {
+            threads.processMessages();
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        }
+        
+    } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;
-    } catch (const std::exception& e) {
-        std::cerr << "Unexpected error: " << e.what() << std::endl;
-        return 84;
     }
+    
     return 0;
 }
