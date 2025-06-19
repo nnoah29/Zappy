@@ -36,7 +36,7 @@ class AI:
         
         # Seuils de nourriture pour le mode urgence
         self.FOOD_CRITICAL_LEVEL = 10  # Seuil critique pour le mode urgence
-        self.FOOD_SAFE_LEVEL = 25      # Niveau de sécurité pour désactiver le mode urgence
+        self.FOOD_SAFE_LEVEL = 15      # Niveau de sécurité pour désactiver le mode urgence (abaissé de 25 à 15)
         
         # Initialisation des gestionnaires
         self.vision_manager = VisionManager(protocol, player, map, logger)
@@ -181,10 +181,8 @@ class AI:
     def _execute_action(self) -> bool:
         """Exécute l'action appropriée selon l'état actuel."""
         try:
-            # --- DÉBUT DE LA NOUVELLE LOGIQUE DE DÉCISION ---
             food_level = self.inventory_manager.inventory['food']
             
-            # 1. ÉTAT D'URGENCE ABSOLUE (la survie se joue à quelques secondes)
             if food_level < 10:
                 self.state = "EMERGENCY_FOOD_SEARCH"
                 self.logger.critical("🚨🚨 MODE URGENCE : Survie immédiate prioritaire.")
@@ -219,10 +217,9 @@ class AI:
                                 self.logger.critical("✅ RESSOURCES TROUVÉES EN MOUVEMENT ALÉATOIRE")
                             return True
                 
-                return True  # On ne fait RIEN d'autre ce tour-ci
+                return True
             
-            # 2. ÉTAT DE CONSTITUTION DE RÉSERVES (la survie n'est pas garantie)
-            if food_level < 25:
+            if food_level < 15:
                 self.state = "SURVIVAL_BUFFERING"
                 self.logger.warning(f"⚠️ MODE SÉCURITÉ : Constitution des réserves de nourriture (actuel: {food_level}). Objectifs secondaires suspendus.")
                 
@@ -236,7 +233,6 @@ class AI:
                             self.logger.warning("❌ Échec de la collecte de sécurité")
                         return True
                 else:
-                    # Si pas de nourriture en vue, exploration ciblée pour la nourriture
                     self.logger.info("🔍 Exploration ciblée pour la nourriture.")
                     exploration_target = self._generate_emergency_exploration_target()
                     if exploration_target:
@@ -247,70 +243,62 @@ class AI:
                                 self.logger.info("✅ Ressources trouvées lors de l'exploration de sécurité")
                             return True
                 
-                return True  # On ne s'occupe QUE de la nourriture
+                return True
             
-            # 3. OPÉRATIONS NORMALES (la survie est assurée, on peut progresser)
-            self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}). Reprise des opérations normales.")
+            self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}). Objectif : Élévation.")
             self.state = "NORMAL_OPERATIONS"
             
-            # C'est SEULEMENT ICI que vous vérifiez les besoins pour l'élévation
-            if self.inventory_manager.inventory['linemate'] >= 1:
-                if self.elevation_manager.can_elevate():
-                    self.logger.info("🚀 Conditions d'élévation remplies, démarrage de l'élévation")
-                    return self.elevation_manager.start_elevation()
-                else:
-                    self.logger.info("❌ Conditions d'élévation non remplies, collecte d'autres ressources")
-            
-            # Collecte de linemate si nécessaire pour l'élévation
-            if self.inventory_manager.inventory['linemate'] < 1:
-                self.logger.info("🔍 Recherche spécifique de linemate pour l'élévation")
+            if self.inventory_manager.inventory.get('linemate', 0) < 1:
+                self.logger.info("🔍 Objectif : Trouver une pierre de linemate.")
                 target = self.vision_manager.find_nearest_object("linemate")
                 if target:
-                    self.logger.info(f"🎯 Linemate trouvé à {target}, déplacement en cours...")
+                    self.logger.info(f"🎯 Linemate trouvé à {target}, déplacement...")
                     if self.movement_manager.move_to(target):
-                        # Le déplacement itératif garantit qu'on est sur la case du linemate
-                        self.logger.info("✅ Arrivé sur la case du linemate, collecte en cours...")
-                        if self._collect_resource("linemate"):
+                        if self._collect_resource_intensively("linemate"):
                             self.logger.info("✅ Linemate collecté avec succès")
                         else:
-                            self.logger.warning("❌ Le linemate a disparu avant la collecte")
-                        return True
+                            self.logger.warning("❌ Échec de la collecte de linemate")
                 else:
-                    # Si pas de linemate en vue, exploration active pour en trouver
-                    self.logger.info("🔍 Pas de linemate en vue, exploration active...")
+                    self.logger.info("🔍 Aucune linemate en vue, exploration...")
                     exploration_target = self._generate_linemate_exploration_target()
                     if exploration_target:
                         self.logger.info(f"🎯 Exploration vers {exploration_target} pour trouver du linemate")
                         if self.movement_manager.move_to(exploration_target):
                             self.logger.info("✅ Déplacement d'exploration réussi")
-                            return True
-            
-            # Collecte générale de ressources
-            if self._move_to_nearest_resource():
-                self.logger.debug("Déplacement vers la ressource la plus proche")
-                if self._collect_available_resources():
-                    self.logger.debug("Ressources collectées après déplacement")
                 return True
             
-            # Exploration si aucune ressource trouvée
-            self.logger.debug("Exploration")
-            self.state = "exploring"
-            self.target_resource = None
+            self.logger.info("✅ Linemate en inventaire. Préparation du rituel.")
             
-            if not self.target_position:
-                x = random.randint(-1, 1)
-                y = random.randint(-1, 1)
-                if (x, y) != (0, 0):
-                    self.target_position = (x, y)
-                    self.logger.debug(f"Nouvelle cible d'exploration: {self.target_position}")
-                
-            if not self.movement_manager.move_to(self.target_position):
-                self.target_position = None
+            current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
+            player_count = current_tile_content.count('player')
+            if player_count > 1:
+                self.logger.warning(f"⚠️ Il y a {player_count} joueurs ici. Je cherche un endroit calme.")
+                random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
+                if self.movement_manager.move_to(random_direction):
+                    self.logger.info("✅ Déplacement vers une case plus calme")
                 return True
-                
-            self.target_position = None
-            return True
-                
+            
+            if 'linemate' not in current_tile_content:
+                self.logger.info("📦 La case est prête, je dépose la pierre.")
+                if self.protocol.set("linemate"):
+                    self.logger.info("✅ Linemate déposé sur la case")
+                else:
+                    self.logger.error("❌ Échec du dépôt de linemate")
+                return True
+            
+            self.logger.info("✨ Conditions parfaites ! Lancement de l'incantation pour le niveau 2 !")
+            response = self.protocol.incantation()
+            
+            if response == "ko":
+                self.logger.error("❌ Échec de l'incantation")
+                return True
+            elif response == "elevation underway":
+                self.logger.info("🌟 Élévation en cours ! Attente du résultat...")
+                return True
+            else:
+                self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation: {response}")
+                return True
+            
         except Exception as e:
             self.logger.error(f"Erreur lors de l'exécution de l'action: {str(e)}")
             return False
