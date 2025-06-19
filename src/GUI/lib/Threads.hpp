@@ -19,6 +19,14 @@ public:
     void setMessage(Message);
     bool isRunning();
     void processMessages();
+private:
+    void run();
+    Network& network_;
+    std::thread thread_;
+    std::atomic<bool> running_{false};
+    std::mutex Mutex_;
+    std::queue<std::string> Queue_;
+    Message message;
 };
 
 #endif
