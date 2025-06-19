@@ -1,1340 +1,198 @@
-2025-06-19 00:30:04,743 - __main__ - DEBUG - Configuration du logging terminée. Fichier zappy.log créé.
-2025-06-19 00:30:04,743 - __main__ - INFO - Niveau de logging configuré à DEBUG pour tous les modules.
-2025-06-19 00:30:04,744 - core.client - INFO - Tentative de connexion à localhost:3000
-2025-06-19 00:30:04,745 - core.client - INFO - Socket connecté avec succès
-2025-06-19 00:30:04,745 - core.client - INFO - En attente du message de bienvenue...
-2025-06-19 00:30:04,745 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:04,745 - core.client - DEBUG - Données reçues: WELCOME
-2025-06-19 00:30:04,746 - core.client - INFO - Message reçu: WELCOME
-2025-06-19 00:30:04,746 - core.client - INFO - Envoi du nom d'équipe: chris
-2025-06-19 00:30:04,746 - core.client - DEBUG - Envoyé (7.0s): chris
-2025-06-19 00:30:04,747 - core.client - INFO - En attente de la réponse du serveur...
-2025-06-19 00:30:04,747 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:04,748 - core.client - DEBUG - Données reçues: 185
+2025-06-19 01:36:57,851 - __main__ - DEBUG - Configuration du logging terminée. Fichier zappy.log créé.
+2025-06-19 01:36:57,851 - __main__ - INFO - Niveau de logging configuré à DEBUG pour tous les modules.
+2025-06-19 01:36:57,851 - core.client - INFO - Tentative de connexion à localhost:3000
+2025-06-19 01:36:57,852 - core.client - INFO - Socket connecté avec succès
+2025-06-19 01:36:57,852 - core.client - INFO - En attente du message de bienvenue...
+2025-06-19 01:36:57,852 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:57,852 - core.client - DEBUG - Données reçues: WELCOME
+2025-06-19 01:36:57,852 - core.client - INFO - Message reçu: WELCOME
+2025-06-19 01:36:57,852 - core.client - INFO - Envoi du nom d'équipe: chris
+2025-06-19 01:36:57,852 - core.client - DEBUG - Envoyé (7.0s): chris
+2025-06-19 01:36:57,852 - core.client - INFO - En attente de la réponse du serveur...
+2025-06-19 01:36:57,852 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:57,853 - core.client - DEBUG - Données reçues: 177
 15 20
-2025-06-19 00:30:04,749 - core.client - INFO - Réponse reçue: 185
+2025-06-19 01:36:57,853 - core.client - INFO - Réponse reçue: 177
 15 20
-2025-06-19 00:30:04,749 - core.client - INFO - Numéro de client reçu: 185
-2025-06-19 00:30:04,750 - core.client - INFO - Dimensions de la carte reçues dans la même réponse: 15 20
-2025-06-19 00:30:04,750 - core.client - INFO - Dimensions de la carte parsées: (15, 20)
-2025-06-19 00:30:04,751 - core.client - INFO - Connecté au serveur. Client #185, Carte: 15x20
-2025-06-19 00:30:04,751 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
-2025-06-19 00:30:04,752 - __main__ - INFO - player 185 created on team chris at (7, 10)
-2025-06-19 00:30:04,752 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,753 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,753 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,754 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,754 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,755 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,755 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,756 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,756 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,756 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,756 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,756 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,757 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,757 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,757 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,758 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,758 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,759 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,759 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,759 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,760 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,761 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,761 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,761 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,761 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,761 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,761 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,762 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,762 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,762 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,762 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,762 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,762 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,763 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,763 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,763 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,763 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,763 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,763 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,763 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,764 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,764 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,764 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,764 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,764 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,764 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,764 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,765 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,765 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,765 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,765 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,765 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,765 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,766 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,766 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,766 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,766 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,766 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,766 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,767 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,767 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,767 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,767 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,767 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,767 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,768 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,769 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,769 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,770 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,770 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,770 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,771 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,771 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,772 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,773 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,773 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,774 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,774 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,775 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,775 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,776 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,776 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,777 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,777 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,778 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,778 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,779 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,779 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,779 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,780 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,780 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,780 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,780 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,781 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,781 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,781 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,781 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,782 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,782 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,782 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,783 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,783 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,783 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,783 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,784 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,784 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,785 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,785 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,785 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,786 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,786 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,787 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,787 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,788 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,789 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,789 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,791 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,791 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,792 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,792 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,792 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,793 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,793 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,794 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,794 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,794 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,794 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,795 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,795 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,795 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,795 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,795 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,795 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,796 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,796 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,796 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,796 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,796 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,796 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,797 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,797 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,797 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,797 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,798 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,798 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,798 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,798 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,798 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,798 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,799 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,799 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,799 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,799 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,800 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,800 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,800 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,801 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,801 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,801 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,801 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,802 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,802 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,802 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,802 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,802 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,802 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,803 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,803 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,803 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,803 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,804 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,804 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,804 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,804 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,804 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,804 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,805 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,805 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,805 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,806 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,807 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,807 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,808 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,808 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,809 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,810 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,811 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,812 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,813 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,813 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,814 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,815 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,816 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,817 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,817 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,818 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,818 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,819 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,819 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,819 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,820 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,820 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,820 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,820 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,821 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,821 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,821 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,821 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,822 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,822 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,822 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,822 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,823 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,823 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,823 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,823 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,824 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,824 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,824 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,824 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,824 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,825 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,825 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,825 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,825 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,825 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,825 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,826 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,826 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,827 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,827 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,828 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,828 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,828 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,828 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,829 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,830 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,831 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,831 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,832 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,833 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,834 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,835 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,835 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,835 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,836 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,836 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,836 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,837 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,837 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,837 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,837 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,838 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,838 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,838 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,838 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,839 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,839 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,839 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,839 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,840 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,840 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,840 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,840 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,840 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,840 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,841 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,841 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,841 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,841 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,842 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,842 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,842 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,842 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,843 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,843 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,843 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,843 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,844 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,844 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,844 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,844 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,845 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,845 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,845 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,846 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,846 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,846 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,846 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,847 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,848 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,848 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,848 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
-2025-06-19 00:30:04,848 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
-2025-06-19 00:30:04,849 - __main__ - INFO - Joueur initialisé: ID=185, Équipe=chris, Position=(7, 10)
-2025-06-19 00:30:04,849 - __main__ - INFO - Carte initialisée: 15x20
-2025-06-19 00:30:04,850 - __main__ - INFO - IA initialisée avec succès
-2025-06-19 00:30:04,851 - core.client - DEBUG - Envoyé (7s): Look
-2025-06-19 00:30:04,851 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:04,922 - core.client - DEBUG - Données reçues: [ player, linemate thystame,, deraumere mendiane ]
-2025-06-19 00:30:04,922 - __main__ - DEBUG - Vision mise à jour: [['player'], ['linemate', 'thystame'], [], ['deraumere', 'mendiane']]
-2025-06-19 00:30:04,923 - core.client - DEBUG - Envoyé (1s): Inventory
-2025-06-19 00:30:04,923 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:04,934 - core.client - DEBUG - Données reçues: [ food 9, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
-2025-06-19 00:30:04,934 - __main__ - DEBUG - Inventaire mis à jour: {'food': 9, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
-2025-06-19 00:30:04,935 - __main__ - DEBUG - Pas assez de linemate dans l'inventaire pour l'élévation
-2025-06-19 00:30:04,935 - __main__ - DEBUG - État changé: collecting linemate (priorité)
-2025-06-19 00:30:04,935 - __main__ - DEBUG - Recherche de la ressource la plus proche...
-2025-06-19 00:30:04,935 - __main__ - DEBUG - Ressource linemate trouvée à (1, 0) (distance: 1)
-2025-06-19 00:30:04,935 - __main__ - DEBUG - Nouvelle ressource la plus proche: linemate à (1, 0)
-2025-06-19 00:30:04,936 - __main__ - DEBUG - Ressource deraumere trouvée à (0, 1) (distance: 1)
-2025-06-19 00:30:04,936 - __main__ - DEBUG - Ressource mendiane trouvée à (0, 1) (distance: 1)
-2025-06-19 00:30:04,936 - __main__ - DEBUG - Ressource thystame trouvée à (1, 0) (distance: 1)
-2025-06-19 00:30:04,936 - __main__ - INFO - 🎯 Déplacement vers linemate à (1, 0) depuis (7, 10)
-2025-06-19 00:30:04,937 - __main__ - DEBUG - Collision détectée, tentative d'éjection
-2025-06-19 00:30:04,937 - __main__ - DEBUG - Éjection réussie, tentative de déplacement
-2025-06-19 00:30:05,038 - core.client - DEBUG - Envoyé (7s): Right
-2025-06-19 00:30:05,038 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:05,110 - core.client - DEBUG - Données reçues: ok
-2025-06-19 00:30:05,112 - __main__ - DEBUG - Direction mise à jour: 1
-2025-06-19 00:30:05,112 - __main__ - DEBUG - Rotation vers la droite: 1
-2025-06-19 00:30:05,113 - core.client - DEBUG - Envoyé (7s): Forward
-2025-06-19 00:30:05,113 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:05,184 - core.client - DEBUG - Données reçues: ok
-2025-06-19 00:30:05,187 - __main__ - DEBUG - Position mise à jour: (8, 10)
-2025-06-19 00:30:05,187 - __main__ - DEBUG - Déplacement vers (8, 10)
-2025-06-19 00:30:05,187 - __main__ - INFO - ✅ Déplacement réussi vers linemate: (7, 10) → (8, 10)
-2025-06-19 00:30:05,188 - __main__ - DEBUG - Déplacement vers la ressource la plus proche
-2025-06-19 00:30:12,189 - core.client - DEBUG - Envoyé (7s): Look
-2025-06-19 00:30:12,189 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:12,259 - core.client - DEBUG - Données reçues: [ player, food linemate phiras,, sibur mendiane ]
-2025-06-19 00:30:12,260 - __main__ - DEBUG - Vision mise à jour: [['player'], ['food', 'linemate', 'phiras'], [], ['sibur', 'mendiane']]
-2025-06-19 00:30:12,260 - core.client - DEBUG - Envoyé (1s): Inventory
-2025-06-19 00:30:12,261 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:12,271 - core.client - DEBUG - Données reçues: [ food 4, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
-2025-06-19 00:30:12,272 - __main__ - DEBUG - Inventaire mis à jour: {'food': 4, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
-2025-06-19 00:30:12,273 - __main__ - DEBUG - État changé: collecting food (critique)
-2025-06-19 00:30:12,273 - __main__ - WARNING - 🚨 Nourriture critique, recherche prioritaire de nourriture
-2025-06-19 00:30:12,274 - __main__ - INFO - 🍽️ Nourriture trouvée à (1, 0), déplacement prioritaire
-2025-06-19 00:30:12,275 - __main__ - DEBUG - Collision détectée, tentative d'éjection
-2025-06-19 00:30:12,275 - __main__ - DEBUG - Éjection réussie, tentative de déplacement
-2025-06-19 00:30:12,376 - core.client - DEBUG - Envoyé (7s): Forward
-2025-06-19 00:30:12,377 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:12,447 - core.client - DEBUG - Données reçues: ok
-2025-06-19 00:30:12,448 - __main__ - DEBUG - Position mise à jour: (9, 10)
-2025-06-19 00:30:12,448 - __main__ - DEBUG - Déplacement vers (9, 10)
-2025-06-19 00:30:19,448 - core.client - DEBUG - Envoyé (7s): Look
-2025-06-19 00:30:19,451 - core.client - DEBUG - En attente de données du serveur...
-2025-06-19 00:30:19,452 - core.client - DEBUG - Données reçues: dead
-2025-06-19 00:30:19,452 - __main__ - DEBUG - Vision mise à jour: [['dead']]
-2025-06-19 00:30:19,453 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,453 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,454 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,455 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,456 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,457 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,458 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,459 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,459 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,459 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,459 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,459 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,459 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,463 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,463 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,463 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,463 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,463 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,464 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,465 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,466 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,467 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,468 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,469 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,469 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,469 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,469 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,469 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,470 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,470 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,470 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,471 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,471 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,471 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,471 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,472 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,474 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,475 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,476 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,477 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,478 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,479 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,480 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,481 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,482 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,483 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,484 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,484 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,484 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,484 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,484 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,484 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,484 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,485 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,486 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,486 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,486 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,486 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,486 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,487 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,487 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,487 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,488 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,488 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,489 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,489 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,490 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,491 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,491 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,492 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,492 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,492 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,493 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,493 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,494 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,494 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,494 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,495 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,495 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,495 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,496 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,496 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,497 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,497 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,498 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,498 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,499 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,499 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,499 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,500 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,500 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,501 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,501 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,501 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,501 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,502 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,502 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,502 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,502 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,503 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,503 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,503 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,503 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,504 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,504 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,504 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,504 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,504 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,504 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,505 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,505 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,505 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,505 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,506 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,506 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,506 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,506 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,507 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,507 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,507 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,508 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,509 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,509 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,510 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,510 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,511 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,512 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,513 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,515 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,515 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,515 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,516 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,517 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,517 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,517 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,517 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,518 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,518 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,518 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,518 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,518 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,519 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,519 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,519 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,519 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,519 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,519 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,520 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,520 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,520 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,520 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,521 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,521 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,521 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,521 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,522 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,522 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,522 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,522 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,523 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,523 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,524 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,524 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,525 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,525 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,526 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,528 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,529 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,530 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,530 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,531 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,531 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,531 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,532 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,533 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,534 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,534 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,534 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,535 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,535 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,535 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,535 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,536 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,536 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,536 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,537 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,537 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,537 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,537 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,537 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,538 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,538 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,538 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,538 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,538 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,539 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,539 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,539 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,539 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,540 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,540 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,540 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,540 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,540 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,541 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,541 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,541 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,541 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,542 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,542 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,542 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,542 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,543 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,543 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,543 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,543 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,544 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,545 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,545 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,546 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,546 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,549 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,552 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,552 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,553 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,553 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,553 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,553 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,554 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,554 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,554 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,555 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,556 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,556 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,557 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,558 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,558 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,559 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,559 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,560 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,561 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,561 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,561 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,562 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,563 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,563 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,564 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,565 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,565 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,566 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,567 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,567 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,568 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,568 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,569 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,570 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,571 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,571 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,571 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,572 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,572 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,573 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,573 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,574 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,574 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,574 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,575 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,575 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,575 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,576 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,576 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,576 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,576 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,576 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,577 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,577 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,577 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,577 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,578 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,578 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,578 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,578 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,579 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,579 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,579 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,580 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,581 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,584 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,585 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,586 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,587 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,587 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,588 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,589 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,590 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,591 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,591 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,592 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,593 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,593 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,594 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,594 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,595 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,595 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,596 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,596 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,597 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,597 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,598 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,598 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,598 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,599 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,599 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,599 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,600 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,601 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,602 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,602 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,603 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,604 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,605 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,606 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,607 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,608 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,609 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,609 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,610 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,611 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,611 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,611 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,612 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,612 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,612 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,613 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,613 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,613 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,613 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,614 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,614 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,614 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,615 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,615 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,615 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,616 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,616 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,616 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,617 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,617 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,617 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,618 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,618 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,619 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,619 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,620 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,620 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,620 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,621 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,621 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,621 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,622 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,623 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,624 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,626 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,627 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,628 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,629 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,630 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,631 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,631 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,632 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,633 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,634 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,634 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,635 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,637 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,638 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,639 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,640 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,641 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,641 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,641 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,642 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,642 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,643 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,643 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,643 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,643 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,644 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,644 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,644 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,645 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,645 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,646 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,646 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,647 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,648 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,649 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,649 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,650 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,651 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,651 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,652 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,653 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,654 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,655 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,655 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,655 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,656 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,657 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,657 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,659 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,660 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,660 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,662 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,663 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,664 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,664 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,664 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,665 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,665 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,665 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,666 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,666 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,666 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,667 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,667 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,667 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,668 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,668 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,668 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,668 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,669 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,669 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,669 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,670 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,670 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,670 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,671 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,671 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,671 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,672 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,672 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,673 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,673 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,675 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,676 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,677 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,678 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,679 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,680 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,681 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,681 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,682 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,683 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,683 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,684 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,684 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,684 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,685 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,686 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,687 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,687 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,688 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,688 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,689 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,690 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,690 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,693 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,694 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,695 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,696 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,697 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,698 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,699 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,700 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,701 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,701 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,701 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,702 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,702 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,702 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,703 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,703 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,703 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,704 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,704 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,704 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,705 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,705 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,705 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,705 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,706 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,706 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,706 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,707 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,707 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,707 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,707 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,707 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,708 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,708 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,708 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,709 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,709 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,709 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,709 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,710 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,710 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,710 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,710 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,711 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,711 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,712 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,715 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,715 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,718 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,719 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,719 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,720 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,720 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,721 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,721 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,721 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,722 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,722 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,723 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,723 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,723 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,724 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,724 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,724 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,725 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,725 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,725 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,726 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,726 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,726 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,727 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,727 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,727 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,728 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,728 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,728 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,729 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,729 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,729 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,730 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,730 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,731 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,732 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,734 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,735 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,736 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,736 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,737 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,737 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,737 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,738 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,739 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,740 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,741 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,741 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,742 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,742 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,742 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,742 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,743 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,743 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,744 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,744 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,744 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,745 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,745 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,745 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,745 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,746 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,746 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,746 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,747 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,747 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,747 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,747 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,747 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,747 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,748 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,748 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,748 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,749 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,751 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,751 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,752 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,752 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,753 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,754 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,754 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,755 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,757 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,760 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,760 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,760 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,761 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,761 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,761 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,762 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,762 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,762 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,763 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,763 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,764 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,764 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,764 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,765 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,765 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,765 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,766 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,766 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,766 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,767 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,767 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,767 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,769 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,770 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,771 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,772 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,773 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,774 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,775 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,776 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,777 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,777 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,778 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,778 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,779 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,779 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,779 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,779 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,780 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,780 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,780 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,781 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,781 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,781 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,782 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,782 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,782 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,782 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,783 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,783 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,784 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,784 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,784 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,785 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,785 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,785 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,785 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,786 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,786 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,786 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,786 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,787 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,788 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,789 - __main__ - ERROR - Erreur lors de la mise à jour de l'inventaire: Erreur d'envoi: [Errno 32] Broken pipe
-2025-06-19 00:30:19,789 - core.client - ERROR - Erreur d'envoi: [Errno 32] Broken pipe
+2025-06-19 01:36:57,853 - core.client - INFO - Numéro de client reçu: 177
+2025-06-19 01:36:57,853 - core.client - INFO - Dimensions de la carte reçues dans la même réponse: 15 20
+2025-06-19 01:36:57,853 - core.client - INFO - Dimensions de la carte parsées: (15, 20)
+2025-06-19 01:36:57,853 - core.client - INFO - Connecté au serveur. Client #177, Carte: 15x20
+2025-06-19 01:36:57,853 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:57,853 - __main__ - INFO - player 177 created on team chris at (7, 10)
+2025-06-19 01:36:57,975 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:57,975 - __main__ - INFO - Joueur initialisé: ID=177, Équipe=chris, Position=(7, 10)
+2025-06-19 01:36:57,975 - __main__ - INFO - Carte initialisée: 15x20
+2025-06-19 01:36:57,976 - __main__ - INFO - IA initialisée avec succès
+2025-06-19 01:36:57,976 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-19 01:36:57,976 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,046 - core.client - DEBUG - Données reçues: [ player food food food linemate linemate deraumere, food, linemate phiras, food linemate deraumere ]
+2025-06-19 01:36:58,047 - __main__ - DEBUG - Vision mise à jour: [['player', 'food', 'food', 'food', 'linemate', 'linemate', 'deraumere'], ['food'], ['linemate', 'phiras'], ['food', 'linemate', 'deraumere']]
+2025-06-19 01:36:58,048 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:36:58,048 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,059 - core.client - DEBUG - Données reçues: [ food 9, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:36:58,059 - __main__ - DEBUG - Inventaire mis à jour: {'food': 9, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,059 - __main__ - DEBUG - Pas assez de linemate dans l'inventaire pour l'élévation
+2025-06-19 01:36:58,060 - __main__ - DEBUG - État changé: collecting linemate (priorité)
+2025-06-19 01:36:58,060 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-19 01:36:58,060 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-19 01:36:58,061 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,131 - core.client - DEBUG - Données reçues: [ player food food food linemate linemate deraumere, food, linemate phiras, food linemate deraumere ]
+2025-06-19 01:36:58,132 - __main__ - DEBUG - Vision forcée mise à jour: [['player', 'food', 'food', 'food', 'linemate', 'linemate', 'deraumere'], ['food'], ['linemate', 'phiras'], ['food', 'linemate', 'deraumere']]
+2025-06-19 01:36:58,132 - __main__ - DEBUG - Contenu de la case actuelle: ['player', 'food', 'food', 'food', 'linemate', 'linemate', 'deraumere']
+2025-06-19 01:36:58,132 - __main__ - DEBUG - Ressources à collecter: ['food', 'food', 'food', 'linemate', 'linemate', 'deraumere']
+2025-06-19 01:36:58,132 - __main__ - DEBUG - Tentative de collecte de food à la position (7, 10)
+2025-06-19 01:36:58,132 - core.client - DEBUG - Envoyé (7s): Take food
+2025-06-19 01:36:58,132 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,203 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:36:58,203 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:36:58,204 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,214 - core.client - DEBUG - Données reçues: [ food 10, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:36:58,216 - __main__ - DEBUG - Inventaire mis à jour: {'food': 10, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,216 - __main__ - DEBUG - ✅ food pris avec succès, inventaire: {'food': 10, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,217 - __main__ - INFO - ✅ Ressource food collectée avec succès à la position (7, 10)
+2025-06-19 01:36:58,217 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 10, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,217 - __main__ - DEBUG - Ressource food collectée depuis la case actuelle
+2025-06-19 01:36:58,218 - __main__ - DEBUG - Tentative de collecte de food à la position (7, 10)
+2025-06-19 01:36:58,218 - core.client - DEBUG - Envoyé (7s): Take food
+2025-06-19 01:36:58,218 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,289 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:36:58,290 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:36:58,290 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,300 - core.client - DEBUG - Données reçues: [ food 11, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:36:58,301 - __main__ - DEBUG - Inventaire mis à jour: {'food': 11, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,301 - __main__ - DEBUG - ✅ food pris avec succès, inventaire: {'food': 11, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,302 - __main__ - INFO - ✅ Ressource food collectée avec succès à la position (7, 10)
+2025-06-19 01:36:58,302 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 11, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,303 - __main__ - DEBUG - Ressource food collectée depuis la case actuelle
+2025-06-19 01:36:58,303 - __main__ - DEBUG - Tentative de collecte de food à la position (7, 10)
+2025-06-19 01:36:58,304 - core.client - DEBUG - Envoyé (7s): Take food
+2025-06-19 01:36:58,304 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,374 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:36:58,376 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:36:58,377 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,387 - core.client - DEBUG - Données reçues: [ food 12, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:36:58,388 - __main__ - DEBUG - Inventaire mis à jour: {'food': 12, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,389 - __main__ - DEBUG - ✅ food pris avec succès, inventaire: {'food': 12, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,389 - __main__ - INFO - ✅ Ressource food collectée avec succès à la position (7, 10)
+2025-06-19 01:36:58,389 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 12, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,390 - __main__ - DEBUG - Ressource food collectée depuis la case actuelle
+2025-06-19 01:36:58,390 - __main__ - DEBUG - Tentative de collecte de linemate à la position (7, 10)
+2025-06-19 01:36:58,391 - core.client - DEBUG - Envoyé (7s): Take linemate
+2025-06-19 01:36:58,391 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,462 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:36:58,463 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:36:58,463 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,473 - core.client - DEBUG - Données reçues: [ food 12, linemate 1, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:36:58,474 - __main__ - DEBUG - Inventaire mis à jour: {'food': 12, 'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,475 - __main__ - DEBUG - ✅ linemate pris avec succès, inventaire: {'food': 12, 'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,476 - __main__ - INFO - ✅ Ressource linemate collectée avec succès à la position (7, 10)
+2025-06-19 01:36:58,477 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 12, 'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,478 - __main__ - DEBUG - Ressource linemate collectée depuis la case actuelle
+2025-06-19 01:36:58,479 - __main__ - DEBUG - Tentative de collecte de linemate à la position (7, 10)
+2025-06-19 01:36:58,480 - core.client - DEBUG - Envoyé (7s): Take linemate
+2025-06-19 01:36:58,480 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,550 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:36:58,551 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:36:58,552 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,562 - core.client - DEBUG - Données reçues: [ food 12, linemate 2, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:36:58,562 - __main__ - DEBUG - Inventaire mis à jour: {'food': 12, 'linemate': 2, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,563 - __main__ - DEBUG - ✅ linemate pris avec succès, inventaire: {'food': 12, 'linemate': 2, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,563 - __main__ - INFO - ✅ Ressource linemate collectée avec succès à la position (7, 10)
+2025-06-19 01:36:58,564 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 12, 'linemate': 2, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,564 - __main__ - DEBUG - Ressource linemate collectée depuis la case actuelle
+2025-06-19 01:36:58,565 - __main__ - DEBUG - Tentative de collecte de deraumere à la position (7, 10)
+2025-06-19 01:36:58,565 - core.client - DEBUG - Envoyé (7s): Take deraumere
+2025-06-19 01:36:58,565 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,636 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:36:58,637 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:36:58,637 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:36:58,647 - core.client - DEBUG - Données reçues: [ food 12, linemate 2, deraumere 1, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:36:58,648 - __main__ - DEBUG - Inventaire mis à jour: {'food': 12, 'linemate': 2, 'deraumere': 1, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,649 - __main__ - DEBUG - ✅ deraumere pris avec succès, inventaire: {'food': 12, 'linemate': 2, 'deraumere': 1, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,649 - __main__ - INFO - ✅ Ressource deraumere collectée avec succès à la position (7, 10)
+2025-06-19 01:36:58,649 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 12, 'linemate': 2, 'deraumere': 1, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:36:58,650 - __main__ - DEBUG - Ressource deraumere collectée depuis la case actuelle
+2025-06-19 01:36:58,650 - __main__ - DEBUG - Ressources disponibles ramassées
+2025-06-19 01:36:58,651 - __main__ - INFO - 🚀 Linemate collecté, tentative d'élévation immédiate
+2025-06-19 01:36:58,651 - __main__ - DEBUG - Pas assez de linemate dans l'inventaire pour l'élévation
+2025-06-19 01:36:58,651 - __main__ - INFO - ❌ Conditions d'élévation non remplies, collecte d'autres ressources
+2025-06-19 01:37:05,652 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-19 01:37:05,652 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:05,722 - core.client - DEBUG - Données reçues: [ player, food, linemate phiras, food linemate deraumere ]
+2025-06-19 01:37:05,723 - __main__ - DEBUG - Vision mise à jour: [['player'], ['food'], ['linemate', 'phiras'], ['food', 'linemate', 'deraumere']]
+2025-06-19 01:37:05,723 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:37:05,724 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:05,734 - core.client - DEBUG - Données reçues: [ food 6, linemate 2, deraumere 1, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:37:05,735 - __main__ - DEBUG - Inventaire mis à jour: {'food': 6, 'linemate': 2, 'deraumere': 1, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:05,735 - __main__ - DEBUG - Pas assez de linemate dans l'inventaire pour l'élévation
+2025-06-19 01:37:05,736 - __main__ - DEBUG - État changé: collecting linemate (priorité)
+2025-06-19 01:37:05,736 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-19 01:37:05,737 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-19 01:37:05,738 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:05,808 - core.client - DEBUG - Données reçues: [ player, food, linemate phiras, food linemate deraumere ]
+2025-06-19 01:37:05,808 - __main__ - DEBUG - Vision forcée mise à jour: [['player'], ['food'], ['linemate', 'phiras'], ['food', 'linemate', 'deraumere']]
+2025-06-19 01:37:05,808 - __main__ - DEBUG - Contenu de la case actuelle: ['player']
+2025-06-19 01:37:05,809 - __main__ - DEBUG - Ressources à collecter: []
+2025-06-19 01:37:05,809 - __main__ - WARNING - 🚨 Nourriture critique, recherche prioritaire de nourriture
+2025-06-19 01:37:05,809 - __main__ - INFO - 🍽️ Nourriture trouvée à (1, 0), déplacement prioritaire
+2025-06-19 01:37:05,809 - __main__ - DEBUG - Collision détectée, tentative d'éjection
+2025-06-19 01:37:05,811 - __main__ - DEBUG - Éjection réussie, tentative de déplacement
+2025-06-19 01:37:05,912 - core.client - DEBUG - Envoyé (7s): Right
+2025-06-19 01:37:05,913 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:05,982 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:37:05,982 - __main__ - DEBUG - Direction mise à jour: 1
+2025-06-19 01:37:05,983 - __main__ - DEBUG - Rotation vers la droite: 1
+2025-06-19 01:37:05,983 - core.client - DEBUG - Envoyé (7s): Forward
+2025-06-19 01:37:05,983 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:06,053 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:37:06,054 - __main__ - DEBUG - Position mise à jour: (8, 10)
+2025-06-19 01:37:06,054 - __main__ - DEBUG - Déplacement vers (8, 10)
+2025-06-19 01:37:06,054 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision après déplacement
+2025-06-19 01:37:06,054 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-19 01:37:06,054 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-19 01:37:06,055 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:06,125 - core.client - DEBUG - Données reçues: [ player deraumere deraumere, food mendiane, food food, sibur mendiane ]
+2025-06-19 01:37:06,125 - __main__ - DEBUG - Vision forcée mise à jour: [['player', 'deraumere', 'deraumere'], ['food', 'mendiane'], ['food', 'food'], ['sibur', 'mendiane']]
+2025-06-19 01:37:06,126 - __main__ - INFO - ✅ Déplacement vers nourriture réussi, collecte immédiate
+2025-06-19 01:37:06,126 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-19 01:37:06,126 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-19 01:37:06,126 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:06,197 - core.client - DEBUG - Données reçues: [ player deraumere deraumere, food mendiane, food food, sibur mendiane ]
+2025-06-19 01:37:06,198 - __main__ - DEBUG - Vision forcée mise à jour: [['player', 'deraumere', 'deraumere'], ['food', 'mendiane'], ['food', 'food'], ['sibur', 'mendiane']]
+2025-06-19 01:37:06,199 - __main__ - DEBUG - Contenu de la case actuelle: ['player', 'deraumere', 'deraumere']
+2025-06-19 01:37:06,199 - __main__ - DEBUG - Ressources à collecter: ['deraumere', 'deraumere']
+2025-06-19 01:37:06,200 - __main__ - DEBUG - Tentative de collecte de deraumere à la position (8, 10)
+2025-06-19 01:37:06,201 - core.client - DEBUG - Envoyé (7s): Take deraumere
+2025-06-19 01:37:06,202 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:06,272 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:37:06,272 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:37:06,273 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:06,283 - core.client - DEBUG - Données reçues: [ food 6, linemate 2, deraumere 2, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:37:06,284 - __main__ - DEBUG - Inventaire mis à jour: {'food': 6, 'linemate': 2, 'deraumere': 2, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:06,285 - __main__ - DEBUG - ✅ deraumere pris avec succès, inventaire: {'food': 6, 'linemate': 2, 'deraumere': 2, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:06,285 - __main__ - INFO - ✅ Ressource deraumere collectée avec succès à la position (8, 10)
+2025-06-19 01:37:06,286 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 6, 'linemate': 2, 'deraumere': 2, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:06,286 - __main__ - DEBUG - Ressource deraumere collectée depuis la case actuelle
+2025-06-19 01:37:06,286 - __main__ - DEBUG - Tentative de collecte de deraumere à la position (8, 10)
+2025-06-19 01:37:06,287 - core.client - DEBUG - Envoyé (7s): Take deraumere
+2025-06-19 01:37:06,287 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:06,358 - core.client - DEBUG - Données reçues: ok
+2025-06-19 01:37:06,359 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:37:06,360 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:06,370 - core.client - DEBUG - Données reçues: [ food 6, linemate 2, deraumere 3, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:37:06,371 - __main__ - DEBUG - Inventaire mis à jour: {'food': 6, 'linemate': 2, 'deraumere': 3, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:06,371 - __main__ - DEBUG - ✅ deraumere pris avec succès, inventaire: {'food': 6, 'linemate': 2, 'deraumere': 3, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:06,371 - __main__ - INFO - ✅ Ressource deraumere collectée avec succès à la position (8, 10)
+2025-06-19 01:37:06,371 - __main__ - INFO - 📦 Inventaire après collecte: {'food': 6, 'linemate': 2, 'deraumere': 3, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:06,372 - __main__ - DEBUG - Ressource deraumere collectée depuis la case actuelle
+2025-06-19 01:37:06,372 - __main__ - INFO - ✅ Nourriture collectée en priorité
+2025-06-19 01:37:13,372 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-19 01:37:13,373 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:13,443 - core.client - DEBUG - Données reçues: [ player, food mendiane, food food, sibur mendiane ]
+2025-06-19 01:37:13,444 - __main__ - DEBUG - Vision mise à jour: [['player'], ['food', 'mendiane'], ['food', 'food'], ['sibur', 'mendiane']]
+2025-06-19 01:37:13,444 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-19 01:37:13,445 - core.client - DEBUG - En attente de données du serveur...
+2025-06-19 01:37:13,455 - core.client - DEBUG - Données reçues: [ food 0, linemate 2, deraumere 3, sibur 0, mendiane 0, phiras 0, thystame 0 ]
+2025-06-19 01:37:13,456 - __main__ - DEBUG - Inventaire mis à jour: {'food': 0, 'linemate': 2, 'deraumere': 3, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-19 01:37:13,456 - __main__ - ERROR - Le joueur est mort de faim

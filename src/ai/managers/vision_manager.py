@@ -52,6 +52,27 @@ class VisionManager:
             self.logger.error(f"Erreur lors de la mise à jour de la vision: {str(e)}")
             return False
 
+    def force_update_vision(self) -> bool:
+        """Force la mise à jour de la vision en ignorant le cooldown.
+        
+        Returns:
+            bool: True si la mise à jour a réussi
+        """
+        try:
+            self.logger.debug("🔄 Mise à jour forcée de la vision (ignorant le cooldown)")
+            response = self.protocol.look()
+            self.vision = self._parse_vision(response)
+            self.vision_data = self.vision
+            self.last_vision_update = time.time()
+            
+            self._update_vision_cache()
+            
+            self.logger.debug(f"Vision forcée mise à jour: {self.vision}")
+            return True
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour forcée de la vision: {str(e)}")
+            return False
+
     def _update_vision_cache(self) -> None:
         """Met à jour le cache de vision."""
         try:

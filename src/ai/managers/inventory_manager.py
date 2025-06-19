@@ -60,14 +60,14 @@ class InventoryManager:
             bool: True si l'objet a été pris
         """
         try:
-            response = self.protocol.take(object_type)
-            if response == "ok":
+            success = self.protocol.take(object_type)
+            if success:
                 if not self.update_inventory():
                     self.logger.error("Erreur lors de la mise à jour de l'inventaire après prise")
                     return False
-                self.logger.debug(f"{object_type} pris avec succès, inventaire: {self.inventory}")
+                self.logger.debug(f"✅ {object_type} pris avec succès, inventaire: {self.inventory}")
                 return True
-            self.logger.debug(f"Impossible de prendre {object_type}: {response}")
+            self.logger.debug(f"❌ Impossible de prendre {object_type}: échec de la commande")
             return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la prise d'objet: {str(e)}")
