@@ -13,14 +13,19 @@
     #include <stdbool.h>
     #include "../Clock/clock.h"
     #include "../Commandes/command.h"
-#include "../Map/map.h"
+    #include "../Map/map.h"
     #include "../SessionClients/session_client.h"
 
     #define MAX_TEAMS 10
     #define MAX_CLIENTS 1000
 
 // Structures (inchangées)
-typedef enum { NORTH, EAST, SOUTH, WEST } orientation_t;
+typedef enum {
+    NORTH,
+    EAST,
+    SOUTH,
+    WEST
+} orientation_t;
 
 typedef struct session_client_s {
     int x, y;
@@ -65,7 +70,8 @@ typedef struct {
 } command_info_t;
 
 typedef void (*parser_func_t)(config_server_t *conf, char **argv, int *i);
-typedef void (*cmd_func_t)(server_t *server, session_client_t *client, const command_t *cmd);
+typedef void (*cmd_func_t)(server_t *server, session_client_t *client,
+    const command_t *cmd);
 
 typedef struct {
     const char *key;
@@ -78,7 +84,7 @@ typedef struct {
 } option_cmd_t;
 
 extern const command_info_t command_table[];
-extern const size_t command_table_size;
+extern const size_t cmd_table_size;
 
 void parse_port(config_server_t *conf, char **argv, int *i);
 void parse_width(config_server_t *conf, char **argv, int *i);
@@ -115,10 +121,12 @@ double get_exec_duration(const char *cmd, int freq);
 void exec_cmd(server_t *server, int client_idx);
 
 // server_command_handler.c
-void handle_command(server_t *server, session_client_t *client, const command_t *cmd);
-void connec_t(server_t *server, session_client_t *client, const command_t *cmd);
-void assign_team(server_t *server, int client_idx, const char* team_name);
-void handle_command_ai(server_t *server, session_client_t *client, const command_t *cmd);
-void handle_command_gui(server_t *server, session_client_t *client, const command_t *cmd);
+void handle_command(server_t *server, session_client_t *client,
+    const command_t *cmd);
+void connec_t(server_t *server, session_client_t *client,
+    const command_t *cmd);
+void assign_team(server_t *server, int client_idx, const char *team_name);
+
+
 
 #endif //SERVER_H

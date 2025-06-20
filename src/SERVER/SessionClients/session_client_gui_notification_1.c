@@ -53,10 +53,12 @@ void pbc_f(server_t *server, session_client_t *client, const char *message)
 }
 
 /// Notifie le début d’une incantation (pic)
-void pic_f(server_t *server, session_client_t *client, const char *player_list_str)
+void pic_f(server_t *server, session_client_t *client,
+    const char *player_list_str)
 {
     char buffer[2048];
 
-    snprintf(buffer, sizeof(buffer), "pic %d %d %d %s\n", client->x, client->y, client->level, player_list_str);
+    snprintf(buffer, sizeof(buffer), "pic %d %d %d %s\n", client->x,
+        client->y, client->level, player_list_str);
     send_to_all_guis(server, buffer);
 }

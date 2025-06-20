@@ -1,5 +1,5 @@
 /*
-** EPITECH PROJECT, 2024
+** EPITECH PROJECT, 2025
 ** B-YEP-400-COT-4-1-zappy-noah.toffa
 ** File description:
 ** commandes.h
@@ -17,6 +17,7 @@ typedef struct {
     char **args;
     double duration;
     struct timespec ready_at;
+    int argc;
 } command_t;
 
 typedef struct {
@@ -32,10 +33,8 @@ int remove_command_at(command_queue_t *queue, int index);
 int get_next_ready_command(command_queue_t *queue, struct timespec *now);
 int enqueue_command(command_queue_t *queue, const char *cmd, double duration,
     struct timespec* now);
-
 // command_utils.c
 int is_command_ready(command_t *cmd, struct timespec *now);
-void setup_command(command_queue_t *queue, const char *cmd, int index, double duration);
-
-
+void setup_command(command_queue_t *queue, const char *cmd, int index,
+    double duration);
 #endif //COMMANDES_H

@@ -47,8 +47,7 @@ void initialize_teams(server_t *server)
         server->teams[i].name = strdup(names[i]);
         server->teams[i].nbPlayers = 0;
         server->teams[i].nbMaxPlayers = server->config->nbClients;
-        // Le nombre d'oeufs disponibles au départ par équipe
-        server->teams[i].nbEggs = server->config->nbClients;
+        server->teams[i].nbEggs = server->config->nbClients * 2 / 3;
     }
 }
 
@@ -60,7 +59,7 @@ server_t *setup_server(config_server_t *config)
     memset(server, 0, sizeof(server_t));
     server->config = config;
     server->port = config->port;
-    server->nfds = 1; // Commence avec le socket serveur
+    server->nfds = 1;
     init_clients(server);
     initialize_teams(server);
     server->map = map_create(config->map_w, config->map_h);
@@ -84,6 +83,8 @@ void cleanup_server(server_t *server)
     }
     // TODO: Ajoutez ici le free pour les autres ressources (map, teams, etc.)
     if (server->config) {
+        map_destroy(server->map, server->config->map_w,
+            server->config->map_h);
         for (int i = 0; i < server->config->nb_teams; i++)
             free(server->config->names[i]);
         free(server->config);

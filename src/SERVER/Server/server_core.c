@@ -40,10 +40,9 @@ void check_life(server_t *server, int client_idx)
         if (client->inventory[FOOD] > 0) {
             client->inventory[FOOD]--;
             get_next_food_consumption(client, server);
-            // pin_f(server, client, NULL); // TODO: Notifier le GUI
         } else {
             send(client->fd, "dead\n", 5, 0);
-            // pdi_f(server, client, NULL); // TODO: Notifier le GUI
+            pdi_f(server, client);
             map_detach_entity(&server->map[client->y][client->x], client);
             close_client_connection(server, client_idx);
         }
@@ -54,7 +53,8 @@ void handle_game_logic(server_t *server)
 {
     spawn_ressources(server);
     for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].fd == -1 || server->clients[i].is_egg || !server->clients[i].active)
+        if (server->clients[i].fd == -1 || server->clients[i].is_egg ||
+            !server->clients[i].active)
             continue;
         exec_cmd(server, i);
         check_life(server, i);
@@ -69,16 +69,12 @@ void run_server(server_t *server)
     while (running) {
         timeout = calculate_next_event_timeout(server);
         ready = poll(server->fds, server->nfds, timeout);
-
         if (ready < 0) {
-            if (errno == EINTR)
-                continue;
             perror("poll");
-            break;
+            continue;
         }
         if (ready > 0)
             handle_network_events(server);
-
         handle_game_logic(server);
     }
 }

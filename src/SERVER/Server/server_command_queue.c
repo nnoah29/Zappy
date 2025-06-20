@@ -17,7 +17,7 @@ const command_info_t command_table[] = {
     {"Fork", 42}, {"Eject", 7}, {"Take", 7}, {"Set", 7},
     {"Incantation", 300},
 };
-const size_t command_table_size = sizeof(command_table) / sizeof(command_info_t);
+const size_t cmd_table_size = sizeof(command_table) / sizeof(command_info_t);
 
 double get_exec_duration(const char *cmd, int freq)
 {
@@ -31,12 +31,12 @@ double get_exec_duration(const char *cmd, int freq)
     free(cmd_cpy);
     if (!token)
         return -1.0;
-    for (size_t i = 0; i < command_table_size; i++) {
+    for (size_t i = 0; i < cmd_table_size; i++) {
         if (strcmp(token, command_table[i].name) == 0) {
             return (double)command_table[i].units / freq;
         }
     }
-    return 0.0; // Commande inconnue, traitée immédiatement (ko)
+    return 0.0;
 }
 
 void process_command(char *cmd, const session_client_t *client, int freq)
@@ -61,7 +61,7 @@ void receive_client_data(server_t *server, int client_idx)
         buffer, sizeof(buffer) - 1, 0);
     const session_client_t *client = &server->clients[client_idx];
 
-    if (len <= 0) { // Déconnexion ou erreur
+    if (len <= 0) {
         printf("Client %d déconnecté.\n", client_idx);
         close_client_connection(server, client_idx);
         return;

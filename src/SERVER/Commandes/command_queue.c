@@ -66,8 +66,8 @@ int remove_command_at(command_queue_t *queue, int index)
     if (queue->size == 0)
         return 0;
     free(queue->commands[index].raw_cmd);
-    // Note: La libération des args n'était pas dans votre code original,
-    // donc je la laisse de côté pour respecter la consigne "telquel".
+    for (int i = 0; i < queue->commands[index].argc; ++i)
+        free(queue->commands[index].args[i]);
     for (int i = index; i != queue->tail; i = (i + 1) % MAX_COMMANDS) {
         next = (i + 1) % MAX_COMMANDS;
         queue->commands[i] = queue->commands[next];

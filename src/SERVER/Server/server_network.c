@@ -63,7 +63,8 @@ void accept_client_connection(server_t *server)
         return;
     }
     setup_client(server, new_idx, client_fd);
-    printf("Nouveau client connecté avec fd %d, assigné à l'index %d.\n", client_fd, new_idx);
+    printf("Nouveau client connecté avec fd %d, assigné à l'index %d.\n",
+        client_fd, new_idx);
 }
 
 void close_client_connection(server_t *server, int client_idx)
@@ -78,15 +79,11 @@ void close_client_connection(server_t *server, int client_idx)
     }
     if (server->clients[client_idx].fd != -1)
         close(server->clients[client_idx].fd);
-
-    // Nettoyage de la structure client
     free(server->clients[client_idx].queue);
     memset(&server->clients[client_idx], 0, sizeof(session_client_t));
     server->clients[client_idx].fd = -1;
     server->clients[client_idx].idx = -1;
-
     if (poll_idx != -1) {
-        // Compactage du tableau pollfd
         server->fds[poll_idx] = server->fds[server->nfds - 1];
         server->nfds--;
     }

@@ -21,7 +21,8 @@ int is_command_ready(command_t *cmd, struct timespec *now)
     return 0;
 }
 
-void setup_command(command_queue_t *queue, const char *cmd, int index, double duration)
+void setup_command(command_queue_t *queue, const char *cmd,
+    int index, double duration)
 {
     char *cmd_copy = strdup(cmd);
     char *token = strtok(cmd_copy, " ");
@@ -38,6 +39,7 @@ void setup_command(command_queue_t *queue, const char *cmd, int index, double du
         if (!token)
             break;
         queue->commands[index].args[i] = strdup(token);
+        queue->commands[index].argc++;
     }
     queue->commands[index].args[i] = NULL;
     queue->commands[index].duration = duration;

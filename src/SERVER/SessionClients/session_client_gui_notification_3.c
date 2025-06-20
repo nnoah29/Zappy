@@ -18,7 +18,8 @@ void enw_f(server_t *server, session_client_t *egg)
 {
     char buffer[128];
 
-    snprintf(buffer, sizeof(buffer), "enw %d %d %d %d\n", egg->idx, egg->parent_idx, egg->x, egg->y);
+    snprintf(buffer, sizeof(buffer), "enw %d %d %d %d\n",
+        egg->idx, egg->parent_idx, egg->x, egg->y);
     send_to_all_guis(server, buffer);
 }
 

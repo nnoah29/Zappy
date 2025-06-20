@@ -12,7 +12,6 @@ add_executable(SERVER main.c
         Clock/clock.h
         Commandes/command.h
         SessionClients/session_client_gui_cmd_1.c
-        Map/map.c
         Map/map.h
         SessionClients/session_client_gui_notification_1.c
         SessionClients/session_client_gui_cmd_2.c
@@ -33,4 +32,6 @@ add_executable(SERVER main.c
         Utilitaires/event_scheduler.c
         Utilitaires/client_utils.c
         Utilitaires/error.c
+        Map/map_management.c
+        Map/map_entities.c
 )

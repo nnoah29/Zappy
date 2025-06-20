@@ -24,7 +24,8 @@ void plv_h(server_t *server, session_client_t *client, const command_t *cmd)
     }
     player_idx = atoi(&cmd->args[0][1]);
     if (player_idx != -1) {
-        dprintf(client->fd, "plv %d %d\n", server->clients[player_idx].idx, server->clients[player_idx].level);
+        dprintf(client->fd, "plv %d %d\n", server->clients[player_idx].idx,
+            server->clients[player_idx].level);
     }
 }
 
@@ -42,9 +43,9 @@ void pin_h(server_t *server, session_client_t *client, const command_t *cmd)
     if (player_idx != -1) {
         target = &server->clients[player_idx];
         dprintf(client->fd, "pin %d %d %d %d %d %d %d %d %d %d\n",
-            target->idx, target->x, target->y, target->inventory[0], target->inventory[1],
-            target->inventory[2], target->inventory[3], target->inventory[4],
-            target->inventory[5], target->inventory[6]);
+            target->idx, target->x, target->y, target->inventory[0],
+            target->inventory[1], target->inventory[2], target->inventory[3],
+            target->inventory[4], target->inventory[5], target->inventory[6]);
     }
 }
 

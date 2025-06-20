@@ -8,31 +8,28 @@
 #include "session_client.h"
 #include <stdio.h>
 
-void forward_f(server_t *server, session_client_t *client, const command_t *cmd)
+void forward_f(server_t *server, session_client_t *client,
+    const command_t *cmd)
 {
     int x = client->x;
     int y = client->y;
 
     switch (client->orientation) {
-        case NORTH:
-            y = (y - 1 + server->config->map_h)
-                % server->config->map_h;
-            break;
-        case EAST:
-            x = (x + 1) % server->config->map_w;
-            break;
-        case SOUTH:
-            y = (y + 1) % server->config->map_h;
-            break;
-        case WEST:
-            x = (x - 1 + server->config->map_w)
-                % server->config->map_w;
-            break;
-        default: ;
+    case NORTH:
+        y = (y - 1 + server->config->map_h) % server->config->map_h;
+        break;
+    case EAST:
+        x = (x + 1) % server->config->map_w;
+        break;
+    case SOUTH:
+        y = (y + 1) % server->config->map_h;
+        break;
+    case WEST:
+        x = (x - 1 + server->config->map_w) % server->config->map_w;
+        break;
     }
     map_move_entity(server->map, client, x, y);
     ppo_f(server, client);
-    printf("forward\n");
     (void)cmd;
 }
 
@@ -60,7 +57,8 @@ void look_f(server_t *server, session_client_t *client, const command_t *cmd)
     printf("look\n");
 }
 
-void inventory_f(server_t *server, session_client_t *client, const command_t *cmd)
+void inventory_f(server_t *server, session_client_t *client,
+    const command_t *cmd)
 {
     (void)server;
     (void)client;
