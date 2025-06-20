@@ -2,14 +2,14 @@
 ** EPITECH PROJECT, 2024
 ** B-YEP-400-COT-4-1-zappy-noah.toffa
 ** File description:
-** commandes.c
+** command_queue.c
 */
 
-#include "commandes.h"
+#include "command.h"
 #include <stdlib.h>
 #include <string.h>
 
-int find_best_index(int best_index, int index, command_queue_t *queue,
+static int find_best_index(int best_index, int index, command_queue_t *queue,
     command_t *cmd)
 {
     if (best_index == -1 ||
@@ -18,6 +18,28 @@ int find_best_index(int best_index, int index, command_queue_t *queue,
         best_index = index;
     }
     return best_index;
+}
+
+void init_command_queue(command_queue_t *queue)
+{
+    queue->head = 0;
+    queue->tail = 0;
+    queue->size = 0;
+}
+
+int enqueue_command(command_queue_t *queue, const char *cmd, double duration,
+    struct timespec *now)
+{
+    const int index = queue->tail;
+
+    if (queue->size >= MAX_COMMANDS)
+        return 0;
+    setup_command(queue, cmd, index, duration);
+    queue->commands[index].ready_at = *now;
+    add_seconds_to_timespec(&queue->commands[index].ready_at, duration);
+    queue->tail = (queue->tail + 1) % MAX_COMMANDS;
+    queue->size++;
+    return 1;
 }
 
 int get_next_ready_command(command_queue_t *queue, struct timespec *now)
@@ -44,33 +66,13 @@ int remove_command_at(command_queue_t *queue, int index)
     if (queue->size == 0)
         return 0;
     free(queue->commands[index].raw_cmd);
+    // Note: La libération des args n'était pas dans votre code original,
+    // donc je la laisse de côté pour respecter la consigne "telquel".
     for (int i = index; i != queue->tail; i = (i + 1) % MAX_COMMANDS) {
         next = (i + 1) % MAX_COMMANDS;
         queue->commands[i] = queue->commands[next];
     }
     queue->tail = (queue->tail - 1 + MAX_COMMANDS) % MAX_COMMANDS;
     queue->size--;
-    return 1;
-}
-
-void init_command_queue(command_queue_t *queue)
-{
-    queue->head = 0;
-    queue->tail = 0;
-    queue->size = 0;
-}
-
-int enqueue_command(command_queue_t *queue, const char *cmd, double duration,
-    struct timespec *now)
-{
-    const int index = queue->tail;
-
-    if (queue->size >= MAX_COMMANDS)
-        return 0;
-    setup_command(queue, cmd, index, duration);
-    queue->commands[index].ready_at = *now;
-    add_seconds_to_timespec(&queue->commands[index].ready_at, duration);
-    queue->tail = (queue->tail + 1) % MAX_COMMANDS;
-    queue->size++;
     return 1;
 }

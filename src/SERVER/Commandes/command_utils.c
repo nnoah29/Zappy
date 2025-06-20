@@ -2,13 +2,12 @@
 ** EPITECH PROJECT, 2024
 ** B-YEP-400-COT-4-1-zappy-noah.toffa
 ** File description:
-** commandes.c
+** command_utils.c
 */
 
-#include "commandes.h"
+#include "command.h"
 #include <stdlib.h>
 #include <string.h>
-
 
 int is_command_ready(command_t *cmd, struct timespec *now)
 {

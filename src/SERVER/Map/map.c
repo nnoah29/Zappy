@@ -36,21 +36,31 @@ tile_t **map_create(int width, int height)
     return map;
 }
 
-void map_destroy(tile_t **map, int width, int height) {
-    // Note: la destruction des listes chaînées doit être gérée avec soin
-    // pour éviter les fuites de mémoire.
+void map_destroy(tile_t **map, int width, int height)
+{
+    if (!map)
+        return;
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            entity_on_tile_t *current = map[y][x].entities;
+            while (current) {
+                entity_on_tile_t *next = current->next;
+                free(current);
+                current = next;
+            }
+        }
+        free(map[y]);
+    }
+    free(map);
     // TODO: implementer cette fonction
 }
 
 /**
  * @brief Ajoute une entité à une tuile de la carte
- *
  * Cette fonction crée un nouveau nœud dans la liste chaînée des entités présentes
  * sur une tuile. L'entité est ajoutée en tête de liste.
- *
  * @param tile   Pointeur vers la tuile où ajouter l'entité
  * @param entity Pointeur vers l'entité (session client) à ajouter
- *
  * @note La fonction termine le programme avec un code d'erreur 84 si l'allocation
  *       mémoire échoue
  */
@@ -67,13 +77,10 @@ void map_add_entity(tile_t *tile, session_client_t *entity)
 
 /**
  * @brief Détache une entité d'une tuile sans la supprimer
- *
  * Cette fonction retire l'entité de la liste des entités présentes sur la tuile,
  * sans supprimer l'entité elle-même. Le nœud de la liste est libéré.
- *
  * @param tile   Pointeur vers la tuile d'où détacher l'entité
  * @param entity Pointeur vers l'entité (session client) à détacher
- *
  * @return 1 si l'entité a été trouvée et détachée, 0 sinon
  */
 int map_detach_entity(tile_t *tile, session_client_t *entity)
@@ -83,11 +90,10 @@ int map_detach_entity(tile_t *tile, session_client_t *entity)
 
     while (current != NULL) {
         if (current->entity == entity) {
-            if (previous == NULL) {
+            if (previous == NULL)
                 tile->entities = current->next;
-            } else {
+            else
                 previous->next = current->next;
-            }
             free(current);
             return 1;
         }
@@ -116,8 +122,8 @@ void map_spawn_resources(server_t *server)
     for (int res_idx = 0; res_idx < NB_RESOURCES; res_idx++) {
         quantity_to_spawn = map_size * densities[res_idx];
         for (int i = 0; i < quantity_to_spawn; i++) {
-            x = rand() % server->config->map_w;
-            y = rand() % server->config->map_h;
+            x = (int)random() % server->config->map_w;
+            y = (int)random() % server->config->map_h;
             server->map[y][x].resources[res_idx]++;
         }
     }

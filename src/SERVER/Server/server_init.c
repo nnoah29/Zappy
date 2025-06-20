@@ -2,16 +2,16 @@
 ** EPITECH PROJECT, 2024
 ** B-YEP-400-COT-4-1-zappy-noah.toffa
 ** File description:
-** Server.c
+** server_init.c
 */
 
-#include "server.h"
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
+#include <time.h>
+#include "server.h"
 #include "../my.h"
-static const server_t *s;
 
 void put_online(server_t *server)
 {
@@ -34,7 +34,8 @@ void init_clients(server_t *server)
     for (int i = 0; i < MAX_CLIENTS; ++i) {
         server->fds[i].fd = -1;
         server->clients[i].fd = -1;
-        server->clients[i].active = 0;
+        server->clients[i].active = false;
+        server->clients[i].idx = -1;
     }
 }
 
@@ -42,15 +43,15 @@ void initialize_teams(server_t *server)
 {
     char **names = server->config->names;
 
-    for (int i = 0; names[i] != NULL; ++i) {
+    for (int i = 0; i < server->config->nb_teams; ++i) {
         server->teams[i].name = strdup(names[i]);
         server->teams[i].nbPlayers = 0;
         server->teams[i].nbMaxPlayers = server->config->nbClients;
-        server->teams[i].nbEggs = server->config->nbClients * 2 / 3;
+        // Le nombre d'oeufs disponibles au départ par équipe
+        server->teams[i].nbEggs = server->config->nbClients;
     }
 }
 
-// initialiser le serveur
 server_t *setup_server(config_server_t *config)
 {
     server_t *server = malloc(sizeof(server_t));
@@ -59,16 +60,17 @@ server_t *setup_server(config_server_t *config)
     memset(server, 0, sizeof(server_t));
     server->config = config;
     server->port = config->port;
-    server->nfds = 0;
+    server->nfds = 1; // Commence avec le socket serveur
     init_clients(server);
     initialize_teams(server);
     server->map = map_create(config->map_w, config->map_h);
     put_online(server);
+    server->fds[0].fd = server->server_fd;
+    server->fds[0].events = POLLIN;
     map_spawn_resources(server);
     re_spawn_ressources_duration(server);
     signal(SIGINT, handle_signal);
     printf("Serveur en attente de connexions sur le port %d\n", server->port);
-    s = server;
     return server;
 }
 
@@ -80,10 +82,12 @@ void cleanup_server(server_t *server)
         if (server->fds[i].fd >= 0)
             close(server->fds[i].fd);
     }
+    // TODO: Ajoutez ici le free pour les autres ressources (map, teams, etc.)
     if (server->config) {
         for (int i = 0; i < server->config->nb_teams; i++)
             free(server->config->names[i]);
         free(server->config);
     }
     free(server);
+    printf("Serveur nettoyé et arrêté.\n");
 }

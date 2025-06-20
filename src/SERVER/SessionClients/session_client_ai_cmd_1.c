@@ -31,62 +31,30 @@ void forward_f(server_t *server, session_client_t *client, const command_t *cmd)
         default: ;
     }
     map_move_entity(server->map, client, x, y);
-    ppo_f(server, client, cmd);
+    ppo_f(server, client);
     printf("forward\n");
 }
 
 void right_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
     client->orientation = (client->orientation + 1) % 4;
-    ppo_f(server, client, cmd);
+    ppo_f(server, client);
     printf("right\n");
 }
 
 void left_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
     client->orientation = (client->orientation - 1 + 4) % 4;
-    ppo_f(server, client, cmd);
+    ppo_f(server, client);
     printf("left\n");
 }
 
 void look_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
-    if (client->orientation == NORTH)
     printf("look\n");
 }
 
 void inventory_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
     printf("inventory\n");
-}
-
-
-void broadcast_f(server_t *server, session_client_t *client, const command_t *cmd)
-{
-    printf("broadcast\n");
-}
-
-void connect_nbr_f(server_t *server, session_client_t *client, const command_t *cmd)
-{
-    printf("connect_nbr\n");
-}
-
-void fork_f(server_t *server, session_client_t *client, const command_t *cmd)
-{
-    printf("fork\n");
-}
-
-void eject_f(server_t *server, session_client_t *client, const command_t *cmd)
-{
-    printf("eject\n");
-}
-
-void take_object_f(server_t *server, session_client_t *client, const command_t *cmd)
-{
-    printf("take_object\n");
-}
-
-void set_object_f(server_t *server, session_client_t *client, const command_t *cmd)
-{
-    printf("set_object\n");
 }

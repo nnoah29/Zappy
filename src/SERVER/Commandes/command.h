@@ -5,7 +5,6 @@
 ** commandes.h
 */
 
-
 #ifndef COMMANDES_H
     #define COMMANDES_H
     #define MAX_COMMANDS 10
@@ -27,14 +26,16 @@ typedef struct {
     int size;
 } command_queue_t;
 
+// command_queue.c
+void init_command_queue(command_queue_t *queue);
+int remove_command_at(command_queue_t *queue, int index);
+int get_next_ready_command(command_queue_t *queue, struct timespec *now);
 int enqueue_command(command_queue_t *queue, const char *cmd, double duration,
     struct timespec* now);
-command_t *peek_command(command_queue_t *queue);
+
+// command_utils.c
 int is_command_ready(command_t *cmd, struct timespec *now);
-int dequeue_command(command_queue_t *queue);
-int get_next_ready_command(command_queue_t *queue, struct timespec *now);
-int remove_command_at(command_queue_t *queue, int index);
 void setup_command(command_queue_t *queue, const char *cmd, int index, double duration);
-void init_command_queue(command_queue_t *queue);
+
 
 #endif //COMMANDES_H

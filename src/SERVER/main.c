@@ -35,6 +35,7 @@ void recursive_parse(config_server_t *conf, char **argv, int i, int argc)
     recursive_parse(conf, argv, i + 1, argc);
 }
 
+// fonction utlie pour le debogage
 void print_config(config_server_t *server)
 {
     printf("Port: %d\n", server->port);
