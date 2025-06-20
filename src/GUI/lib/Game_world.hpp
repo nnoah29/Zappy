@@ -50,6 +50,8 @@ public:
     void removeEgg(int eggId);
     Player *findPlayer(int playerId);
     bool isValidPosition(int x, int y) const;
+    void updatePlayerLevel(int, int);
+    void updateResource(int, int, int, int);
 };
 
 #endif

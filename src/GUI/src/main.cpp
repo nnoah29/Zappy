@@ -3,8 +3,9 @@
 #include "../lib/Exceptions.hpp"
 #include <iostream>
 #include "../lib/Network.hpp"
-#include "../lib/Threads.hpp"
 #include "../lib/Parser.hpp"
+#include  "../lib/Game_world.hpp"
+#include<string>
 
 static int port = -1;
 static std::string machine;
@@ -66,27 +67,130 @@ bool parseArguments(int argc, char** argv)
     return true;
 }
 
-void parseMessage(const std::string& message) 
+void Msz(const std::vector<std::string>& oklm, GameWorld& gw)
 {
-    std::string messagecl = message;
-    messagecl.erase(std::remove(messagecl.begin(), messagecl.end(), '\r'), messagecl.end());
-    messagecl.erase(std::remove(messagecl.begin(), messagecl.end(), '\n'), messagecl.end());
-    
-    auto command = Parser::splitCommand(messagecl);
-    
-    std::cout << "[" << command.cmd << "] ";
-    for (const auto& arg : command.args) 
-        std::cout << arg << " ";
-    std::cout << "\n";
-    
-    if (command.cmd == "msz" && command.args.size() >= 2)
-        std::cout << ">>> Map size: " << command.args[0] << "x" << command.args[1] << "\n";
-    else if (command.cmd == "bct" && command.args.size() >= 9)
-        std::cout << ">>> Tile content at (" << command.args[0] << "," << command.args[1] << ")\n";
-    else if (command.cmd == "pnw" && command.args.size() >= 6)
-        std::cout << ">>> New player #" << command.args[0] << " from team " << command.args[5] << "\n";
-    else if (command.cmd == "seg")
-        std::cout << "\n>>> WINNING TEAM: " << (command.args.empty() ? "Unknown" : command.args[0]) << "\n\n";
+    if (oklm.size() < 3)
+        throw std::runtime_error("Invalid msz");
+    gw.initialize(std::stoi(oklm[1]), std::stoi(oklm[2]));
+}
+
+void Bct(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 10)
+        throw std::runtime_error("Invalid bct");
+    Resource res;
+    res.food = std::stoi(oklm[3]);
+    res.linemate = std::stoi(oklm[4]);
+    res.deraumere = std::stoi(oklm[5]);
+    res.sibur = std::stoi(oklm[6]);
+    res.mendiane = std::stoi(oklm[7]);
+    res.phiras = std::stoi(oklm[8]);
+    res.thystame = std::stoi(oklm[9]);
+    gw.updateTileResources(std::stoi(oklm[1]), std::stoi(oklm[2]), res);
+}
+
+void Pnw(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 7)
+        throw std::runtime_error("Invalid pnw");
+    Player p;
+    p.id = std::stoi(oklm[1]);
+    p.x = std::stoi(oklm[2]);
+    p.y = std::stoi(oklm[3]);
+    p.orientation = std::stoi(oklm[4]);
+    p.level = std::stoi(oklm[5]);
+    p.team = oklm[6];
+    gw.addPlayer(p);
+}
+
+void Ppo(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 5)
+        throw std::runtime_error("Invalid ppo");
+    gw.updatePlayerPosition(
+        std::stoi(oklm[1]),
+        std::stoi(oklm[2]),
+        std::stoi(oklm[3]),
+        std::stoi(oklm[4])
+    );
+}
+
+void Plv(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 3)
+        throw std::runtime_error("Invalid plv");
+    gw.updatePlayerLevel(std::stoi(oklm[1]), std::stoi(oklm[2]));
+}
+
+void Enw(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 5)
+        throw std::runtime_error("Invalid enw");
+    Egg egg;
+    egg.id = std::stoi(oklm[1]);
+    egg.x = std::stoi(oklm[3]);
+    egg.y = std::stoi(oklm[4]);
+    gw.addEgg(egg);
+}
+
+void Pdr(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 3)
+        throw std::runtime_error("Invalid pdr");
+    Player* p = gw.findPlayer(std::stoi(oklm[1]));
+    if (p)
+        gw.updateResource(p->x, p->y, std::stoi(oklm[2]), 1);
+}
+
+void Pgt(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 3)
+        throw std::runtime_error("Invalid pgt");
+    Player* p = gw.findPlayer(std::stoi(oklm[1]));
+    if (p)
+        gw.updateResource(p->x, p->y, std::stoi(oklm[2]), -1);
+}
+
+
+void parseMessage(const std::string& message, GameWorld& gw)
+{
+    std::stringstream ss(message);
+    std::string line;
+    std::vector<std::string> oklm;
+
+    while (std::getline(ss, line)) {
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+        oklm = Parser::split(line, ' ');
+        if (oklm.empty())
+            continue;
+        try {
+            if (oklm[0] == "msz") 
+                Msz(oklm, gw);
+            else if (oklm[0] == "bct")
+                Bct(oklm, gw);
+            else if (oklm[0] == "pnw")
+                Pnw(oklm, gw);
+            else if (oklm[0] == "ppo")
+                Ppo(oklm, gw);
+            else if (oklm[0] == "plv")
+                Plv(oklm, gw);
+            else if (oklm[0] == "pin")
+                std::cout<<"Inventory"<<std::endl;
+            else if (oklm[0] == "enw")
+                Enw(oklm, gw);
+            else if (oklm[0] == "pdr")
+                Pdr(oklm, gw);
+            else if (oklm[0] == "pgt")
+                Pgt(oklm, gw);
+            else if (oklm[0] == "pic")
+                std::cout<<"start of incantation"<<std::endl;
+            else if (oklm[0] == "pie")
+                std::cout<<"end of incantation"<<std::endl;
+            else if (oklm[0] == "seg") std::cout << "Winner: " << oklm[1] << "\n";
+        } catch (const std::exception& e) {
+            std::cerr << "Parse error: " << e.what() << "\n";
+        }
+    }
 }
 
 int main(int argc, char **argv) 
@@ -95,23 +199,17 @@ int main(int argc, char **argv)
         return 84;
 
     Network network;
+    GameWorld gameWorld;
     try {
         network.connect(machine, port);
         std::string welcome = network.receive();
         std::cout << "Server welcome: " << welcome << std::endl;
-        
         network.send("GRAPHIC\n");
         std::string reponse = network.receive();
-        Threads threads(network);
-        threads.setMessage(parseMessage);
-        threads.start();
-        std::cout << "\nGUI started. Waiting for server commands...\n";
-        std::cout << "Press Ctrl+C to exit\n\n";
-        while (threads.isRunning()) {
-            threads.processMessages();
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+        while (true) {
+            std::string response = network.receive();
+            parseMessage(response, gameWorld);
         }
-        
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;

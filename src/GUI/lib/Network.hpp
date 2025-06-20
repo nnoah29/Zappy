@@ -18,7 +18,7 @@ public:
     void connect(std::string, int);
     void disconnect();
     void send(const std::string &message);
-    std::string receive(size_t size = 1024);
+    std::string receive(size_t size = 10000);
     bool isConnected() const;
 private:
     int clientSocket;
