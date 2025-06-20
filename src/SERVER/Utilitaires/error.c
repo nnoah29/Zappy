@@ -11,7 +11,7 @@
 
 void exit_error(char *error, int degree)
 {
-    (void)degree;
     printf("[ERROR] : %s\n", error);
     exit(84);
+    (void)degree;
 }
