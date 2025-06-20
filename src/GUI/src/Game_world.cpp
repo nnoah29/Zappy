@@ -126,13 +126,27 @@ void GameWorld::updateResource(int x, int y, int resourceType, int amount)
     Tile& tile = m_map[y][x];
     
     switch (resourceType) {
-        case 0: tile.resources.food = std::max(0, tile.resources.food + amount); break;
-        case 1: tile.resources.linemate = std::max(0, tile.resources.linemate + amount); break;
-        case 2: tile.resources.deraumere = std::max(0, tile.resources.deraumere + amount); break;
-        case 3: tile.resources.sibur = std::max(0, tile.resources.sibur + amount); break;
-        case 4: tile.resources.mendiane = std::max(0, tile.resources.mendiane + amount); break;
-        case 5: tile.resources.phiras = std::max(0, tile.resources.phiras + amount); break;
-        case 6: tile.resources.thystame = std::max(0, tile.resources.thystame + amount); break;
+        case 0: 
+            tile.resources.food = std::max(0, tile.resources.food + amount);
+            break;
+        case 1:
+            tile.resources.linemate = std::max(0, tile.resources.linemate + amount);
+            break;
+        case 2:
+            tile.resources.deraumere = std::max(0, tile.resources.deraumere + amount);
+            break;
+        case 3:
+            tile.resources.sibur = std::max(0, tile.resources.sibur + amount);
+            break;
+        case 4:
+            tile.resources.mendiane = std::max(0, tile.resources.mendiane + amount);
+            break;
+        case 5:
+            tile.resources.phiras = std::max(0, tile.resources.phiras + amount);
+            break;
+        case 6:
+            tile.resources.thystame = std::max(0, tile.resources.thystame + amount);
+            break;
         default: break;
     }
 }
