@@ -52,6 +52,7 @@ void pin_h(server_t *server, session_client_t *client, const command_t *cmd)
 void sgt_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     dprintf(client->fd, "sgt %d\n", server->config->freq);
+    (void)cmd;
 }
 
 /// Définit le temps d’exécution d’une action (sst T)

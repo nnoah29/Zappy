@@ -16,6 +16,7 @@
 /// Envoie la taille de la map (msz)
 void msz_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
+    (void)cmd;
     dprintf(client->fd, "msz %d %d\n", server->config->map_w, server->config->map_h);
 }
 
@@ -54,6 +55,7 @@ void mct_h(server_t *server, session_client_t *client, const command_t *cmd)
                 tile->resources[3], tile->resources[4], tile->resources[5], tile->resources[6]);
         }
     }
+    (void)cmd;
 }
 
 /// Envoie la liste des équipes (tna)
@@ -62,6 +64,7 @@ void tna_h(server_t *server, session_client_t *client, const command_t *cmd)
     for (int i = 0; i < server->config->nb_teams; i++) {
         dprintf(client->fd, "tna %s\n", server->teams[i].name);
     }
+    (void)cmd;
 }
 
 /// Envoie la position d’un joueur (#n) (ppo)
@@ -77,4 +80,5 @@ void ppo_h(server_t *server, session_client_t *client, const command_t *cmd)
     if (player_idx != -1) {
         dprintf(client->fd, "ppo %d %d %d %d\n", client->idx, client->x, client->y, client->orientation);
     }
+    (void)server;
 }

@@ -16,12 +16,18 @@
 /// Notifie une commande non autorisée (suc)
 void suc_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
+    (void)server;
+    (void)client;
+    (void)cmd;
     printf("suc\n");
 }
 
 /// Notifie une commande invalide (sbp)
 void sbp_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
+    (void)server;
+    (void)client;
+    (void)cmd;
     printf("sbp\n");
 }
 

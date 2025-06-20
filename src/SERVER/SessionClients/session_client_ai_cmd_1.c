@@ -33,6 +33,7 @@ void forward_f(server_t *server, session_client_t *client, const command_t *cmd)
     map_move_entity(server->map, client, x, y);
     ppo_f(server, client);
     printf("forward\n");
+    (void)cmd;
 }
 
 void right_f(server_t *server, session_client_t *client, const command_t *cmd)
@@ -40,6 +41,7 @@ void right_f(server_t *server, session_client_t *client, const command_t *cmd)
     client->orientation = (client->orientation + 1) % 4;
     ppo_f(server, client);
     printf("right\n");
+    (void)cmd;
 }
 
 void left_f(server_t *server, session_client_t *client, const command_t *cmd)
@@ -47,14 +49,21 @@ void left_f(server_t *server, session_client_t *client, const command_t *cmd)
     client->orientation = (client->orientation - 1 + 4) % 4;
     ppo_f(server, client);
     printf("left\n");
+    (void)cmd;
 }
 
 void look_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
+    (void)server;
+    (void)client;
+    (void)cmd;
     printf("look\n");
 }
 
 void inventory_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
+    (void)server;
+    (void)client;
+    (void)cmd;
     printf("inventory\n");
 }
