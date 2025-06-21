@@ -9,6 +9,8 @@ from models.player import Player
 from models.map import Map
 from managers.elevation_manager import ElevationManager
 from managers.inventory_manager import InventoryManager
+from models.playerCommunicator import PlayerCommunicator
+from managers.reproduction_manager import ReproductionManager
 
 class AI:
     """Classe principale de l'IA."""
@@ -26,7 +28,7 @@ class AI:
         self.player = player
         self.map = map
         self.logger = logger
-        self.state = "exploring"
+        self.state = "EMERGENCY_FOOD_SEARCH"  # État initial : recherche d'urgence de nourriture
         self.target_resource = None
         self.target_position = None
         self.level = 1
@@ -36,15 +38,21 @@ class AI:
         
         # Seuils de nourriture pour le mode urgence
         self.FOOD_CRITICAL_LEVEL = 10  # Seuil critique pour le mode urgence
-        self.FOOD_SAFE_LEVEL = 15      # Niveau de sécurité pour désactiver le mode urgence (abaissé de 25 à 15)
+        self.FOOD_SAFE_LEVEL = 12      # Niveau de sécurité pour désactiver le mode urgence (abaissé de 25 à 13)
         
         # Initialisation des gestionnaires
         self.vision_manager = VisionManager(protocol, player, map, logger)
         self.inventory_manager = InventoryManager(protocol, player, logger)
         self.movement_manager = MovementManager(protocol, player, map, self.vision_manager, logger)
         self.elevation_manager = ElevationManager(protocol, self.vision_manager, self.movement_manager, logger)
+        self.communicator = PlayerCommunicator(protocol, player, logger)
+        self.reproduction_manager = ReproductionManager(protocol, logger)
         
         self.last_update = 0
+
+        # État spécial pour l'élévation en cours
+        self.elevation_in_progress = False
+        self.elevation_start_time = 0
 
         self.logger.info(f"Joueur initialisé: ID={player.id}, Équipe={player.team}, Position={player.position}")
         self.logger.info(f"Carte initialisée: {map.width}x{map.height}")
@@ -181,6 +189,56 @@ class AI:
     def _execute_action(self) -> bool:
         """Exécute l'action appropriée selon l'état actuel."""
         try:
+            # Gestion spéciale de l'état d'élévation
+            if self.state == "ELEVATING":
+                self.logger.info("⏳ En attente du résultat de l'élévation...")
+                # Pendant l'élévation, on ne fait rien d'autre
+                # Le résultat sera géré par la boucle principale
+                return True
+            
+            # Gestion spéciale de l'état de participation à un rituel
+            if self.state == "JOINING_RITUAL":
+                self.logger.info("🤝 En route pour rejoindre un rituel d'équipe...")
+                if self.target_position:
+                    if self.movement_manager.move_to(self.target_position):
+                        self.logger.info("✅ Déplacement vers le rituel réussi")
+                        # Une fois arrivé, on revient à l'état normal
+                        self.state = "NORMAL_OPERATIONS"
+                        self.target_position = None
+                    else:
+                        self.logger.warning("❌ Impossible d'atteindre le rituel")
+                        self.state = "NORMAL_OPERATIONS"
+                        self.target_position = None
+                return True
+            
+            # Gestion spéciale de l'état d'attente d'un partenaire pour le rituel
+            if self.state == "WAITING_FOR_RITUAL_PARTNER":
+                self.logger.info("⏳ En attente d'un partenaire pour le rituel niveau 3...")
+                
+                # Vérifier s'il y a un autre joueur sur la case
+                current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
+                player_count = current_tile_content.count('player')
+                
+                if player_count >= 2:
+                    self.logger.info("👥 Partenaire détecté ! Lancement du rituel niveau 3 !")
+                    response = self.protocol.incantation()
+                    
+                    if response == "ko":
+                        self.logger.error("❌ Échec de l'incantation de groupe")
+                        self.state = "NORMAL_OPERATIONS"
+                    elif response == "elevation underway":
+                        self.logger.info("🌟 Élévation de groupe en cours ! Attente du résultat...")
+                        self.elevation_in_progress = True
+                        self.elevation_start_time = time.time()
+                        self.state = "ELEVATING"
+                    else:
+                        self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation de groupe: {response}")
+                        self.state = "NORMAL_OPERATIONS"
+                else:
+                    self.logger.debug(f"⏳ Toujours en attente... ({player_count} joueur(s) sur la case)")
+                
+                return True
+            
             food_level = self.inventory_manager.inventory['food']
             
             if food_level < 10:
@@ -219,7 +277,7 @@ class AI:
                 
                 return True
             
-            if food_level < 15:
+            if food_level < 12:
                 self.state = "SURVIVAL_BUFFERING"
                 self.logger.warning(f"⚠️ MODE SÉCURITÉ : Constitution des réserves de nourriture (actuel: {food_level}). Objectifs secondaires suspendus.")
                 
@@ -248,7 +306,49 @@ class AI:
             self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}). Objectif : Élévation.")
             self.state = "NORMAL_OPERATIONS"
             
-            if self.inventory_manager.inventory.get('linemate', 0) < 1:
+            # Vérification des messages d'équipe en priorité
+            if self._handle_team_messages():
+                return True  # Un message a été traité, on attend le prochain cycle
+            
+            current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
+            player_count = current_tile_content.count('player')
+            linemate_on_tile = current_tile_content.count('linemate')
+            linemate_in_inventory = self.inventory_manager.inventory.get('linemate', 0)
+            
+            # DÉCISION 1 : Lancer l'incantation si TOUT est prêt.
+            if player_count == 1 and linemate_on_tile >= 1:
+                self.logger.info("✨ Conditions parfaites ! Lancement de l'incantation pour le niveau 2 !")
+                response = self.protocol.incantation()
+                
+                if response == "elevation underway":
+                    self.logger.info("🌟 Élévation en cours ! Attente du résultat...")
+                    self.elevation_in_progress = True
+                    self.elevation_start_time = time.time()
+                    self.state = "ELEVATING"
+                    return True
+                elif response == "ko":
+                    self.logger.error("❌ Échec de l'incantation")
+                    return True
+                else:
+                    self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation: {response}")
+                    return True
+            
+            if linemate_in_inventory >= 1 and player_count == 1:
+                self.logger.info("📦 Case prête et pierre en main. Je dépose la pierre.")
+                if self.protocol.set("linemate"):
+                    self.logger.info("✅ Linemate déposé sur la case")
+                else:
+                    self.logger.error("❌ Échec du dépôt de linemate")
+                return True
+            
+            if linemate_in_inventory >= 1 and player_count > 1:
+                self.logger.warning(f"⚠️ J'ai la pierre mais il y a {player_count} joueurs ici. Je bouge.")
+                random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
+                if self.movement_manager.move_to(random_direction):
+                    self.logger.info("✅ Déplacement vers une case plus calme")
+                return True
+            
+            if linemate_in_inventory == 0 and linemate_on_tile == 0:
                 self.logger.info("🔍 Objectif : Trouver une pierre de linemate.")
                 target = self.vision_manager.find_nearest_object("linemate")
                 if target:
@@ -267,37 +367,32 @@ class AI:
                             self.logger.info("✅ Déplacement d'exploration réussi")
                 return True
             
-            self.logger.info("✅ Linemate en inventaire. Préparation du rituel.")
+            self.logger.debug("Situation d'élévation non couverte, exploration par défaut.")
+            self._explore()
             
-            current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
-            player_count = current_tile_content.count('player')
-            if player_count > 1:
-                self.logger.warning(f"⚠️ Il y a {player_count} joueurs ici. Je cherche un endroit calme.")
-                random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
-                if self.movement_manager.move_to(random_direction):
-                    self.logger.info("✅ Déplacement vers une case plus calme")
+            if self.reproduction_manager.can_fork() and food_level > 20:
+                self.logger.info("🥚 Conditions optimales pour la reproduction.")
+                if self.reproduction_manager.reproduce():
+                    self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
                 return True
             
-            if 'linemate' not in current_tile_content:
-                self.logger.info("📦 La case est prête, je dépose la pierre.")
-                if self.protocol.set("linemate"):
-                    self.logger.info("✅ Linemate déposé sur la case")
-                else:
-                    self.logger.error("❌ Échec du dépôt de linemate")
-                return True
+            if self.player.level == 2:
+                if self._has_resources_for_level(3) and food_level > 15:
+                    self.logger.info("📢 J'ai les ressources pour le niveau 3. J'appelle à l'aide !")
+                    self.communicator.send_team_message("RITUAL_LVL3_START", f"{self.player.x},{self.player.y}")
+                    
+                    self.logger.info("📦 Je pose les pierres pour le rituel niveau 3...")
+                    if self.protocol.set("linemate"):
+                        self.logger.info("✅ Linemate posé")
+                    if self.protocol.set("deraumere"):
+                        self.logger.info("✅ Deraumere posé")
+                    if self.protocol.set("sibur"):
+                        self.logger.info("✅ Sibur posé")
+                    
+                    self.state = "WAITING_FOR_RITUAL_PARTNER"
+                    return True
             
-            self.logger.info("✨ Conditions parfaites ! Lancement de l'incantation pour le niveau 2 !")
-            response = self.protocol.incantation()
-            
-            if response == "ko":
-                self.logger.error("❌ Échec de l'incantation")
-                return True
-            elif response == "elevation underway":
-                self.logger.info("🌟 Élévation en cours ! Attente du résultat...")
-                return True
-            else:
-                self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation: {response}")
-                return True
+            return True
             
         except Exception as e:
             self.logger.error(f"Erreur lors de l'exécution de l'action: {str(e)}")
@@ -506,7 +601,6 @@ class AI:
             collected_anything = False
             resources_to_collect = ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]
             
-            # En mode urgence, priorité absolue à la nourriture
             if self.state == "EMERGENCY_FOOD_SEARCH":
                 resources_to_collect = ["food"] + [r for r in resources_to_collect if r != "food"]
             
@@ -515,11 +609,10 @@ class AI:
                     self.logger.info(f"✅ {resource} collecté(e)")
                     collected_anything = True
                     
-                    # En mode urgence, forcer la mise à jour de la vision après chaque collecte
                     if self.state == "EMERGENCY_FOOD_SEARCH":
                         self.vision_manager.force_update_vision()
                     
-                    time.sleep(0.1)  # Petite pause entre les collectes
+                    time.sleep(0.1)
             
             if collected_anything:
                 self.logger.info(f"📦 Collecte terminée à {position}")
@@ -537,7 +630,6 @@ class AI:
         try:
             self.logger.debug("Recherche de la ressource la plus proche...")
             
-            # Priorité absolue : nourriture d'abord si critique, puis linemate pour l'élévation
             if self.inventory_manager.inventory['food'] < 20:
                 self.logger.warning("🚨 Nourriture critique, priorité absolue à la nourriture")
                 resources = ["food"]
@@ -578,7 +670,6 @@ class AI:
                         self.logger.info(f"✅ Ressources collectées après déplacement vers {nearest_resource}")
                     else:
                         self.logger.warning(f"❌ Aucune ressource collectée après déplacement vers {nearest_resource}")
-                        # Tentative de collecte directe de la ressource ciblée
                         self.logger.info(f"🔄 Tentative de collecte directe de {nearest_resource}")
                         if self._collect_resource(nearest_resource):
                             self.logger.info(f"✅ {nearest_resource} collecté directement")
@@ -608,7 +699,6 @@ class AI:
             position = self.player.get_position()
             self.logger.info(f"🔄 Collecte intensive de {resource} à la position {position}")
             
-            # VÉRIFICATION DE DERNIÈRE MINUTE
             self.logger.info("🕵️ Vérification finale de la présence de la ressource...")
             self.vision_manager.force_update_vision()
             tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
@@ -618,21 +708,17 @@ class AI:
             
             collected_count = 0
             
-            # Boucle de collecte intensive
             while True:
                 if self.inventory_manager.take_object(resource):
                     collected_count += 1
                     self.logger.info(f"✅ {resource} #{collected_count} collecté(e)")
                     
-                    # CORRECTION CRITIQUE : Mettre à jour la vision immédiatement
                     self.logger.info("🔄 Forçage de la mise à jour de la vision post-collecte.")
                     if not self.vision_manager.force_update_vision():
                         self.logger.warning("❌ Échec de la mise à jour de la vision post-collecte")
                     
-                    # Petite pause pour ne pas surcharger le serveur
                     time.sleep(0.1)
                 else:
-                    # La commande a échoué (réponse "ko"), signifie que la case est vide
                     if collected_count > 0:
                         self.logger.info(f"📦 Collecte intensive terminée : {collected_count} {resource} collecté(s)")
                         self.logger.info(f"📦 Inventaire après collecte intensive : {self.inventory_manager.inventory}")
@@ -658,3 +744,85 @@ class AI:
         except Exception as e:
             self.logger.error(f"Erreur lors de la génération de cible d'exploration d'urgence: {str(e)}")
             return (1, 0)
+
+    def _handle_team_messages(self) -> bool:
+        """Gère les messages de l'équipe reçus via broadcast.
+        
+        Returns:
+            bool: True si un message a été traité, False sinon
+        """
+        try:
+            message = self.communicator.receive_broadcast()
+            if not message:
+                return False
+                
+            if message.get("team") != self.player.team:
+                return False
+                
+            action = message.get("action")
+            data = message.get("data", "")
+            
+            if action == "RITUAL_LVL3_START":
+                self.logger.info(f"🤝 Mon équipe a besoin d'aide pour un rituel niveau 3 ! Je réponds.")
+                
+                try:
+                    coords = tuple(map(int, data.split(',')))
+                    self.target_position = coords
+                    self.state = "JOINING_RITUAL"
+                    
+                    self.communicator.send_team_message("COMING_FOR_RITUAL", f"{self.player.id}")
+                    return True
+                except ValueError:
+                    self.logger.warning(f"❌ Coordonnées invalides dans le message: {data}")
+                    return False
+                    
+            elif action == "EGG_LAID":
+                self.logger.info(f"🥚 Un coéquipier a pondu un œuf à {data}")
+                return False
+                
+            elif action == "COMING_FOR_RITUAL":
+                self.logger.info(f"👥 Coéquipier {data} arrive pour le rituel")
+                return False
+                
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors du traitement des messages d'équipe: {str(e)}")
+            return False
+
+    def _has_resources_for_level(self, level: int) -> bool:
+        """Vérifie si l'IA a les ressources nécessaires pour un niveau donné.
+        
+        Args:
+            level (int): Niveau cible
+            
+        Returns:
+            bool: True si l'IA a toutes les ressources nécessaires
+        """
+        try:
+            requirements = {
+                2: {"linemate": 1},
+                3: {"linemate": 1, "deraumere": 1, "sibur": 1},
+                4: {"linemate": 1, "deraumere": 1, "sibur": 2, "phiras": 1},
+                5: {"linemate": 1, "deraumere": 2, "sibur": 1, "mendiane": 3},
+                6: {"linemate": 1, "deraumere": 2, "sibur": 3, "phiras": 1},
+                7: {"linemate": 2, "deraumere": 2, "sibur": 2, "mendiane": 2, "phiras": 2, "thystame": 1},
+                8: {"linemate": 1, "deraumere": 1, "sibur": 2, "mendiane": 1, "phiras": 1, "thystame": 1}
+            }
+            
+            if level not in requirements:
+                self.logger.warning(f"Niveau {level} non supporté")
+                return False
+                
+            needed = requirements[level]
+            inventory = self.inventory_manager.inventory
+            
+            for resource, quantity in needed.items():
+                if inventory.get(resource, 0) < quantity:
+                    return False
+                    
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la vérification des ressources pour le niveau {level}: {str(e)}")
+            return False

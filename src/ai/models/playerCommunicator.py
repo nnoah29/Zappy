@@ -49,12 +49,19 @@ class PlayerCommunicator:
             dict: Dictionnaire contenant les informations du message, ou None si aucun message
         """
         try:
-            # Supposons que le protocole a une méthode pour récupérer le dernier broadcast reçu
-            response = self.protocol.get_last_broadcast()
-            if response:
-                parsed = self.parse_message(response)
-                self.logger.info(f"Message reçu: {parsed}")
-                return parsed
+            if hasattr(self.protocol.client, 'socket'):
+                import select
+                ready, _, _ = select.select([self.protocol.client.socket], [], [], 0.001)
+                if ready:
+                    try:
+                        message = self.protocol.client.socket.recv(1024).decode('utf-8').strip()
+                        if message.startswith("message"):
+                            parsed = self.parse_message(message)
+                            self.logger.info(f"📨 Message reçu: {parsed}")
+                            return parsed
+                    except:
+                        pass
+            
             return None
         except Exception as e:
             self.logger.error(f"Erreur lors de la réception du message: {e}")
@@ -62,7 +69,7 @@ class PlayerCommunicator:
 
     def parse_message(self, raw_message: str) -> Dict[str, Any]:
         """
-        Parse un message brut reçu (format: "team:action:data" ou JSON).
+        Parse un message brut reçu (format: "message K, text" ou "team:action:data").
 
         Arguments:
             raw_message (str): Message brut
@@ -71,19 +78,48 @@ class PlayerCommunicator:
             dict: Dictionnaire avec les champs extraits
         """
         try:
-            if raw_message.startswith("{") and raw_message.endswith("}"):
-                # Format JSON
+            if raw_message.startswith("message"):
+                parts = raw_message.split(',', 1)
+                if len(parts) == 2:
+                    direction_part = parts[0].split()
+                    direction = int(direction_part[1]) if len(direction_part) > 1 else 0
+                    text = parts[1].strip()
+                    
+                    if ':' in text:
+                        team_parts = text.split(':', 2)
+                        if len(team_parts) == 3:
+                            return {
+                                "direction": direction,
+                                "team": team_parts[0],
+                                "action": team_parts[1], 
+                                "data": team_parts[2]
+                            }
+                        elif len(team_parts) == 2:
+                            return {
+                                "direction": direction,
+                                "team": team_parts[0],
+                                "action": team_parts[1],
+                                "data": ""
+                            }
+                    
+                    return {
+                        "direction": direction,
+                        "raw": text
+                    }
+            
+            elif raw_message.startswith("{") and raw_message.endswith("}"):
                 import json
                 return json.loads(raw_message)
-            else:
-                # Format string: "team:action:data"
+            
+            elif ':' in raw_message:
                 parts = raw_message.split(":", 2)
                 if len(parts) == 3:
                     return {"team": parts[0], "action": parts[1], "data": parts[2]}
                 elif len(parts) == 2:
                     return {"team": parts[0], "action": parts[1], "data": ""}
-                else:
-                    return {"raw": raw_message}
+            
+            return {"raw": raw_message}
+            
         except Exception as e:
             self.logger.error(f"Erreur lors du parsing du message: {e}")
             return {"raw": raw_message}

@@ -179,3 +179,28 @@ class ZappyClient:
         if self.socket:
             self.socket.close()
             self.socket = None
+
+    def check_for_messages(self) -> Optional[str]:
+        """Vérifie s'il y a des messages en attente du serveur.
+        
+        Returns:
+            str: Message reçu, ou None s'il n'y en a pas
+        """
+        if not self.socket:
+            return None
+            
+        try:
+            self.socket.settimeout(0.001)
+            data = self.socket.recv(4096)
+            if data:
+                message = data.decode('utf-8').strip()
+                self.logger.debug(f"Message reçu: {message}")
+                return message
+        except socket.timeout:
+            pass
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la vérification des messages: {e}")
+        finally:
+            self.socket.settimeout(None)
+            
+        return None

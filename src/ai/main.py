@@ -111,6 +111,31 @@ def main() -> int:
 
         while True:
             try:
+                async_message = client.check_for_messages()
+                if async_message:
+                    logger.info(f"📨 Message asynchrone reçu: {async_message}")
+                    
+                    if async_message.startswith("Current level:"):
+                        new_level = int(async_message.split(": ")[1])
+                        client.ai.player.level = new_level
+                        client.ai.vision_manager.set_level(new_level)
+                        client.ai.elevation_in_progress = False
+                        client.ai.state = "NORMAL_OPERATIONS"
+                        logger.info(f"🎉🎉🎉 ÉLÉVATION RÉUSSIE ! NOUVEAU NIVEAU : {new_level} 🎉🎉🎉")
+                        continue
+                    elif async_message == "ko" and client.ai.elevation_in_progress:
+                        logger.warning("❌ Le rituel d'élévation a échoué.")
+                        client.ai.elevation_in_progress = False
+                        client.ai.state = "NORMAL_OPERATIONS"
+                        continue
+                    elif async_message.startswith("message"):
+                        logger.info(f"📢 Broadcast reçu: {async_message}")
+                        if hasattr(client.ai, 'communicator'):
+                            parsed_message = client.ai.communicator.parse_message(async_message)
+                            if parsed_message and parsed_message.get("team") == client.ai.player.team:
+                                logger.info(f"🤝 Message d'équipe reçu: {parsed_message}")
+                        continue
+                
                 if not client.run():
                     logger.info("Arrêt de l'IA.")
                     break

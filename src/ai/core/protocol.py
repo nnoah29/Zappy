@@ -201,25 +201,20 @@ class ZappyProtocol:
             self.last_error = f"Erreur lors du dépôt d'objet: {e}"
             raise
 
-    def incantation(self) -> int:
+    def incantation(self) -> str:
         """Commence un rituel d'élévation.
         
         Returns:
-            int: Niveau atteint après l'élévation, -1 si échec
+            str: Réponse du serveur ("elevation underway", "ko", etc.)
         """
         try:
             self.client._send("Incantation\n")
             response = self.client._receive().strip()
-            if response != "Elevation underway":
-                self.last_error = "Échec du début de l'élévation"
-                return -1
-                
-            level_response = self.client._receive().strip()
-            self.last_response = level_response
-            return int(level_response.split(": ")[1])
+            self.last_response = response
+            return response
         except Exception as e:
             self.last_error = f"Erreur lors de l'élévation: {e}"
-            raise 
+            raise
 
     def parse_look_response(self, response: str) -> list:
         """Parse la réponse de la commande Look.
@@ -295,4 +290,4 @@ class ZappyProtocol:
             return int(response.split(':')[1].strip())
         except Exception as e:
             self.last_error = f"Erreur lors du parsing de l'éjection: {e}"
-            raise 
+            raise
