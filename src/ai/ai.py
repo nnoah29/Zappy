@@ -226,7 +226,7 @@ class AI:
                     if response == "ko":
                         self.logger.error("❌ Échec de l'incantation de groupe")
                         self.state = "NORMAL_OPERATIONS"
-                    elif response == "elevation underway":
+                    elif response == "Elevation underway":
                         self.logger.info("🌟 Élévation de groupe en cours ! Attente du résultat...")
                         self.elevation_in_progress = True
                         self.elevation_start_time = time.time()
