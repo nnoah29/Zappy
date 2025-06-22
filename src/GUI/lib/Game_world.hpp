@@ -37,11 +37,7 @@ private:
 
 public:
     bool initialize(int width, int height);
-    int getWidth() const { return m_width; }
-    int getHeight() const { return m_height; }
     const Tile &getTile(int x, int y) const;
-    const std::vector<Player> &getPlayers() const { return m_players; }
-    const std::vector<Egg> &getEggs() const { return m_eggs; }
     void updateTileResources(int x, int y, const Resource &resources);
     void addPlayer(const Player &player);
     void updatePlayerPosition(int playerId, int x, int y, int orientation);
@@ -50,8 +46,12 @@ public:
     void removeEgg(int eggId);
     Player *findPlayer(int playerId);
     bool isValidPosition(int x, int y) const;
-    void updatePlayerLevel(int, int);
     void updateResource(int, int, int, int);
+    void updatePlayerLevel(int, int);
+    int getWidth() const { return m_width; }
+    int getHeight() const { return m_height; }
+    const std::vector<Player> &getPlayers() const { return m_players; }
+    const std::vector<Egg> &getEggs() const { return m_eggs; }
 };
 
 #endif
