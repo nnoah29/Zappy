@@ -10,9 +10,17 @@ struct Resource {
                  mendiane(0), phiras(0), thystame(0) {}
 };
 
+struct PlayerInventory {
+    int food, linemate, deraumere, sibur, mendiane, phiras, thystame;
+    int lifeUnits;    
+    PlayerInventory() : food(0), linemate(0), deraumere(0), sibur(0), 
+                       mendiane(0), phiras(0), thystame(0), lifeUnits(1260) {}
+};
+
 struct Player {
     int id, x, y, orientation, level;
     std::string team;
+    PlayerInventory inventory;
     Player() : id(-1), x(0), y(0), orientation(1), level(1) {}
 };
 
@@ -41,6 +49,7 @@ public:
     void updateTileResources(int x, int y, const Resource &resources);
     void addPlayer(const Player &player);
     void updatePlayerPosition(int playerId, int x, int y, int orientation);
+    void updatePlayerInventory(int playerId, const PlayerInventory &inventory);
     void removePlayer(int playerId);
     void addEgg(const Egg &egg);
     void removeEgg(int eggId);
