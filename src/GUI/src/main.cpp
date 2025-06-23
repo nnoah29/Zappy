@@ -102,7 +102,7 @@ void Pnw(const std::vector<std::string>& oklm, GameWorld& gw)
     if (oklm.size() < 7)
         throw std::runtime_error("Invalid pnw");
     Player p;
-    p.id = std::stoi(oklm[1]);
+    p.id = std::stoi(oklm[1].substr(1));
     p.x = std::stoi(oklm[2]);
     p.y = std::stoi(oklm[3]);
     p.orientation = std::stoi(oklm[4]);

@@ -18,6 +18,7 @@ struct Player {
 
 struct Egg {
     int id, x, y, idn;
+    std::string team;
     Egg() : id(-1), x(0), y(0) {}
 };
 
