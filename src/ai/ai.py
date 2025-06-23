@@ -320,7 +320,7 @@ class AI:
                 self.logger.info("✨ Conditions parfaites ! Lancement de l'incantation pour le niveau 2 !")
                 response = self.protocol.incantation()
                 
-                if response == "elevation underway":
+                if response == "Elevation underway":
                     self.logger.info("🌟 Élévation en cours ! Attente du résultat...")
                     self.elevation_in_progress = True
                     self.elevation_start_time = time.time()
