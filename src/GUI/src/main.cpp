@@ -234,6 +234,11 @@ int main(int argc, char **argv)
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;
     }
-    
+    // Core core;
+    // if (!core.initialize()) {
+    //     std::cerr << "Failed to initialize Core system" << std::endl;
+    //     return 84;
+    // }
+    // core.run();
     return 0;
 }
