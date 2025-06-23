@@ -116,7 +116,7 @@ void Ppo(const std::vector<std::string>& oklm, GameWorld& gw)
     if (oklm.size() < 5)
         throw std::runtime_error("Invalid ppo");
     gw.updatePlayerPosition(
-        std::stoi(oklm[1]),
+        std::stoi(oklm[1.substr(1)]),
         std::stoi(oklm[2]),
         std::stoi(oklm[3]),
         std::stoi(oklm[4])
@@ -127,7 +127,7 @@ void Plv(const std::vector<std::string>& oklm, GameWorld& gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid plv");
-    gw.updatePlayerLevel(std::stoi(oklm[1]), std::stoi(oklm[2]));
+    gw.updatePlayerLevel(std::stoi(oklm[1].substr(1)), std::stoi(oklm[2]));
 }
 
 void Enw(const std::vector<std::string>& oklm, GameWorld& gw)
@@ -150,7 +150,7 @@ void Pdr(const std::vector<std::string>& oklm, GameWorld& gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid pdr");
-    Player* p = gw.findPlayer(std::stoi(oklm[1]));
+    Player* p = gw.findPlayer(std::stoi(oklm[1].substr(1)));
     if (p)
         gw.updateResource(p->x, p->y, std::stoi(oklm[2]), 1);
 }
