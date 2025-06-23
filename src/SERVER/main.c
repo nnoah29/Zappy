@@ -12,7 +12,7 @@
 #include "my.h"
 #include "Server/server.h"
 
-static const  option_parser_t parsers[] = {
+static const option_parser_t parsers[] = {
     {"-p", parse_port},
     {"-x", parse_width},
     {"-y", parse_height},

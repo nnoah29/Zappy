@@ -19,7 +19,6 @@
     #define MAX_TEAMS 10
     #define MAX_CLIENTS 1000
 
-// Structures (inchangées)
 typedef enum {
     NORTH,
     EAST,
@@ -56,7 +55,7 @@ typedef struct configServer {
 typedef struct server {
     int port, server_fd, nfds;
     struct sockaddr_in server_addr;
-    struct pollfd fds[MAX_CLIENTS + 1]; // +1 pour le socket serveur
+    struct pollfd fds[MAX_CLIENTS + 1];
     session_client_t clients[MAX_CLIENTS];
     teams_t teams[MAX_TEAMS];
     config_server_t *config;

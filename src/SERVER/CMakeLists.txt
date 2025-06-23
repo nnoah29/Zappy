@@ -34,4 +34,5 @@ add_executable(SERVER main.c
         Utilitaires/error.c
         Map/map_management.c
         Map/map_entities.c
+        Utilitaires/look_utils.c
 )

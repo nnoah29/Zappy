@@ -76,15 +76,17 @@ void tna_h(server_t *server, session_client_t *client, const command_t *cmd)
 void ppo_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     int player_idx = 0;
+    const session_client_t *player = NULL;
 
     if (cmd->args[0] == NULL || cmd->args[0][0] != '#') {
         dprintf(client->fd, "sbp\n");
         return;
     }
     player_idx = atoi(&cmd->args[0][1]);
+    player = &server->clients[player_idx];
     if (player_idx != -1) {
-        dprintf(client->fd, "ppo %d %d %d %d\n", client->idx,
-            client->x, client->y, client->orientation);
+        dprintf(client->fd, "ppo %d %d %d %d\n", player->idx,
+            player->x, player->y, player->orientation);
     }
     (void)server;
 }
