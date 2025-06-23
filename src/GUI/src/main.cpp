@@ -80,13 +80,21 @@ void Bct(const std::vector<std::string>& oklm, GameWorld& gw)
         throw std::runtime_error("Invalid bct");
     Resource res;
     res.food = std::stoi(oklm[3]);
+    std::cout << "food: " << res.food << std::endl;
     res.linemate = std::stoi(oklm[4]);
+    std::cout << "linemate: " << res.linemate << std::endl;
     res.deraumere = std::stoi(oklm[5]);
+    std::cout << "deraumere: " << res.deraumere << std::endl;
     res.sibur = std::stoi(oklm[6]);
+    std::cout << "sibur: " << res.sibur << std::endl;
     res.mendiane = std::stoi(oklm[7]);
+    std::cout << "mendiane: " << res.mendiane << std::endl;
     res.phiras = std::stoi(oklm[8]);
+    std::cout << "phiras: " << res.phiras << std::endl;
     res.thystame = std::stoi(oklm[9]);
+    std::cout << "thystame: " << res.thystame << std::endl;
     gw.updateTileResources(std::stoi(oklm[1]), std::stoi(oklm[2]), res);
+    std::cout << "Tile at (" << oklm[1] << ", " << oklm[2] << ") updated with resources." << std::endl;
 }
 
 void Pnw(const std::vector<std::string>& oklm, GameWorld& gw)
@@ -127,9 +135,14 @@ void Enw(const std::vector<std::string>& oklm, GameWorld& gw)
     if (oklm.size() < 5)
         throw std::runtime_error("Invalid enw");
     Egg egg;
-    egg.id = std::stoi(oklm[1]);
+    egg.id = std::stoi(oklm[1].substr(1));
+    std::cout << "Egg ID: " << egg.id << std::endl;
+    egg.idn = std::stoi(oklm[2].substr(1));
+    std::cout << "Player Id: " << egg.idn << std::endl;
     egg.x = std::stoi(oklm[3]);
+    std::cout << "Egg X: " << egg.x << std::endl;
     egg.y = std::stoi(oklm[4]);
+    std::cout << "Egg Y: " << egg.y << std::endl;
     gw.addEgg(egg);
 }
 
@@ -151,8 +164,14 @@ void Pgt(const std::vector<std::string>& oklm, GameWorld& gw)
         gw.updateResource(p->x, p->y, std::stoi(oklm[2]), -1);
 }
 
-
-void parseMessage(const std::string& message, GameWorld& gw)
+void Tna(const std::vector<std::string>& oklm, Player& player)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid tna");
+    player.team = oklm[1];
+    std::cout << "Team " << player.team << " added." << std::endl;
+}
+void parseMessage(const std::string& message, GameWorld& gw, Player& player)
 {
     std::stringstream ss(message);
     std::string line;
@@ -168,6 +187,8 @@ void parseMessage(const std::string& message, GameWorld& gw)
                 Msz(oklm, gw);
             else if (oklm[0] == "bct")
                 Bct(oklm, gw);
+            else if (oklm[0] == "tna")
+                Tna(oklm, player);
             else if (oklm[0] == "pnw")
                 Pnw(oklm, gw);
             else if (oklm[0] == "ppo")
@@ -200,16 +221,15 @@ int main(int argc, char **argv)
 
     Network network;
     GameWorld gameWorld;
+    Player player;
     try {
         network.connect(machine, port);
         std::string welcome = network.receive();
         std::cout << "Server welcome: " << welcome << std::endl;
         network.send("GRAPHIC\n");
         std::string reponse = network.receive();
-        while (true) {
-            std::string response = network.receive();
-            parseMessage(response, gameWorld);
-        }
+        std::cout << reponse << std::endl;
+        parseMessage(reponse, gameWorld, player);
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;

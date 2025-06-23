@@ -17,8 +17,7 @@ struct Player {
 };
 
 struct Egg {
-    int id, x, y;
-    std::string team;
+    int id, x, y, idn;
     Egg() : id(-1), x(0), y(0) {}
 };
 
@@ -52,6 +51,7 @@ public:
     int getHeight() const { return m_height; }
     const std::vector<Player> &getPlayers() const { return m_players; }
     const std::vector<Egg> &getEggs() const { return m_eggs; }
+    void addTeam(const std::string &teamName, Player *player = nullptr);
 };
 
 #endif

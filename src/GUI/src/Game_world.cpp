@@ -77,17 +77,11 @@ void GameWorld::removePlayer(int playerId)
 
 void GameWorld::addEgg(const Egg &egg)
 {
-    for (const auto &e : m_eggs) {
-        if (e.id == egg.id) {
-            return;
-        }
-    }
     if (!isValidPosition(egg.x, egg.y)) {
+        std::cerr << "Invalid egg position: (" << egg.x << ", " << egg.y << ")" << std::endl;
         return;
     }
-    m_eggs.push_back(egg);
-    m_map[egg.y][egg.x].eggIds.push_back(egg.id);
-    std::cout << "Egg " << egg.id << " added at (" << egg.x << ", " << egg.y << ")" << std::endl;
+    std::cout << "Egg " << egg.id << " added at (" << egg.x << ", " << egg.y << ") by player: " << egg.idn << std::endl;
 }
 
 void GameWorld::removeEgg(int eggId)
@@ -149,6 +143,16 @@ void GameWorld::updateResource(int x, int y, int resourceType, int amount)
             break;
         default: break;
     }
+}
+
+void GameWorld::addTeam(const std::string& teamName, Player* player)
+{
+    if (teamName.empty()) {
+        std::cerr << "Invalid team name." << std::endl;
+        return;
+    }
+    player->team = teamName;
+    std::cout << "Team " << teamName << " added." << std::endl;
 }
 
 void GameWorld::updatePlayerLevel(int playerId, int level)
