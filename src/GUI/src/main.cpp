@@ -116,7 +116,7 @@ void Ppo(const std::vector<std::string>& oklm, GameWorld& gw)
     if (oklm.size() < 5)
         throw std::runtime_error("Invalid ppo");
     gw.updatePlayerPosition(
-        std::stoi(oklm[1.substr(1)]),
+        std::stoi(oklm[1].substr(1)),
         std::stoi(oklm[2]),
         std::stoi(oklm[3]),
         std::stoi(oklm[4])
@@ -164,14 +164,33 @@ void Pgt(const std::vector<std::string>& oklm, GameWorld& gw)
         gw.updateResource(p->x, p->y, std::stoi(oklm[2]), -1);
 }
 
-void Tna(const std::vector<std::string>& oklm, Player& player)
+void Tna(const std::vector<std::string>& oklm, GameWorld& gw)
 {
     if (oklm.size() < 2)
         throw std::runtime_error("Invalid tna");
-    player.team = oklm[1];
-    std::cout << "Team " << player.team << " added." << std::endl;
+    gw.addTeam(oklm[1]);
 }
-void parseMessage(const std::string& message, GameWorld& gw, Player& player)
+
+void Pin(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 11)
+        throw std::runtime_error("Invalid pin");
+    
+    Player* player = gw.findPlayer(std::stoi(oklm[1].substr(1)));
+    if (!player)
+        return;
+    
+    player->inventory.food = std::stoi(oklm[4]);
+    player->inventory.linemate = std::stoi(oklm[5]);
+    player->inventory.deraumere = std::stoi(oklm[6]);
+    player->inventory.sibur = std::stoi(oklm[7]);
+    player->inventory.mendiane = std::stoi(oklm[8]);
+    player->inventory.phiras = std::stoi(oklm[9]);
+    player->inventory.thystame = std::stoi(oklm[10]);
+    std::cout << "Inventory updated for player #" << player->id << std::endl;
+}
+
+void parseMessage(const std::string& message, GameWorld& gw)
 {
     std::stringstream ss(message);
     std::string line;
@@ -188,7 +207,7 @@ void parseMessage(const std::string& message, GameWorld& gw, Player& player)
             else if (oklm[0] == "bct")
                 Bct(oklm, gw);
             else if (oklm[0] == "tna")
-                Tna(oklm, player);
+                Tna(oklm, gw);
             else if (oklm[0] == "pnw")
                 Pnw(oklm, gw);
             else if (oklm[0] == "ppo")
@@ -196,7 +215,7 @@ void parseMessage(const std::string& message, GameWorld& gw, Player& player)
             else if (oklm[0] == "plv")
                 Plv(oklm, gw);
             else if (oklm[0] == "pin")
-                std::cout<<"Inventory"<<std::endl;
+                Pin(oklm, gw);
             else if (oklm[0] == "enw")
                 Enw(oklm, gw);
             else if (oklm[0] == "pdr")
@@ -229,7 +248,7 @@ int main(int argc, char **argv)
         network.send("GRAPHIC\n");
         std::string reponse = network.receive();
         std::cout << reponse << std::endl;
-        parseMessage(reponse, gameWorld, player);
+        parseMessage(reponse, gameWorld);
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;
