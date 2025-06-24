@@ -380,8 +380,7 @@ class VisionManager:
             level (int): Nouveau niveau
         """
         self.level = level
-        self.vision.set_level(level)
-        self.vision_range = self.vision.get_vision_range()
+        self.logger.info(f"Niveau de vision mis à jour: {self.level}")
 
     def get_resources_in_range(self, max_distance: int = 2) -> Dict[str, List[Tuple[int, int]]]:
         """Récupère toutes les ressources dans un rayon donné.
@@ -396,14 +395,16 @@ class VisionManager:
             if not self.update_vision():
                 return {}
                 
-        env = self.vision.analyze_environment()
         resources = {}
         
         for resource_type in ["food", "linemate", "deraumere", "sibur", "mendiane", "phiras", "thystame"]:
-            resources[resource_type] = [
-                pos for pos in env[resource_type]
-                if abs(pos[0]) + abs(pos[1]) <= max_distance
-            ]
+            resources[resource_type] = []
+            for y in range(-self.level, self.level + 1):
+                for x in range(-self.level, self.level + 1):
+                    if abs(x) + abs(y) <= max_distance:
+                        case_content = self.get_case_content(x, y)
+                        if resource_type in case_content:
+                            resources[resource_type].append((x, y))
             
         return resources
 
@@ -420,8 +421,8 @@ class VisionManager:
             if not self.update_vision():
                 return False
                 
-        index = self.vision.get_case_index(position[0], position[1])
-        return self.vision.is_case_safe(index)
+        case_content = self.get_case_content(position[0], position[1])
+        return "player" not in case_content
 
     def get_best_path_to_resource(self, resource_type: str) -> List[Tuple[int, int]]:
         """Trouve le meilleur chemin vers une ressource.
@@ -470,17 +471,10 @@ class VisionManager:
             List[Tuple[int, int]]: Liste des positions des joueurs
         """
         players = []
-        for i, case in enumerate(self.vision):
-            if "player" in case:
-                pos = self.get_case_position(i)
-                if abs(pos[0]) + abs(pos[1]) <= range:
-                    players.append(pos)
-        return players
-
-    def set_level(self, level: int) -> None:
-        """Définit le niveau du joueur.
-        
-        Args:
-            level (int): Niveau du joueur
-        """
-        self.vision.set_level(level) 
+        for y in range(-self.level, self.level + 1):
+            for x in range(-self.level, self.level + 1):
+                if abs(x) + abs(y) <= range:
+                    case_content = self.get_case_content(x, y)
+                    if "player" in case_content:
+                        players.append((x, y))
+        return players 

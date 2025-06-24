@@ -39,10 +39,31 @@ class InventoryManager:
                 self.logger.error("Pas de réponse du serveur pour l'inventaire")
                 return False
                 
+            if not response.startswith('[') or not response.endswith(']'):
+                self.logger.warning(f"Réponse d'inventaire invalide: {response}")
+                return False
+                
             items = response.strip('[]').split(',')
             for item in items:
-                name, count = item.strip().split()
-                self.inventory[name] = int(count)
+                item = item.strip()
+                if not item:
+                    continue
+                    
+                try:
+                    parts = item.split()
+                    if len(parts) != 2:
+                        self.logger.warning(f"Format d'item invalide: '{item}' dans la réponse: {response}")
+                        continue
+                        
+                    name, count = parts
+                    if name in self.inventory:
+                        self.inventory[name] = int(count)
+                    else:
+                        self.logger.warning(f"Type d'objet inconnu: {name}")
+                        
+                except (ValueError, IndexError) as e:
+                    self.logger.warning(f"Erreur de parsing pour l'item '{item}': {e}")
+                    continue
                 
             self.logger.debug(f"Inventaire mis à jour: {self.inventory}")
             return True

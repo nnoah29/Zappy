@@ -117,8 +117,13 @@ def main() -> int:
                     
                     if async_message.startswith("Current level:"):
                         new_level = int(async_message.split(": ")[1])
-                        client.ai.player.level = new_level
-                        client.ai.vision_manager.set_level(new_level)
+                        client.ai.player.set_level(new_level)
+                        
+                        if hasattr(client.ai, 'vision_manager') and hasattr(client.ai.vision_manager, 'set_level'):
+                            client.ai.vision_manager.set_level(new_level)
+                        else:
+                            logger.warning(f"⚠️ Impossible de mettre à jour le niveau du vision_manager: {type(client.ai.vision_manager)}")
+                            
                         client.ai.elevation_in_progress = False
                         client.ai.state = "NORMAL_OPERATIONS"
                         logger.info(f"🎉🎉🎉 ÉLÉVATION RÉUSSIE ! NOUVEAU NIVEAU : {new_level} 🎉🎉🎉")
@@ -135,6 +140,14 @@ def main() -> int:
                             if parsed_message and parsed_message.get("team") == client.ai.player.team:
                                 logger.info(f"🤝 Message d'équipe reçu: {parsed_message}")
                         continue
+                    else:
+                        logger.debug(f"📨 Message asynchrone non traité: {async_message}")
+                        continue
+                
+                if client.ai.elevation_in_progress:
+                    logger.debug("⏳ IA en attente d'élévation, pause...")
+                    time.sleep(0.1)
+                    continue
                 
                 if not client.run():
                     logger.info("Arrêt de l'IA.")
