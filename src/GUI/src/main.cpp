@@ -135,9 +135,9 @@ void Enw(const std::vector<std::string>& oklm, GameWorld& gw)
     if (oklm.size() < 5)
         throw std::runtime_error("Invalid enw");
     Egg egg;
-    egg.id = std::stoi(oklm[1].substr(1));
+    egg.id = (oklm[1][0] == '#') ? std::stoi(oklm[1].substr(1)) : std::stoi(oklm[1]);
     std::cout << "Egg ID: " << egg.id << std::endl;
-    egg.idn = std::stoi(oklm[2].substr(1));
+    egg.idn = (oklm[2][0] == '#') ? std::stoi(oklm[2].substr(1)) : std::stoi(oklm[2]);
     std::cout << "Player Id: " << egg.idn << std::endl;
     egg.x = std::stoi(oklm[3]);
     std::cout << "Egg X: " << egg.x << std::endl;
@@ -164,11 +164,11 @@ void Pgt(const std::vector<std::string>& oklm, GameWorld& gw)
         gw.updateResource(p->x, p->y, std::stoi(oklm[2]), -1);
 }
 
-void Tna(const std::vector<std::string>& oklm, GameWorld& gw)
+void Tna(const std::vector<std::string>& oklm, GameWorld& gw, Player* player)
 {
     if (oklm.size() < 2)
         throw std::runtime_error("Invalid tna");
-    gw.addTeam(oklm[1]);
+    gw.addTeam(oklm[1], player);
 }
 
 void Pin(const std::vector<std::string>& oklm, GameWorld& gw)
@@ -190,11 +190,132 @@ void Pin(const std::vector<std::string>& oklm, GameWorld& gw)
     std::cout << "Inventory updated for player #" << player->id << std::endl;
 }
 
+void Pex(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid pex");
+    
+    int playerId = std::stoi(oklm[1].substr(1));
+    std::cout << "Player #" << playerId << " expelled another player" << std::endl;
+}
+
+void Pbc(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 3)
+        throw std::runtime_error("Invalid pbc");
+    
+    int playerId = std::stoi(oklm[1].substr(1));
+    std::string message;
+    for (size_t i = 2; i < oklm.size(); ++i) {
+        if (i > 2) message += " ";
+        message += oklm[i];
+    }
+    
+    std::cout << "Player #" << playerId << " broadcasts: " << message << std::endl;
+}
+
+void Pic(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 5)
+        throw std::runtime_error("Invalid pic");
+    
+    int x = std::stoi(oklm[1]);
+    int y = std::stoi(oklm[2]);
+    int level = std::stoi(oklm[3]);
+    
+    std::vector<int> playerIds;
+    for (size_t i = 4; i < oklm.size(); ++i) {
+        playerIds.push_back(std::stoi(oklm[i].substr(1)));
+    }
+    
+    std::cout << "Incantation started at (" << x << "," << y << ") level " << level;
+    std::cout << " with players:";
+    for (int id : playerIds) {
+        std::cout << " #" << id;
+    }
+    std::cout << std::endl;
+}
+
+void Pie(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 4)
+        throw std::runtime_error("Invalid pie");
+    
+    int x = std::stoi(oklm[1]);
+    int y = std::stoi(oklm[2]);
+    int result = std::stoi(oklm[3]);
+    
+    std::cout << "Incantation ended at (" << x << "," << y << ") with result: " 
+              << (result ? "SUCCESS" : "FAILURE") << std::endl;
+}
+
+void Pfk(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid pfk");
+    
+    int playerId = std::stoi(oklm[1].substr(1));
+    std::cout << "Player #" << playerId << " laid an egg" << std::endl;
+}
+
+void Pdi(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid pdi");
+    
+    int playerId = std::stoi(oklm[1].substr(1));
+    gw.removePlayer(playerId);
+    std::cout << "Player #" << playerId << " died" << std::endl;
+}
+
+void Edi(const std::vector<std::string>& oklm, GameWorld& gw)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid edi");
+    
+    int eggId = std::stoi(oklm[1].substr(1));
+    gw.removeEgg(eggId);
+    std::cout << "Egg #" << eggId << " died" << std::endl;
+}
+
+void Sgt(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid sgt");
+    
+    int timeUnit = std::stoi(oklm[1]);
+    std::cout << "Time unit: " << timeUnit << std::endl;
+}
+
+void Sst(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid sst");
+    
+    int timeUnit = std::stoi(oklm[1]);
+    std::cout << "Time unit set to: " << timeUnit << std::endl;
+}
+
+void Smg(const std::vector<std::string>& oklm)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid smg");
+    
+    std::string message;
+    for (size_t i = 1; i < oklm.size(); ++i) {
+        if (i > 1) message += " ";
+        message += oklm[i];
+    }
+    
+    std::cout << "Server message: " << message << std::endl;
+}
+
 void parseMessage(const std::string& message, GameWorld& gw)
 {
     std::stringstream ss(message);
     std::string line;
     std::vector<std::string> oklm;
+    Player player;
 
     while (std::getline(ss, line)) {
         if (!line.empty() && line.back() == '\r') line.pop_back();
@@ -207,7 +328,7 @@ void parseMessage(const std::string& message, GameWorld& gw)
             else if (oklm[0] == "bct")
                 Bct(oklm, gw);
             else if (oklm[0] == "tna")
-                Tna(oklm, gw);
+                Tna(oklm, gw, &player);
             else if (oklm[0] == "pnw")
                 Pnw(oklm, gw);
             else if (oklm[0] == "ppo")
@@ -223,9 +344,21 @@ void parseMessage(const std::string& message, GameWorld& gw)
             else if (oklm[0] == "pgt")
                 Pgt(oklm, gw);
             else if (oklm[0] == "pic")
-                std::cout<<"start of incantation"<<std::endl;
+                Pic(oklm);
             else if (oklm[0] == "pie")
-                std::cout<<"end of incantation"<<std::endl;
+                Pie(oklm);
+            else if (oklm[0] == "pfk")
+                Pfk(oklm);
+            else if (oklm[0] == "pdi")
+                Pdi(oklm, gw);
+            else if (oklm[0] == "edi")
+                Edi(oklm, gw);
+            else if (oklm[0] == "sgt")
+                Sgt(oklm);
+            else if (oklm[0] == "sst")
+                Sst(oklm);
+            else if (oklm[0] == "smg")
+                Smg(oklm);
             else if (oklm[0] == "seg") std::cout << "Winner: " << oklm[1] << "\n";
         } catch (const std::exception& e) {
             std::cerr << "Parse error: " << e.what() << "\n";

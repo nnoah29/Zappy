@@ -81,6 +81,8 @@ void GameWorld::addEgg(const Egg &egg)
         std::cerr << "Invalid egg position: (" << egg.x << ", " << egg.y << ")" << std::endl;
         return;
     }
+    m_eggs.push_back(egg);
+    m_map[egg.y][egg.x].eggIds.push_back(egg.id);
     std::cout << "Egg " << egg.id << " added at (" << egg.x << ", " << egg.y << ") by player: " << egg.idn << std::endl;
 }
 
@@ -162,5 +164,13 @@ void GameWorld::updatePlayerLevel(int playerId, int level)
             player.level = level;
             return;
         }
+    }
+}
+
+void GameWorld::updatePlayerInventory(int playerId, const PlayerInventory& inventory)
+{
+    Player* player = findPlayer(playerId);
+    if (player) {
+        player->inventory = inventory;
     }
 }

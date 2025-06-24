@@ -49,7 +49,6 @@ public:
     void updateTileResources(int x, int y, const Resource &resources);
     void addPlayer(const Player &player);
     void updatePlayerPosition(int playerId, int x, int y, int orientation);
-    void updatePlayerInventory(int playerId, const PlayerInventory &inventory);
     void removePlayer(int playerId);
     void addEgg(const Egg &egg);
     void removeEgg(int eggId);
@@ -62,6 +61,7 @@ public:
     const std::vector<Player> &getPlayers() const { return m_players; }
     const std::vector<Egg> &getEggs() const { return m_eggs; }
     void addTeam(const std::string &teamName, Player *player = nullptr);
+    void updatePlayerInventory(int playerId, const PlayerInventory& inventory);
 };
 
 #endif
