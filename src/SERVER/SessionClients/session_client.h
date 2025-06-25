@@ -11,14 +11,17 @@
     #include <time.h>
     #include "../my.h"
     #include "../Server/server.h"
+    #include "../Utilitaires/dynamic_buffer.h"
 
 
 int find_client_by_fd(server_t *server, int fd);
-void write_vision(server_t *server, session_client_t *client, char *response);
+char *write_vision_(server_t *server, session_client_t *client);
+void write_vision(server_t *server, session_client_t *client,
+    dynamic_buffer_t *db);
 void calculate_direction(server_t *server, session_client_t *client,
     int *x, int *y);
-int process_ejection_on_entity(entity_on_tile_t **current, server_t *server,
-    session_client_t *client);
+int process_ejection_on_entity(entity_on_tile_t *current_node,
+    server_t *server, session_client_t *ejector);
 int forward_f(server_t *server, session_client_t *client,
     const command_t *cmd);
 int right_f(server_t *server, session_client_t *client,

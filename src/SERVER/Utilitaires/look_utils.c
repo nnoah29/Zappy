@@ -5,34 +5,10 @@
 ** look.c
 */
 
+#include <stdio.h>
+
 #include "../SessionClients/session_client.h"
 #include <string.h>
-
-// Remplit un buffer avec le contenu textuel d'une tuile.
-// Les objets sont séparés par des espaces.
-void append_tile_content(char *buffer, const tile_t *tile)
-{
-    const entity_on_tile_t *current_entity = tile->entities;
-    bool needs_space = false;
-    char *resource_string;
-
-    while (current_entity) {
-        add_space(buffer, needs_space);
-        if (current_entity->entity->is_egg)
-            strcat(buffer, "egg");
-        else
-            strcat(buffer, "player");
-        needs_space = true;
-        current_entity = current_entity->next;
-    }
-    for (int i = 0; i < NB_RESOURCES; i++) {
-        for (int j = 0; j < tile->resources[i]; j++) {
-            add_space(buffer, needs_space);
-            strcat(buffer, resource_to_string((resource_t)i));
-            needs_space = true;
-        }
-    }
-}
 
 void calculate_direction_offset(int orientation, int *dx, int *dy,
     int_pair_t rel)
@@ -70,13 +46,38 @@ void get_absolute_position(server_t *s, session_client_t *c,
     pos->y = (c->y + dy + s->config->map_h) % s->config->map_h;
 }
 
-void get_tile_content(server_t *server, session_client_t *client,
-    int_pair_t rel, char *tile_buffer)
+/**
+ * @brief AJOUTE le contenu textuel d'une tuile à un buffer dynamique existant.
+ */
+void append_tile_content_to_buffer(dynamic_buffer_t *db, const tile_t *tile)
 {
-    int_pair_t pos = {0, 0};
+    const entity_on_tile_t *current_entity = tile->entities;
+    bool needs_space = (db->len > 0 && db->buffer[db->len - 1] != ','
+        && db->buffer[db->len - 1] != '[');
+
+    while (current_entity) {
+        buffer_append(db, needs_space ? " " : "");
+        buffer_append(db, current_entity->entity->is_egg ? "egg" : "player");
+        needs_space = true;
+        current_entity = current_entity->next;
+    }
+    for (int i = 0; i < NB_RESOURCES; i++) {
+        for (int j = 0; j < tile->resources[i]; j++) {
+            buffer_append(db, needs_space ? " " : "");
+            buffer_append(db, resource_to_string((resource_t)i));
+            needs_space = true;
+        }
+    }
+}
+
+// Calcule la position d'une tuile relative et AJOUTE son contenu au buffer.
+void get_and_append_tile_content(server_t *server, session_client_t *client,
+    int_pair_t rel, dynamic_buffer_t *db)
+{
+    int_pair_t pos;
 
     get_absolute_position(server, client, rel, &pos);
-    append_tile_content(tile_buffer, &server->map[pos.y][pos.x]);
+    append_tile_content_to_buffer(db, &server->map[pos.y][pos.x]);
 }
 
 resource_t string_to_resource(const char *str)

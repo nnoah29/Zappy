@@ -64,7 +64,6 @@ static void print_log_prefix(log_level_t level, const char *file, int line)
     }
 }
 
-// C-F4: Nouvelle fonction pour afficher la chaîne en échappant les '\n'.
 static void print_sanitized_string(const char *str)
 {
     for (int i = 0; str[i] != '\0'; i++) {

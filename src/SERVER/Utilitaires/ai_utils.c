@@ -5,27 +5,29 @@
 ** ai.c
 */
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "../SessionClients/session_client.h"
 #include <string.h>
 
-void write_vision(server_t *server, session_client_t *client, char *response)
+void write_vision(server_t *server, session_client_t *client,
+    dynamic_buffer_t *db)
 {
-    int_pair_t rel = {0, 0};
-    char tile_buffer[512] = {0};
+    int_pair_t rel;
+    bool is_first = true;
 
-    if (!response)
-        return;
-    response[0] = '[';
-    for (int forward = 0; forward <= client->level; forward++)
+    buffer_append(db, "[");
+    for (int forward = 0; forward <= client->level; forward++) {
         for (int side = -forward; side <= forward; side++) {
+            buffer_append(db, !is_first ? "," : "");
             rel.x = side;
             rel.y = forward;
-            add_semicolon(response, side, forward);
-            memset(tile_buffer, 0, 512);
-            get_tile_content(server, client, rel, tile_buffer);
-            strcat(response, tile_buffer);
+            get_and_append_tile_content(server, client, rel, db);
+            is_first = false;
         }
-    strcat(response, "]\n\0");
+    }
+    buffer_append(db, "]\n");
 }
 
 void calculate_direction(server_t *server, session_client_t *client,
@@ -51,23 +53,25 @@ void calculate_direction(server_t *server, session_client_t *client,
     }
 }
 
-int process_ejection_on_entity(entity_on_tile_t **current, server_t *server,
-    session_client_t *client)
+int process_ejection_on_entity(entity_on_tile_t *current_node,
+    server_t *server, session_client_t *ejector)
 {
+    session_client_t *other_player = NULL;
     int_pair_t pos;
-    session_client_t *other_player = (*current)->entity;
 
-    *current = (*current)->next;
-    if (other_player->idx == client->idx)
+    other_player = current_node->entity;
+    if (other_player->idx == ejector->idx)
         return 0;
     if (other_player->is_egg) {
         edi_f(server, other_player->idx);
-        map_detach_entity(&server->map[client->y][client->x], other_player);
+        map_detach_entity(&server->map[ejector->y][ejector->x], other_player);
         close_client_connection(server, other_player->idx);
         return 1;
     }
     calculate_direction(server, other_player, &pos.x, &pos.y);
+    printf("process \n");
     map_move_entity(server->map, other_player, pos.x, pos.y);
+    printf("ok\n");
     ppo_f(server, other_player);
     pex_f(server, other_player);
     return 1;

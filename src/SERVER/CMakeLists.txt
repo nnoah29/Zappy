@@ -39,4 +39,6 @@ add_executable(SERVER main.c
         Server/server_egg_utils.c
         Logger/logger.c
         Logger/logger.h
+        Utilitaires/dynamic_buffer.c
+        Utilitaires/dynamic_buffer.h
 )

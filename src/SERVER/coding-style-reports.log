@@ -812,6 +812,7 @@
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/argument_parser_core.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/argument_parser_teams.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/client_utils.c.o:1: MAJOR:C-O1
+./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/dynamic_buffer.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/error.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/event_scheduler.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/look_utils.c.o:1: MAJOR:C-O1

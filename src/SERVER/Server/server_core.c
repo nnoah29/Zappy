@@ -35,7 +35,7 @@ void check_life(server_t *server, int client_idx)
     session_client_t *client = &server->players[client_idx];
     struct timespec now;
 
-    if (client->is_egg || !client->active)
+    if (client->is_egg || !client->active || client->is_gui)
         return;
     get_current_time(&now);
     if (timespec_cmp(&now, &client->next_food_time) >= 0) {

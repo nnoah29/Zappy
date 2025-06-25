@@ -42,16 +42,19 @@ int eject_f(server_t *server, session_client_t *client,
 {
     const tile_t *tile = &server->map[client->y][client->x];
     entity_on_tile_t *current = tile->entities;
-    session_client_t *other_player = NULL;
+    entity_on_tile_t *next_entity = NULL;
     bool ejected_someone = false;
-    int_pair_t pos;
 
-    while (current) {
-        if (process_ejection_on_entity(&current, server, client))
-            ejected_someone = true;
-    }
     printf("eject\n");
+    while (current != NULL) {
+        next_entity = current->next;
+        if (process_ejection_on_entity(current, server, client)) {
+            ejected_someone = true;
+        }
+        current = next_entity;
+    }
     dprintf(client->fd, ejected_someone ? "ok\n" : "ko\n");
+    (void)cmd;
     return 0;
 }
 

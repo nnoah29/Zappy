@@ -10,6 +10,7 @@
 
     #include <unistd.h>
     #include "Server/server.h"
+    #include "Utilitaires/dynamic_buffer.h"
 
 typedef struct {
     int x;
@@ -33,5 +34,7 @@ void get_absolute_position(server_t *s, session_client_t *c,
     int_pair_t rel, int_pair_t *pos);
 void get_tile_content(server_t *server, session_client_t *client,
     int_pair_t rel, char *tile_buffer);
+void get_and_append_tile_content(server_t *server, session_client_t *client,
+    int_pair_t rel, dynamic_buffer_t *db);
 void error_msg_eggs_init(server_t *s, int eggs_created, int team_idx);
 #endif //MY_H

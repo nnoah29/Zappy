@@ -19,7 +19,7 @@ int forward_f(server_t *server, session_client_t *client,
     calculate_direction(server, client, &x, &y);
     map_move_entity(server->map, client, x, y);
     ppo_f(server, client);
-    printf("forward\n");
+    dprintf(client->fd, "ok\n");
     (void)cmd;
     return 0;
 }
@@ -28,7 +28,7 @@ int right_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
     client->orientation = (client->orientation + 1) % 4;
     ppo_f(server, client);
-    printf("right\n");
+    dprintf(client->fd, "ok\n");
     (void)cmd;
     return 0;
 }
@@ -37,19 +37,20 @@ int left_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
     client->orientation = (client->orientation - 1 + 4) % 4;
     ppo_f(server, client);
-    printf("left\n");
+    dprintf(client->fd, "ok\n");
     (void)cmd;
     return 0;
 }
 
 int look_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
-    char *response = calloc(4096, sizeof(char));
+    dynamic_buffer_t response_db;
 
-    write_vision(server, client, response);
-    send(client->fd, response, strlen(response), 0);
-    free(response);
     (void)cmd;
+    buffer_init(&response_db, 256);
+    write_vision(server, client, &response_db);
+    send(client->fd, response_db.buffer, response_db.len, 0);
+    buffer_free(&response_db);
     return 0;
 }
 
