@@ -234,6 +234,15 @@ void Edi(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
     std::cout << "Egg #" << eggId << " died" << std::endl;
 }
 
+void Ebo(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
+{
+    if (oklm.size() < 2)
+        throw std::runtime_error("Invalid ebo");
+    int eggId = std::stoi(oklm[1].substr(1));
+    gw->removeEgg(eggId);
+    std::cout << "Player connected for egg #" << eggId << std::endl;
+}
+
 void Sgt(const std::vector<std::string>& oklm)
 {
     if (oklm.size() < 2)
@@ -293,8 +302,12 @@ void Gui_client::parseInit(std::string init)
                 Plv(tab, _gameWorld);
             else if (tab[0] == "pin")
                 Pin(tab, _gameWorld);
+            else if (tab[0] == "pex")
+                Pex(tab);
             else if (tab[0] == "enw")
                 Enw(tab, _gameWorld);
+            else if (tab[0] == "ebo")
+                Ebo(tab, _gameWorld);
             else if (tab[0] == "pdr")
                 Pdr(tab, _gameWorld);
             else if (tab[0] == "pgt")
@@ -307,6 +320,8 @@ void Gui_client::parseInit(std::string init)
                 Pfk(tab);
             else if (tab[0] == "pdi")
                 Pdi(tab, _gameWorld);
+            else if (tab[0] == "pbc")
+                Pbc(tab);
             else if (tab[0] == "edi")
                 Edi(tab, _gameWorld);
             else if (tab[0] == "sgt")
@@ -315,7 +330,14 @@ void Gui_client::parseInit(std::string init)
                 Sst(tab);
             else if (tab[0] == "smg")
                 Smg(tab);
-            else if (tab[0] == "seg") std::cout << "Winner: " << tab[1] << "\n";
+            else if (tab[0] == "suc")
+                std::cerr << "Unknown command received: "<< tab[0] << std::endl;
+            else if (tab[0] == "sbp")
+                std::cerr << "Command parameter error" << std::endl;
+            else if (tab[0] == "seg") {
+                std::cout << "Game over. Exiting..." << std::endl;
+                break;
+            }
         } catch (const std::exception& e) {
             std::cerr << "Parse error: " << e.what() << "\n";
         }
