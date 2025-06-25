@@ -35,7 +35,6 @@ class AI:
         self.update_cooldown = 1
         
         self.FOOD_CRITICAL_LEVEL = 10
-        self.FOOD_SAFE_LEVEL = 12
         
         self.vision_manager = VisionManager(protocol, player, map, logger)
         self.inventory_manager = InventoryManager(protocol, player, logger)
@@ -184,21 +183,105 @@ class AI:
     def _execute_action(self) -> bool:
         """Exécute l'action appropriée selon l'état actuel."""
         try:
+            # --- GESTION DE LA SURVIE (PRIORITÉ ABSOLUE) ---
+            food_level = self.inventory_manager.inventory['food']
+            
+            # Si on est en état critique, on ne fait RIEN d'autre que chercher à survivre.
+            # On force un Look pour avoir les données les plus fraîches possibles AVANT de décider.
+            if food_level < self.FOOD_CRITICAL_LEVEL:
+                self.state = "EMERGENCY_FOOD_SEARCH"
+                self.logger.critical("🚨🚨 MODE URGENCE : Survie. Refresh de la vision immédiat.")
+                self.vision_manager.force_update_vision()  # <-- LA CORRECTION CRUCIALE
+
+                target = self.vision_manager.find_nearest_object("food")
+                
+                # Maintenant, la logique est basée sur des données fraîches
+                if target:
+                    if target == (0, 0):
+                        self.logger.critical("🚨 NOURRITURE SUR MA CASE (confirmé), COLLECTE IMMÉDIATE")
+                        if self._collect_resource_intensively("food"):
+                            self.logger.critical("✅ NOURRITURE COLLECTÉE EN MODE URGENCE")
+                        else:
+                            self.logger.critical("❌ ÉCHEC DE LA COLLECTE EN MODE URGENCE")
+                    else:
+                        self.logger.critical(f"🚨 NOURRITURE TROUVÉE À {target} (confirmé), DÉPLACEMENT URGENT")
+                        if self.movement_manager.move_to(target):
+                            self.logger.critical("✅ DÉPLACEMENT URGENT RÉUSSI, VÉRIFICATION FINALE...")
+                            
+                            # Vérification finale avant collecte
+                            self.vision_manager.force_update_vision()
+                            current_tile = self.vision_manager.vision_data[0]
+                            if 'food' in current_tile:
+                                self.logger.critical("✅ NOURRITURE CONFIRMÉE, COLLECTE IMMÉDIATE")
+                                if self._collect_resource_intensively("food"):
+                                    self.logger.critical("✅ NOURRITURE COLLECTÉE EN MODE URGENCE")
+                                else:
+                                    self.logger.critical("❌ ÉCHEC DE LA COLLECTE (Post-vérification)")
+                            else:
+                                self.logger.warning("❌ La nourriture a disparu juste avant la collecte !")
+                else:
+                    self.logger.critical("🚨 AUCUNE NOURRITURE EN VUE (confirmé), EXPLORATION D'URGENCE")
+                    exploration_target = self._generate_emergency_exploration_target()
+                    if exploration_target:
+                        self.logger.critical(f"🚨 EXPLORATION D'URGENCE VERS {exploration_target}")
+                        if self.movement_manager.move_to(exploration_target):
+                            self.vision_manager.force_update_vision()
+                            if self._collect_available_resources():
+                                self.logger.critical("✅ RESSOURCES TROUVÉES EN EXPLORATION D'URGENCE")
+                    else:
+                        self.logger.critical("🚨 MOUVEMENT ALÉATOIRE D'URGENCE")
+                        random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
+                        if self.movement_manager.move_to(random_direction):
+                            self.vision_manager.force_update_vision()
+                            if self._collect_available_resources():
+                                self.logger.critical("✅ RESSOURCES TROUVÉES EN MOUVEMENT ALÉATOIRE")
+                
+                return True  # On a géré le tour en mode urgence, on s'arrête là.
+            
+            # Si on n'est pas en crise, on peut continuer avec les autres états...
             if self.state == "ELEVATING":
-                self.logger.info("⏳ En attente du résultat de l'élévation...")
+                self.logger.info("🌟 Élévation en cours...")
+                
+                if self.elevation_in_progress:
+                    elapsed_time = time.time() - self.elevation_start_time
+                    if elapsed_time > 10.0:  # Timeout de 10 secondes
+                        self.logger.warning("⏰ Timeout de l'élévation, retour aux opérations normales")
+                        self.elevation_in_progress = False
+                        self.state = "NORMAL_OPERATIONS"
+                        return True
+                    
+                    # Vérification du résultat de l'élévation
+                    response = self.protocol.receive_message()
+                    if response:
+                        if "Current level:" in response:
+                            new_level = int(response.split(":")[1].strip())
+                            self.player.level = new_level
+                            self.logger.info(f"🎉 Élévation réussie ! Nouveau niveau : {new_level}")
+                            self.elevation_in_progress = False
+                            self.state = "NORMAL_OPERATIONS"
+                            return True
+                        elif "ko" in response:
+                            self.logger.warning("❌ Élévation échouée")
+                            self.elevation_in_progress = False
+                            self.state = "NORMAL_OPERATIONS"
+                            return True
+                
                 return True
             
             if self.state == "JOINING_RITUAL":
-                self.logger.info("🤝 En route pour rejoindre un rituel d'équipe...")
-                if self.target_position:
-                    if self.movement_manager.move_to(self.target_position):
-                        self.logger.info("✅ Déplacement vers le rituel réussi")
-                        self.state = "NORMAL_OPERATIONS"
-                        self.target_position = None
+                self.logger.info("🤝 Rejoindre un rituel d'équipe...")
+                
+                if self.ritual_target_position:
+                    if self.movement_manager.move_to(self.ritual_target_position):
+                        self.logger.info("✅ Arrivé au point de rituel, attente...")
+                        self.state = "WAITING_FOR_RITUAL_PARTNER"
                     else:
-                        self.logger.warning("❌ Impossible d'atteindre le rituel")
+                        self.logger.warning("❌ Impossible d'atteindre le point de rituel")
                         self.state = "NORMAL_OPERATIONS"
-                        self.target_position = None
+                        self.ritual_target_position = None
+                else:
+                    self.logger.warning("❌ Aucune position de rituel définie")
+                    self.state = "NORMAL_OPERATIONS"
                 return True
             
             if self.state == "WAITING_FOR_RITUAL_PARTNER":
@@ -294,61 +377,8 @@ class AI:
                 self._explore()
                 return True
             
-            food_level = self.inventory_manager.inventory['food']
-            
+            # --- MODE SÉCURITÉ (nourriture faible mais pas critique) ---
             if food_level < 10:
-                self.state = "EMERGENCY_FOOD_SEARCH"
-                self.logger.critical("🚨🚨 MODE URGENCE : Survie immédiate prioritaire.")
-                
-                self.logger.critical("🚨 MODE URGENCE : Recherche prioritaire de nourriture")
-                target = self.vision_manager.find_nearest_object("food")
-                if target:
-                    if target == (0, 0):
-                        self.logger.critical("🚨 NOURRITURE SUR MA CASE, COLLECTE IMMÉDIATE")
-                        if self._collect_resource_intensively("food"):
-                            self.logger.critical("✅ NOURRITURE COLLECTÉE EN MODE URGENCE")
-                        else:
-                            self.logger.critical("❌ ÉCHEC DE LA COLLECTE EN MODE URGENCE")
-                        return True
-                    else:
-                        self.logger.critical(f"🚨 NOURRITURE TROUVÉE À {target}, DÉPLACEMENT URGENT")
-                        if self.movement_manager.move_to(target):
-                            self.logger.critical("✅ DÉPLACEMENT URGENT RÉUSSI, VÉRIFICATION FINALE...")
-                            
-                            self.vision_manager.force_update_vision()
-                            current_tile = self.vision_manager.vision_data[0]
-                            if 'food' in current_tile:
-                                self.logger.critical("✅ NOURRITURE CONFIRMÉE, COLLECTE IMMÉDIATE")
-                                if self._collect_resource_intensively("food"):
-                                    self.logger.critical("✅ NOURRITURE COLLECTÉE EN MODE URGENCE")
-                                else:
-                                    self.logger.critical("❌ ÉCHEC DE LA COLLECTE (Post-vérification)")
-                            else:
-                                self.logger.warning("❌ La nourriture a disparu juste avant la collecte !")
-                            
-                            return True
-                else:
-                    self.logger.critical("🚨 AUCUNE NOURRITURE EN VUE, EXPLORATION D'URGENCE")
-                    exploration_target = self._generate_emergency_exploration_target()
-                    if exploration_target:
-                        self.logger.critical(f"🚨 EXPLORATION D'URGENCE VERS {exploration_target}")
-                        if self.movement_manager.move_to(exploration_target):
-                            self.vision_manager.force_update_vision()
-                            if self._collect_available_resources():
-                                self.logger.critical("✅ RESSOURCES TROUVÉES EN EXPLORATION D'URGENCE")
-                            return True
-                    else:
-                        self.logger.critical("🚨 MOUVEMENT ALÉATOIRE D'URGENCE")
-                        random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
-                        if self.movement_manager.move_to(random_direction):
-                            self.vision_manager.force_update_vision()
-                            if self._collect_available_resources():
-                                self.logger.critical("✅ RESSOURCES TROUVÉES EN MOUVEMENT ALÉATOIRE")
-                            return True
-                
-                return True
-            
-            if food_level < 12:
                 self.state = "SURVIVAL_BUFFERING"
                 self.logger.warning(f"⚠️ MODE SÉCURITÉ : Constitution des réserves de nourriture (actuel: {food_level}). Objectifs secondaires suspendus.")
                 
@@ -366,6 +396,7 @@ class AI:
                         if self.movement_manager.move_to(target):
                             self.logger.info("✅ Déplacement réussi, vérification finale...")
                             
+                            # Vérification finale avant collecte
                             self.vision_manager.force_update_vision()
                             current_tile = self.vision_manager.vision_data[0]
                             if 'food' in current_tile:
@@ -391,7 +422,7 @@ class AI:
                 
                 return True
             
-            
+            # --- OPÉRATIONS NORMALES (nourriture suffisante) ---
             self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}). Joueur Niveau {self.player.level}. Objectif : Élévation.")
             self.state = "NORMAL_OPERATIONS"
             
@@ -406,8 +437,6 @@ class AI:
                 if self.reproduction_manager.reproduce():
                     self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
                 return True
-            
-            
             
             if 1 <= self.player.level <= 7:
                 next_level = self.player.level + 1
@@ -543,7 +572,6 @@ class AI:
                             return True
                 
                 return True
-            
             
             if self.reproduction_manager.can_fork() and food_level > 20:
                 self.logger.info("🥚 Conditions optimales pour la reproduction.")
