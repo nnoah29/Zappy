@@ -35,9 +35,8 @@ class Gui_client {
     std::mutex _messageMutex;
     std::thread _receiveThread;
 
-    void parseMessage(std::string);
+    void parseInit(std::string);
     void receiveMessage();
-
 };
 
 #endif /* !GUI_CLIENT_HPP_ */

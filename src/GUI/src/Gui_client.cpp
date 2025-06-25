@@ -104,9 +104,12 @@ void Pgt(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid pgt");
-    Player* p = gw->findPlayer(std::stoi(oklm[1]));
+    Player* p = gw->findPlayer(std::stoi(oklm[1].substr(1)));
     if (p)
         gw->updateResource(p->x, p->y, std::stoi(oklm[2]), -1);
+    std::cout << "Player #" << p->id << " resource updated at (" 
+              << p->x << ", " << p->y << ") for resource type: " 
+              << oklm[2] << std::endl;
 }
 
 void Tna(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw, Player* player)
@@ -132,7 +135,15 @@ void Pin(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
     player->inventory.mendiane = std::stoi(oklm[8]);
     player->inventory.phiras = std::stoi(oklm[9]);
     player->inventory.thystame = std::stoi(oklm[10]);
-    std::cout << "Inventory updated for player #" << player->id << std::endl;
+    std::cout << "Player #" << player->id << " inventory updated: "
+              << "Food: " << player->inventory.food
+              << ", Linemate: " << player->inventory.linemate
+              << ", Deraumere: " << player->inventory.deraumere
+              << ", Sibur: " << player->inventory.sibur
+              << ", Mendiane: " << player->inventory.mendiane
+              << ", Phiras: " << player->inventory.phiras
+              << ", Thystame: " << player->inventory.thystame
+              << std::endl;
 }
 
 void Pex(const std::vector<std::string>& oklm)
@@ -255,7 +266,7 @@ void Smg(const std::vector<std::string>& oklm)
     std::cout << "Server message: " << message << std::endl;
 }
 
-void Gui_client::parseMessage(std::string init)
+void Gui_client::parseInit(std::string init)
 {
     std::stringstream ss(init);
     std::string line;
@@ -319,7 +330,8 @@ void Gui_client::receiveMessage()
             std::cerr << "Connection lost or empty message received." << std::endl;
             break;
         }
-        std::cout << message << std::endl;
+        parseInit(message);
+        std::cout << "Received message: " << message << std::endl;
         _messageMutex.lock();
         _message.push_back(message);
         _messageMutex.unlock();
@@ -340,7 +352,7 @@ void Gui_client::run()
         _network->send("GRAPHIC\n");
         std::string init = _network->receive();
         std::cout << init << std::endl;
-        parseMessage(init);
+        parseInit(init);
         _receiveThread = std::thread(&Gui_client::receiveMessage, this);
         if (_receiveThread.joinable())
             _receiveThread.join();

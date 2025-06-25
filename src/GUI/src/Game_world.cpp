@@ -59,6 +59,7 @@ void GameWorld::updatePlayerPosition(int playerId, int x, int y, int orientation
     player->y = y;
     player->orientation = orientation;
     m_map[y][x].playerIds.push_back(playerId);
+    std::cout << "Player " << playerId << " moved to (" << x << ", " << y << ")" << std::endl;
 }
 
 void GameWorld::removePlayer(int playerId)
