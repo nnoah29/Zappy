@@ -35,12 +35,13 @@ int find_egg_in_team(server_t *server, int team_idx)
 }
 
 void setup_player_from_egg(session_client_t *egg,
-    session_client_t *client_temp, server_t *server)
+    session_client_t *client_temp, server_t *server, int egg_idx)
 {
     teams_t *team = &server->teams[egg->team_idx];
     char buffer[128];
 
     egg->fd = client_temp->fd;
+    egg->idx = egg_idx;
     egg->queue = client_temp->queue;
     egg->is_egg = false;
     egg->active = true;
@@ -71,8 +72,7 @@ void hatch_egg_for_client(server_t *server, int client_temp_idx, int egg_idx)
     teams_t *team = &server->teams[egg->team_idx];
     char buffer[128];
 
-    egg->idx = egg_idx;
-    setup_player_from_egg(egg, client_temp, server);
+    setup_player_from_egg(egg, client_temp, server, egg_idx);
     team->nbPlayers++;
     team->nbEggs--;
     team->players[team->nbPlayers - 1] = egg;
@@ -110,7 +110,5 @@ void init_eggs(int team_idx, server_t *s)
         }
     }
     if (eggs_created < s->teams[team_idx].nbEggs)
-        LOG(LOG_ERROR, "N'a pu créer que %d/%d œufs pour "
-        "l'équipe '%s'. Pas assez de slots.\n", eggs_created,
-        s->teams[team_idx].nbEggs, s->teams[team_idx].name);
+        error_msg_eggs_init(s, eggs_created, team_idx);
 }

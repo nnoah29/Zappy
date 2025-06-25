@@ -65,7 +65,7 @@ void accept_client_connection(server_t *server)
         return;
     }
     setup_client(server, new_idx, client_fd, true);
-    LOG(LOG_INFO,"Nouveau client connecté avec fd %d, assigné à l'index %d.",
+    LOG(LOG_INFO, "Nouveau client connecté avec fd %d, assigné à l'index %d.",
         client_fd, new_idx);
 }
 

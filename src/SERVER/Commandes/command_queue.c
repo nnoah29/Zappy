@@ -12,7 +12,7 @@
 #include "../Logger/logger.h"
 
 static int find_best_index(int best_index, int index, command_queue_t *queue,
-                           command_t *cmd)
+    command_t *cmd)
 {
     if (best_index == -1 ||
         timespec_cmp(&cmd->ready_at,
@@ -66,10 +66,7 @@ int remove_command_at(command_queue_t *queue, int index)
     int next = -1;
 
     if (queue->size == 0)
-    {
-    LOG(LOG_WARN, "Segfault");
         return 0;
-    }
     free(queue->commands[index].raw_cmd);
     for (int i = 0; i < queue->commands[index].argc; ++i)
         free(queue->commands[index].args[i]);

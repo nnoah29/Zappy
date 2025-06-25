@@ -11,17 +11,10 @@
 #include <unistd.h>
 #include "logger.h"
 
-// ... (Les constantes et la structure logger_config_t ne changent pas) ...
-#define COLOR_RESET "\x1b[0m"
-#define COLOR_META "\x1b[90m"
-static const char *G_LEVEL_STRINGS[] = {"DEBUG", "INFO ", "WARN ", "ERROR"};
-static const char *G_LEVEL_COLORS[] = {
+const char *G_LEVEL_STRINGS[] = {"DEBUG", "INFO ", "WARN ", "ERROR"};
+const char *G_LEVEL_COLORS[] = {
     "\x1b[94m", "\x1b[32m", "\x1b[33m", "\x1b[31m"
 };
-
-typedef struct logger_config_s {
-    log_level_t level;
-} logger_config_t;
 
 static logger_config_t *get_logger_config(void)
 {
@@ -30,7 +23,6 @@ static logger_config_t *get_logger_config(void)
     return &config;
 }
 
-// ... (get_formatted_time, print_colored_prefix, print_log_prefix ne changent pas) ...
 static void get_formatted_time(char *buffer, size_t buffer_size)
 {
     struct timespec spec;
@@ -93,17 +85,16 @@ int log_set_level(log_level_t level)
     return 0;
 }
 
-// C-F4: La fonction principale est modifiée pour utiliser le buffer.
-void log_message(log_level_t level, const char *file, int line,
+void doc(log_level_t level, m_t meta,
     const char *format, ...)
 {
-    logger_config_t *config = get_logger_config();
-    char buffer[2048]; // Buffer pour le message formaté
+    const logger_config_t *config = get_logger_config();
+    char buffer[2048];
     va_list args;
 
     if (level < config->level)
         return;
-    print_log_prefix(level, file, line);
+    print_log_prefix(level, meta.file, meta.line);
     va_start(args, format);
     vsnprintf(buffer, sizeof(buffer), format, args);
     va_end(args);

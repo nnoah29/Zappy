@@ -17,7 +17,6 @@
     #include "../SessionClients/session_client.h"
     #include "../Logger/logger.h"
 
-
     #define MAX_TEAMS 10
     #define MAX_CLIENTS 1000
 
@@ -132,7 +131,7 @@ void assign_team(server_t *server, int client_temp_idx,
 int find_team_by_name(server_t *server, const char *team_name);
 int find_egg_in_team(server_t *server, int team_idx);
 void setup_player_from_egg(session_client_t *egg, session_client_t
-    *client_temp, server_t *server);
+    *client_temp, server_t *server, int egg_idx);
 void hatch_egg_for_client(server_t *server, int client_temp_idx, int egg_idx);
 void init_eggs(int team_idx, server_t *s);
 

@@ -75,7 +75,8 @@ server_t *setup_server(config_server_t *config)
     map_spawn_resources(server);
     re_spawn_ressources_duration(server);
     signal(SIGINT, handle_signal);
-    LOG(LOG_INFO, "Serveur en attente de connexions sur le port %d", server->port);
+    LOG(LOG_INFO, "Serveur en attente de connexions sur le port %d",
+        server->port);
     return server;
 }
 
