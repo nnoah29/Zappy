@@ -311,14 +311,21 @@ class AI:
                             self.logger.critical("❌ ÉCHEC DE LA COLLECTE EN MODE URGENCE")
                         return True
                     else:
-                        # La nourriture est sur une autre case, déplacement nécessaire
                         self.logger.critical(f"🚨 NOURRITURE TROUVÉE À {target}, DÉPLACEMENT URGENT")
                         if self.movement_manager.move_to(target):
-                            self.logger.critical("✅ DÉPLACEMENT URGENT RÉUSSI, COLLECTE IMMÉDIATE")
-                            if self._collect_resource_intensively("food"):
-                                self.logger.critical("✅ NOURRITURE COLLECTÉE EN MODE URGENCE")
+                            self.logger.critical("✅ DÉPLACEMENT URGENT RÉUSSI, VÉRIFICATION FINALE...")
+                            
+                            self.vision_manager.force_update_vision()
+                            current_tile = self.vision_manager.vision_data[0]
+                            if 'food' in current_tile:
+                                self.logger.critical("✅ NOURRITURE CONFIRMÉE, COLLECTE IMMÉDIATE")
+                                if self._collect_resource_intensively("food"):
+                                    self.logger.critical("✅ NOURRITURE COLLECTÉE EN MODE URGENCE")
+                                else:
+                                    self.logger.critical("❌ ÉCHEC DE LA COLLECTE (Post-vérification)")
                             else:
-                                self.logger.critical("❌ ÉCHEC DE LA COLLECTE EN MODE URGENCE")
+                                self.logger.warning("❌ La nourriture a disparu juste avant la collecte !")
+                            
                             return True
                 else:
                     self.logger.critical("🚨 AUCUNE NOURRITURE EN VUE, EXPLORATION D'URGENCE")
@@ -357,10 +364,19 @@ class AI:
                     else:
                         self.logger.info(f"🎯 Cible de sécurité : nourriture à {target}.")
                         if self.movement_manager.move_to(target):
-                            if self._collect_resource_intensively("food"):
-                                self.logger.info("✅ Nourriture collectée pour les réserves")
+                            self.logger.info("✅ Déplacement réussi, vérification finale...")
+                            
+                            self.vision_manager.force_update_vision()
+                            current_tile = self.vision_manager.vision_data[0]
+                            if 'food' in current_tile:
+                                self.logger.info("✅ Nourriture confirmée, collecte...")
+                                if self._collect_resource_intensively("food"):
+                                    self.logger.info("✅ Nourriture collectée pour les réserves")
+                                else:
+                                    self.logger.warning("❌ Échec de la collecte (Post-vérification)")
                             else:
-                                self.logger.warning("❌ Échec de la collecte de sécurité")
+                                self.logger.warning("❌ La nourriture a disparu juste avant la collecte !")
+                            
                             return True
                 else:
                     self.logger.info("🔍 Exploration ciblée pour la nourriture.")
