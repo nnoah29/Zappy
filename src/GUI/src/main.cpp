@@ -5,7 +5,8 @@
 #include "../lib/Network.hpp"
 #include "../lib/Parser.hpp"
 #include  "../lib/Game_world.hpp"
-#include<string>
+#include <string>
+#include <memory>
 
 static int port = -1;
 static std::string machine;
@@ -108,6 +109,7 @@ void Pnw(const std::vector<std::string>& oklm, GameWorld& gw)
     p.orientation = std::stoi(oklm[4]);
     p.level = std::stoi(oklm[5]);
     p.team = oklm[6];
+    std::cout << "[DEBUG] Ajout player id=" << p.id << " team=" << p.team << " pos=(" << p.x << "," << p.y << ")" << std::endl;
     gw.addPlayer(p);
 }
 
@@ -372,8 +374,10 @@ int main(int argc, char **argv)
         return 84;
 
     Network network;
-    GameWorld gameWorld;
+    auto gameWorld = std::make_shared<GameWorld>();
     Player player;
+    int mapWidth = 0;
+    int mapHeight = 0;
     try {
         network.connect(machine, port);
         std::string welcome = network.receive();
@@ -381,16 +385,27 @@ int main(int argc, char **argv)
         network.send("GRAPHIC\n");
         std::string reponse = network.receive();
         std::cout << reponse << std::endl;
-        parseMessage(reponse, gameWorld);
+        std::stringstream ss(reponse);
+        std::string line;
+        while (std::getline(ss, line)) {
+            if (!line.empty() && line.back() == '\r') line.pop_back();
+            std::vector<std::string> tokens = Parser::split(line, ' ');
+            if (!tokens.empty() && tokens[0] == "msz" && tokens.size() >= 3) {
+                mapWidth = std::stoi(tokens[1]);
+                mapHeight = std::stoi(tokens[2]);
+                break;
+            }
+        }
+        parseMessage(reponse, *gameWorld);
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;
     }
-    // Core core;
-    // if (!core.initialize()) {
-    //     std::cerr << "Failed to initialize Core system" << std::endl;
-    //     return 84;
-    // }
-    // core.run();
+    Core core;
+    if (!core.initialize(mapWidth, mapHeight, gameWorld)) {
+        std::cerr << "Failed to initialize Core system" << std::endl;
+        return 84;
+    }
+    core.run();
     return 0;
 }
