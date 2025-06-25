@@ -75,6 +75,6 @@ void map_spawn_resources(server_t *server)
             server->map[y][x].resources[res_idx]++;
         }
     }
-    mct_f(server);
     LOG(LOG_DEBUG, "Ressources ont été générées sur la carte.");
+    mct_f(server);
 }
