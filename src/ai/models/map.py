@@ -15,7 +15,7 @@ class Tile:
         }
         self.players = []
         self.logger = logging.getLogger(__name__)
-        self.logger.info(f"map tile created: {self.resources} {self.players}")
+        # self.logger.info(f"map tile created: {self.resources} {self.players}")
 
 class Map:
     def __init__(self, width, height):

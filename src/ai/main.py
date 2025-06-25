@@ -139,6 +139,13 @@ def main() -> int:
                             parsed_message = client.ai.communicator.parse_message(async_message)
                             if parsed_message and parsed_message.get("team") == client.ai.player.team:
                                 logger.info(f"🤝 Message d'équipe reçu: {parsed_message}")
+                                
+                                action = parsed_message.get("action")
+                                if action == "RITUAL_LVL3_START":
+                                    if client.ai.player.level == 2:
+                                        logger.info("🤝 Je suis niveau 2, je peux participer au rituel niveau 3 !")
+                                    else:
+                                        logger.info(f"⚠️ Je suis niveau {client.ai.player.level}, je ne peux pas participer au rituel niveau 3")
                         continue
                     else:
                         logger.debug(f"📨 Message asynchrone non traité: {async_message}")

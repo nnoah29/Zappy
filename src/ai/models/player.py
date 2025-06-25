@@ -24,7 +24,7 @@ class Player:
         self.level = 1
         self.inventory = InventoryManager(protocol, self, logger)
         self.logger = logger
-        self.logger.info(f"player {id} created on team {team} at {self.position}")
+        # self.logger.info(f"player {id} created on team {team} at {self.position}")
 
     def get_position(self) -> Tuple[int, int]:
         """Récupère la position actuelle du joueur.

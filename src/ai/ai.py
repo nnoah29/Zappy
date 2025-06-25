@@ -28,19 +28,15 @@ class AI:
         self.player = player
         self.map = map
         self.logger = logger
-        self.state = "EMERGENCY_FOOD_SEARCH"  # État initial : recherche d'urgence de nourriture
+        self.state = "EMERGENCY_FOOD_SEARCH"
         self.target_resource = None
         self.target_position = None
-        self.level = 1
         
-        # Réduction drastique du cooldown pour réactivité maximale
-        self.update_cooldown = 1  # Réduit de 7 à 1 seconde
+        self.update_cooldown = 1
         
-        # Seuils de nourriture pour le mode urgence
-        self.FOOD_CRITICAL_LEVEL = 10  # Seuil critique pour le mode urgence
-        self.FOOD_SAFE_LEVEL = 12      # Niveau de sécurité pour désactiver le mode urgence (abaissé de 25 à 13)
+        self.FOOD_CRITICAL_LEVEL = 10
+        self.FOOD_SAFE_LEVEL = 12
         
-        # Initialisation des gestionnaires
         self.vision_manager = VisionManager(protocol, player, map, logger)
         self.inventory_manager = InventoryManager(protocol, player, logger)
         self.movement_manager = MovementManager(protocol, player, map, self.vision_manager, logger)
@@ -50,13 +46,12 @@ class AI:
         
         self.last_update = 0
 
-        # État spécial pour l'élévation en cours
         self.elevation_in_progress = False
         self.elevation_start_time = 0
 
-        self.logger.info(f"Joueur initialisé: ID={player.id}, Équipe={player.team}, Position={player.position}")
-        self.logger.info(f"Carte initialisée: {map.width}x{map.height}")
-        self.logger.info("IA initialisée avec succès")
+        # self.logger.info(f"Joueur initialisé: ID={player.id}, Équipe={player.team}, Position={player.position}")
+        # self.logger.info(f"Carte initialisée: {map.width}x{map.height}")
+        # self.logger.info("IA initialisée avec succès")
 
     def update(self) -> bool:
         """Met à jour l'IA et exécute une action.
@@ -67,9 +62,7 @@ class AI:
         try:
             current_time = time.time()
             
-            # Cooldown dynamique : plus rapide en mode urgence
             if self.state == "EMERGENCY_FOOD_SEARCH":
-                # En mode urgence, pas de cooldown pour une réactivité maximale
                 cooldown = 0.1
             else:
                 cooldown = self.update_cooldown
@@ -79,25 +72,20 @@ class AI:
             
             self.last_update = current_time
             
-            # Mise à jour de la vision
             if not self.vision_manager.update_vision():
                 self.logger.warning("Échec de la mise à jour de la vision")
                 return True
             
-            # Mise à jour de l'inventaire
             if not self.inventory_manager.update_inventory():
                 self.logger.warning("Échec de la mise à jour de l'inventaire")
                 return True
             
-            # Vérification de la mort
             if self.inventory_manager.inventory['food'] <= 0:
                 self.logger.error("Le joueur est mort de faim")
                 return False
             
-            # Mise à jour de l'état
             self._update_state()
             
-            # Exécution de l'action
             return self._execute_action()
             
         except Exception as e:
@@ -189,20 +177,15 @@ class AI:
     def _execute_action(self) -> bool:
         """Exécute l'action appropriée selon l'état actuel."""
         try:
-            # Gestion spéciale de l'état d'élévation
             if self.state == "ELEVATING":
                 self.logger.info("⏳ En attente du résultat de l'élévation...")
-                # Pendant l'élévation, on ne fait rien d'autre
-                # Le résultat sera géré par la boucle principale
                 return True
             
-            # Gestion spéciale de l'état de participation à un rituel
             if self.state == "JOINING_RITUAL":
                 self.logger.info("🤝 En route pour rejoindre un rituel d'équipe...")
                 if self.target_position:
                     if self.movement_manager.move_to(self.target_position):
                         self.logger.info("✅ Déplacement vers le rituel réussi")
-                        # Une fois arrivé, on revient à l'état normal
                         self.state = "NORMAL_OPERATIONS"
                         self.target_position = None
                     else:
@@ -211,11 +194,9 @@ class AI:
                         self.target_position = None
                 return True
             
-            # Gestion spéciale de l'état d'attente d'un partenaire pour le rituel
             if self.state == "WAITING_FOR_RITUAL_PARTNER":
                 self.logger.info("⏳ En attente d'un partenaire pour le rituel niveau 3...")
                 
-                # Vérifier s'il y a un autre joueur sur la case
                 current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
                 player_count = current_tile_content.count('player')
                 
@@ -303,19 +284,18 @@ class AI:
                 
                 return True
             
+            
             self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}). Objectif : Élévation.")
             self.state = "NORMAL_OPERATIONS"
             
-            # Vérification des messages d'équipe en priorité
             if self._handle_team_messages():
-                return True  # Un message a été traité, on attend le prochain cycle
+                return True
             
             current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
             player_count = current_tile_content.count('player')
             linemate_on_tile = current_tile_content.count('linemate')
             linemate_in_inventory = self.inventory_manager.inventory.get('linemate', 0)
             
-            # DÉCISION 1 : Lancer l'incantation si TOUT est prêt.
             if player_count == 1 and linemate_on_tile >= 1:
                 self.logger.info("✨ Conditions parfaites ! Lancement de l'incantation pour le niveau 2 !")
                 response = self.protocol.incantation()
@@ -513,17 +493,6 @@ class AI:
         else:
             self.target_position = self._generate_smart_exploration_target()
 
-    def _try_elevation(self) -> None:
-        """Tente de monter de niveau."""
-        result = self.protocol.incantation()
-        if result > 0:
-            self.level = result
-            self.vision_manager.set_level(result)
-            self.logger.debug(f"Niveau {self.level} atteint")
-        else:
-            self.logger.debug("Échec de l'incantation")
-            self._explore()
-
     def _generate_smart_exploration_target(self) -> Tuple[int, int]:
         """Génère une cible d'exploration intelligente.
         
@@ -540,7 +509,6 @@ class AI:
                     x, y = 1, 0
                 return (x, y)
             
-            # Exploration intelligente basée sur la vision
             max_radius = min(5, self.vision_manager.level + 2)
             
             directions = [
