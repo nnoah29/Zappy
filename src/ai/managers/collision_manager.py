@@ -69,12 +69,12 @@ class CollisionManager:
             current_tile = vision_data[0] if vision_data else ""
             if current_tile.count('player') > 1:
                 self.logger.info("Autre joueur détecté sur la même case. Tentative d'éjection.")
-                response = self.protocol.eject()
-                if response == "ok":
+                success = self.protocol.eject()
+                if success:
                     self.logger.debug("Éjection réussie")
                     return True
                 else:
-                    self.logger.debug(f"Échec de l'éjection: {response}")
+                    self.logger.debug("Échec de l'éjection")
                     return False
             return True
         except Exception as e:
@@ -144,55 +144,11 @@ class CollisionManager:
             self.escape_attempts = 0
             return True
 
-        if self.escape_attempts >= self.max_escape_attempts:
-            success = self._handle_severe_collision()
-            if success:
-                self.escape_attempts = 0
-            return success
-
-        self.escape_attempts += 1
-        success = self._basic_escape_strategy()
-        if success:
+        if self.avoid_collision():
             self.escape_attempts = 0
-        return success
-
-    def _basic_escape_strategy(self) -> bool:
-        """Stratégie basique d'évasion de collision.
-        
-        Returns:
-            bool: True si l'évasion a réussi
-        """
-        if not self.protocol.right():
-            return False
-        if not self.protocol.forward():
-            return False
-
-        if not self.check_collision():
             return True
 
-        if not self.protocol.left():
-            return False
-        if not self.protocol.left():
-            return False
-        if not self.protocol.forward():
-            return False
-
-        return not self.check_collision()
-
-    def _handle_severe_collision(self) -> bool:
-        """Gère une collision sévère (après plusieurs tentatives d'évasion).
-        
-        Returns:
-            bool: True si la collision a été résolue
-        """
-        for _ in range(4):
-            if not self.protocol.right():
-                return False
-            if not self.protocol.forward():
-                return False
-            if not self.check_collision():
-                return True
-
+        self.escape_attempts += 1
         return False
 
     def reset(self) -> None:

@@ -104,8 +104,8 @@ class InventoryManager:
             bool: True si l'objet a été posé
         """
         try:
-            response = self.protocol.set(object_type)
-            if response == "ok":
+            success = self.protocol.set(object_type)
+            if success:
                 self.inventory[object_type] -= 1
                 return True
             return False

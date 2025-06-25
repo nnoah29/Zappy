@@ -26,6 +26,24 @@ class Player:
         self.logger = logger
         # self.logger.info(f"player {id} created on team {team} at {self.position}")
 
+    @property
+    def x(self) -> int:
+        """Récupère la coordonnée X de la position.
+        
+        Returns:
+            int: Coordonnée X
+        """
+        return self.position[0]
+
+    @property
+    def y(self) -> int:
+        """Récupère la coordonnée Y de la position.
+        
+        Returns:
+            int: Coordonnée Y
+        """
+        return self.position[1]
+
     def get_position(self) -> Tuple[int, int]:
         """Récupère la position actuelle du joueur.
         

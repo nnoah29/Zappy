@@ -30,12 +30,12 @@ class PlayerCommunicator:
             bool: True si l'envoi a réussi, False sinon
         """
         try:
-            response = self.protocol.broadcast(message)
-            if response == "ok":
+            success = self.protocol.broadcast(message)
+            if success:
                 self.logger.info(f"Broadcast envoyé: {message}")
                 return True
             else:
-                self.logger.warning(f"Broadcast échoué: {response}")
+                self.logger.warning(f"Broadcast échoué")
                 return False
         except Exception as e:
             self.logger.error(f"Erreur lors du broadcast: {e}")
