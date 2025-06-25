@@ -70,12 +70,12 @@ int calculate_next_event_timeout(server_t *server)
     struct timespec now;
     const session_client_t *client = NULL;
     long food_timeout = 0;
-    long min_t = 0;
+    long min_t = -1;
 
     get_current_time(&now);
     min_t = timespec_diff_ms(&now, &server->next_respawn_time);
     for (int i = 0; i < MAX_CLIENTS; ++i) {
-        client = &server->clients[i];
+        client = &server->players[i];
         if (client->fd < 0 || !client->active || client->is_gui)
             continue;
         food_timeout = timespec_diff_ms(&now, &client->next_food_time);

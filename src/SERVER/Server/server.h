@@ -15,6 +15,8 @@
     #include "../Commandes/command.h"
     #include "../Map/map.h"
     #include "../SessionClients/session_client.h"
+    #include "../Logger/logger.h"
+
 
     #define MAX_TEAMS 10
     #define MAX_CLIENTS 1000
@@ -56,7 +58,7 @@ typedef struct server {
     int port, server_fd, nfds;
     struct sockaddr_in server_addr;
     struct pollfd fds[MAX_CLIENTS + 1];
-    session_client_t clients[MAX_CLIENTS];
+    session_client_t players[MAX_CLIENTS];
     teams_t teams[MAX_TEAMS];
     config_server_t *config;
     struct timespec next_respawn_time;
@@ -69,7 +71,7 @@ typedef struct {
 } command_info_t;
 
 typedef void (*parser_func_t)(config_server_t *conf, char **argv, int *i);
-typedef void (*cmd_func_t)(server_t *server, session_client_t *client,
+typedef int (*cmd_func_t)(server_t *server, session_client_t *client,
     const command_t *cmd);
 
 typedef struct {
@@ -103,7 +105,7 @@ void initialize_teams(server_t *server);
 void accept_client_connection(server_t *server);
 void close_client_connection(server_t *server, int client_idx);
 void handle_network_events(server_t *server);
-void setup_client(server_t *server, int idx, int fd);
+void setup_client(server_t *server, int idx, int fd, bool first);
 int find_client_by_fd(server_t *server, int fd); // à implémenter
 
 // server_core.c
@@ -124,8 +126,15 @@ void handle_command(server_t *server, session_client_t *client,
     const command_t *cmd);
 void connec_t(server_t *server, session_client_t *client,
     const command_t *cmd);
-void assign_team(server_t *server, int client_idx, const char *team_name);
+void assign_team(server_t *server, int client_temp_idx,
+    const char *team_name);
 
+int find_team_by_name(server_t *server, const char *team_name);
+int find_egg_in_team(server_t *server, int team_idx);
+void setup_player_from_egg(session_client_t *egg, session_client_t
+    *client_temp, server_t *server);
+void hatch_egg_for_client(server_t *server, int client_temp_idx, int egg_idx);
+void init_eggs(int team_idx, server_t *s);
 
 
 #endif //SERVER_H

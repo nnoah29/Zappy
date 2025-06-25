@@ -277,7 +277,7 @@
     <inspection_tool class="CppTemplateParameterNeverUsed" enabled="true" level="HINT" enabled_by_default="true" />
     <inspection_tool class="CppTemplateParameterShadowing" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CppThrowExpressionCanBeReplacedWithRethrow" enabled="true" level="WARNING" enabled_by_default="true" />
-    <inspection_tool class="CppTooWideScope" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="CppTooWideScope" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="CppTooWideScopeInitStatement" enabled="true" level="HINT" enabled_by_default="true" />
     <inspection_tool class="CppTypeAliasNeverUsed" enabled="true" level="WARNING" enabled_by_default="true" />
     <inspection_tool class="CppUninitializedDependentBaseClass" enabled="true" level="WARNING" enabled_by_default="true" />

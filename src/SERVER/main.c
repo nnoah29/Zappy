@@ -11,6 +11,7 @@
 #include <string.h>
 #include "my.h"
 #include "Server/server.h"
+#include "Logger/logger.h"
 
 static const option_parser_t parsers[] = {
     {"-p", parse_port},
@@ -58,6 +59,7 @@ config_server_t *parse_args(int argc, char **argv)
 {
     config_server_t *conf = malloc(sizeof(config_server_t));
 
+    LOG(LOG_INFO, "Analyse des arguments en cours...");
     recursive_parse(conf, argv, 1, argc);
     check_config(conf);
     return conf;
@@ -65,6 +67,7 @@ config_server_t *parse_args(int argc, char **argv)
 
 int main(int ac, char *av[])
 {
+    int a = log_set_level(LOG_DEBUG);
     config_server_t *conf = parse_args(ac, av);
     server_t *server = setup_server(conf);
 

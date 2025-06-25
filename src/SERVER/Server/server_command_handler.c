@@ -45,11 +45,12 @@ static void handle_command_gui(server_t *server, session_client_t *client,
     for (size_t i = 0; i < sizeof(gui_cmds) / sizeof(gui_cmds[0]); ++i) {
         len = strlen(gui_cmds[i].cmd);
         if (strncasecmp(cmd->raw_cmd, gui_cmds[i].cmd, len) == 0) {
+            LOG(LOG_DEBUG, "Commande GUI : %s\n", cmd->raw_cmd);
             gui_cmds[i].func(server, client, cmd);
             return;
         }
     }
-    printf("Commande inconnue (GUI) : %s\n", cmd->raw_cmd);
+    LOG(LOG_ERROR, "Commande inconnue (GUI) : %s\n", cmd->raw_cmd);
 }
 
 static void handle_command_ai(server_t *server, session_client_t *client,
@@ -60,61 +61,36 @@ static void handle_command_ai(server_t *server, session_client_t *client,
     for (size_t i = 0; i < sizeof(ai_cmds) / sizeof(ai_cmds[0]); i++) {
         len = strlen(ai_cmds[i].cmd);
         if (strncasecmp(cmd->raw_cmd, ai_cmds[i].cmd, len) == 0) {
+            LOG(LOG_DEBUG, "Commande AI : %s\n", cmd->raw_cmd);
             ai_cmds[i].func(server, client, cmd);
             return;
         }
     }
-    printf("Commande inconnue (AI) : %s\n", cmd->raw_cmd);
+    LOG(LOG_ERROR, "Commande inconnue (AI) : %s\n", cmd->raw_cmd);
 }
 
-void register_player_in_team(server_t *server, int client_idx, int team_idx)
-{
-    const int nb = server->teams[team_idx].nbPlayers;
-    session_client_t *client = &server->clients[client_idx];
-
-    server->teams[team_idx].players[nb] = client;
-    server->teams[team_idx].nbPlayers++;
-    server->teams[team_idx].nbMaxPlayers--;
-    client->team_idx = team_idx;
-    client->is_egg = false;
-    client->is_gui = false;
-    client->active = true;
-    client->level = 1;
-    client->x = (int)random() % server->config->map_w;
-    client->y = (int)random() % server->config->map_h;
-    client->orientation = ((int)random() % 4) + 1;
-    for (int k = 0; k < 7; k++)
-        client->inventory[k] = 0;
-    client->inventory[FOOD] = 10;
-    map_add_entity(&server->map[client->y][client->x], client);
-    get_current_time(&(client->next_food_time));
-    get_next_food_consumption(client, server);
-}
-
-void assign_team(server_t *server, int client_idx, const char *team_name)
+void assign_team(server_t *server, int client_temp_idx, const char *team_name)
 {
     char buffer[128];
+    const int team_idx = find_team_by_name(server, team_name);
+    const int egg_idx = find_egg_in_team(server, team_idx);
 
-    for (int j = 0; j < server->config->nb_teams; j++)
-        if (strcmp(team_name, server->teams[j].name) == 0 &&
-            server->teams[j].nbMaxPlayers > 0) {
-            register_player_in_team(server, client_idx, j);
-            snprintf(buffer, sizeof(buffer), "%d\n",
-                server->teams[j].nbMaxPlayers);
-            send(server->clients[client_idx].fd, buffer, strlen(buffer), 0);
-            snprintf(buffer, sizeof(buffer), "%d %d\n",
-                server->config->map_w, server->config->map_h);
-            send(server->clients[client_idx].fd, buffer, strlen(buffer), 0);
-            pnw_f(server, &server->clients[client_idx]);
-            printf("Client %d a rejoint l'équipe '%s'.\n",
-                client_idx, team_name);
-            return;
-        }
-    printf("Client %d a échoué à rejoindre l'équipe '%s'.\n",
-        client_idx, team_name);
-    send(server->clients[client_idx].fd, "ko\n", 3, 0);
+    if (team_idx == -1 || server->teams[team_idx].nbMaxPlayers <= 0) {
+        send(server->players[client_temp_idx].fd, "ko\n", 3, 0);
+        close_client_connection(server, client_temp_idx);
+        return;
+    }
+    if (egg_idx != -1) {
+        hatch_egg_for_client(server, client_temp_idx, egg_idx);
+        return;
+    }
+    LOG(LOG_ERROR, "Client temp #%d a échoué à rejoindre l'équipe '%s'.\n",
+        client_temp_idx, team_name);
+    send(server->players[client_temp_idx].fd, "ko\n", 3, 0);
+    close_client_connection(server, client_temp_idx);
 }
 
+// TODO :send_full_game_state_to_gui(server, client);
 void connec_t(server_t *server, session_client_t *client, const command_t *cmd)
 {
     const char *team_name = cmd->raw_cmd;
@@ -122,8 +98,7 @@ void connec_t(server_t *server, session_client_t *client, const command_t *cmd)
     if (strcmp(team_name, "GRAPHIC") == 0) {
         client->is_gui = true;
         client->active = true;
-        printf("Client %d authentifié comme GUI.\n", client->idx);
-        // send_full_game_state_to_gui(server, client);
+        LOG(LOG_DEBUG, "Client %d authentifié comme GUI.", client->idx);
         return;
     }
     assign_team(server, client->idx, team_name);
@@ -136,6 +111,8 @@ void handle_command(server_t *server, session_client_t *client,
         connec_t(server, client, cmd);
         return;
     }
+    LOG(LOG_DEBUG, "Execution de la commande : %s, du joueur %d",
+        cmd->raw_cmd, client->idx);
     if (client->is_gui) {
         handle_command_gui(server, client, cmd);
         return;

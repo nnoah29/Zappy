@@ -24,18 +24,15 @@ int is_command_ready(command_t *cmd, struct timespec *now)
 void setup_command(command_queue_t *queue, const char *cmd,
     int index, double duration)
 {
+    char *save_ptr;
     char *cmd_copy = strdup(cmd);
-    char *token = strtok(cmd_copy, " ");
+    char *token = strtok_r(cmd_copy, " ", &save_ptr);
     int i = 0;
 
-    if (!token) {
-        free(cmd_copy);
-        return;
-    }
     queue->commands[index].raw_cmd = strdup(token);
     queue->commands[index].args = malloc(sizeof(char *) * (MAX_ARGS + 1));
     for (; i < MAX_ARGS; i++) {
-        token = strtok(NULL, " ");
+        token = strtok_r(NULL, " ", &save_ptr);
         if (!token)
             break;
         queue->commands[index].args[i] = strdup(token);

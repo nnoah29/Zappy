@@ -1,5 +1,5 @@
 /*
-** EPITECH PROJECT, 2024
+** EPITECH PROJECT, 2025
 ** B-YEP-400-COT-4-1-zappy-noah.toffa
 ** File description:
 ** sessionClient.h
@@ -14,27 +14,32 @@
 
 
 int find_client_by_fd(server_t *server, int fd);
-void forward_f(server_t *server, session_client_t *client,
+void write_vision(server_t *server, session_client_t *client, char *response);
+void calculate_direction(server_t *server, session_client_t *client,
+    int *x, int *y);
+int process_ejection_on_entity(entity_on_tile_t **current, server_t *server,
+    session_client_t *client);
+int forward_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void right_f(server_t *server, session_client_t *client,
+int right_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void left_f(server_t *server, session_client_t *client,
+int left_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void look_f(server_t *server, session_client_t *client,
+int look_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void inventory_f(server_t *server, session_client_t *client,
+int inventory_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void broadcast_f(server_t *server, session_client_t *client,
+int broadcast_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void connect_nbr_f(server_t *server, session_client_t *client,
+int connect_nbr_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void fork_f(server_t *server, session_client_t *client,
+int fork_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void eject_f(server_t *server, session_client_t *client,
+int eject_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void take_object_f(server_t *server, session_client_t *client,
+int take_object_f(server_t *server, session_client_t *client,
     const command_t *cmd);
-void set_object_f(server_t *server, session_client_t *client,
+int set_object_f(server_t *server, session_client_t *client,
     const command_t *cmd);
 void send_to_all_guis(server_t *server, const char *msg);
 
@@ -64,15 +69,15 @@ void bct_f(server_t *server, int x, int y);
 void mct_f(server_t *server);
 
 
-void msz_h(server_t *server, session_client_t *client, const command_t *cmd);
-void bct_h(server_t *server, session_client_t *client, const command_t *cmd);
-void mct_h(server_t *server, session_client_t *client, const command_t *cmd);
-void tna_h(server_t *server, session_client_t *client, const command_t *cmd);
-void plv_h(server_t *server, session_client_t *client, const command_t *cmd);
-void pin_h(server_t *server, session_client_t *client, const command_t *cmd);
-void sgt_h(server_t *server, session_client_t *client, const command_t *cmd);
-void sst_h(server_t *server, session_client_t *client, const command_t *cmd);
-void ppo_h(server_t *server, session_client_t *client, const command_t *cmd);
+int msz_h(server_t *server, session_client_t *client, const command_t *cmd);
+int bct_h(server_t *server, session_client_t *client, const command_t *cmd);
+int mct_h(server_t *server, session_client_t *client, const command_t *cmd);
+int tna_h(server_t *server, session_client_t *client, const command_t *cmd);
+int plv_h(server_t *server, session_client_t *client, const command_t *cmd);
+int pin_h(server_t *server, session_client_t *client, const command_t *cmd);
+int sgt_h(server_t *server, session_client_t *client, const command_t *cmd);
+int sst_h(server_t *server, session_client_t *client, const command_t *cmd);
+int ppo_h(server_t *server, session_client_t *client, const command_t *cmd);
 
 
 #endif //SESSIONCLIENT_H

@@ -5,6 +5,7 @@
 ** map_entities.c
 */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "map.h"
 #include "../my.h" // Pour exit_error

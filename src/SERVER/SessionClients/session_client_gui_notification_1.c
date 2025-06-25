@@ -16,10 +16,10 @@
 void send_to_all_guis(server_t *server, const char *msg)
 {
     for (int i = 0; i < server->nfds; ++i) {
-        if (server->fds[i].fd < 0 || !server->clients[i].is_gui
-            || server->clients[i].is_egg)
+        if (server->fds[i].fd < 0 || !server->players[i].is_gui
+            || server->players[i].is_egg)
             continue;
-        send(server->clients[i].fd, msg, strlen(msg), 0);
+        send(server->players[i].fd, msg, strlen(msg), 0);
     }
 }
 
@@ -31,7 +31,6 @@ void ppo_f(server_t *server, session_client_t *client)
     snprintf(buffer, sizeof(buffer), "ppo #%d %d %d %d\n",
         client->idx, client->x, client->y, client->orientation);
     send_to_all_guis(server, buffer);
-    printf("ppo\n");
 }
 
 /// Notifie qu’un joueur a été éjecté (pex)

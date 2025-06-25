@@ -14,59 +14,62 @@
 #include "../my.h"
 
 /// Envoie le niveau d’un joueur (#n) (plv)
-void plv_h(server_t *server, session_client_t *client, const command_t *cmd)
+int plv_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     int player_idx = 0;
     const session_client_t *player = NULL;
 
     if (cmd->args[0] == NULL || cmd->args[0][0] != '#') {
         dprintf(client->fd, "sbp\n");
-        return;
+        return 84;
     }
     player_idx = atoi(&cmd->args[0][1]);
-    player = &server->clients[player_idx];
+    player = &server->players[player_idx];
     if (player_idx != -1) {
         dprintf(client->fd, "plv %d %d\n", player->idx,
             player->level);
     }
+    return 0;
 }
 
 /// Envoie l’inventaire d’un joueur (#n) (pin)
-void pin_h(server_t *server, session_client_t *client, const command_t *cmd)
+int pin_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     int player_idx = 0;
     const session_client_t *player = NULL;
 
     if (cmd->args[0] == NULL || cmd->args[0][0] != '#') {
         dprintf(client->fd, "sbp\n");
-        return;
+        return 84;
     }
     player_idx = atoi(&cmd->args[0][1]);
     if (player_idx != -1) {
-        player = &server->clients[player_idx];
+        player = &server->players[player_idx];
         dprintf(client->fd, "pin %d %d %d %d %d %d %d %d %d %d\n",
             player->idx, player->x, player->y, player->inventory[0],
             player->inventory[1], player->inventory[2], player->inventory[3],
             player->inventory[4], player->inventory[5], player->inventory[6]);
     }
+    return 0;
 }
 
 /// Envoie le temps d’exécution d’une action (sgt)
-void sgt_h(server_t *server, session_client_t *client, const command_t *cmd)
+int sgt_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     dprintf(client->fd, "sgt %d\n", server->config->freq);
     (void)cmd;
+    return 0;
 }
 
 /// Définit le temps d’exécution d’une action (sst T)
-void sst_h(server_t *server, session_client_t *client, const command_t *cmd)
+int sst_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     char buffer[64];
     int new_freq = 0;
 
     if (cmd->args[0] == NULL) {
         dprintf(client->fd, "sbp\n");
-        return;
+        return 0;
     }
     new_freq = atoi(cmd->args[0]);
     if (new_freq > 0) {
@@ -76,4 +79,5 @@ void sst_h(server_t *server, session_client_t *client, const command_t *cmd)
     } else {
         dprintf(client->fd, "sbp\n");
     }
+    return 0;
 }

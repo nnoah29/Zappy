@@ -35,4 +35,8 @@ add_executable(SERVER main.c
         Map/map_management.c
         Map/map_entities.c
         Utilitaires/look_utils.c
+        Utilitaires/ai_utils.c
+        Server/server_egg_utils.c
+        Logger/logger.c
+        Logger/logger.h
 )

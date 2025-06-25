@@ -32,15 +32,18 @@ void spawn_ressources(server_t *server)
 
 void check_life(server_t *server, int client_idx)
 {
-    session_client_t *client = &server->clients[client_idx];
+    session_client_t *client = &server->players[client_idx];
     struct timespec now;
 
+    if (client->is_egg || !client->active)
+        return;
     get_current_time(&now);
     if (timespec_cmp(&now, &client->next_food_time) >= 0) {
         if (client->inventory[FOOD] > 0) {
             client->inventory[FOOD]--;
             get_next_food_consumption(client, server);
         } else {
+            LOG(LOG_INFO, "Le joueur %d est mort.", client_idx);
             send(client->fd, "dead\n", 5, 0);
             pdi_f(server, client);
             map_detach_entity(&server->map[client->y][client->x], client);
@@ -53,8 +56,7 @@ void handle_game_logic(server_t *server)
 {
     spawn_ressources(server);
     for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].fd == -1 || server->clients[i].is_egg ||
-            !server->clients[i].active)
+        if (server->players[i].fd == -1 || server->players[i].is_egg)
             continue;
         exec_cmd(server, i);
         check_life(server, i);

@@ -1,5 +1,21 @@
-./Server/server_command_handler.c:126: MINOR:C-F8
+./Commandes/command_queue.c:15: MINOR:C-L2
+./Commandes/command_queue.c:69: MINOR:C-L4
+./Logger/logger.c:15: MAJOR:C-H1
+./Logger/logger.c:16: MAJOR:C-H1
+./Logger/logger.c:22: MAJOR:C-H1
+./Logger/logger.c:33: MAJOR:C-F3
+./Logger/logger.c:97: MAJOR:C-F5
+./Logger/logger.c:101: MINOR:C-F8
+./Logger/logger.c:112: INFO:C-A3
+./Logger/logger.h:25: MINOR:C-G3
+./Logger/logger.h:29: MAJOR:C-F5
+./Logger/logger.h:32: INFO:C-A3
 ./Server/server_core.c:13: MAJOR:C-G4
+./Server/server_egg_utils.c:89: MAJOR:C-F4
+./Server/server_egg_utils.c:114: MAJOR:C-F4
+./Server/server_egg_utils.c:115: MAJOR:C-F4
+./Server/server_init.c:78: MAJOR:C-F3
+./Server/server_network.c:68: MINOR:C-L3
 ./cmake-build-debug/CMakeFiles/3.31.6/CMakeDetermineCompilerABI_C.bin:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/3.31.6/CompilerIdC/CMakeCCompilerId.c:1: MINOR:C-G1
 ./cmake-build-debug/CMakeFiles/3.31.6/CompilerIdC/CMakeCCompilerId.c:1: MINOR:C-O4
@@ -783,6 +799,7 @@
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Commandes/command_utils.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Commandes/commandes.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Commandes/commandes_2.c.o:1: MAJOR:C-O1
+./cmake-build-debug/CMakeFiles/SERVER.dir/Logger/logger.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Map/map.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Map/map_entities.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Map/map_management.c.o:1: MAJOR:C-O1
@@ -794,6 +811,7 @@
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_command_handler.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_command_queue.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_core.c.o:1: MAJOR:C-O1
+./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_egg_utils.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_init.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_network.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/SessionClients/session_client_ai.c.o:1: MAJOR:C-O1
@@ -807,6 +825,7 @@
 ./cmake-build-debug/CMakeFiles/SERVER.dir/SessionClients/session_client_gui_notification_2.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/SessionClients/session_client_gui_notification_3.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/SessionClients/session_client_gui_notification_4.c.o:1: MAJOR:C-O1
+./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/ai_utils.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/argument_parser_core.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/argument_parser_teams.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/client_utils.c.o:1: MAJOR:C-O1

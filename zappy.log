@@ -1,0 +1,362 @@
+2025-06-25 01:01:21,575 - __main__ - DEBUG - Configuration du logging terminée. Fichier zappy.log créé.
+2025-06-25 01:01:21,575 - __main__ - INFO - Niveau de logging configuré à DEBUG pour tous les modules.
+2025-06-25 01:01:21,575 - core.client - INFO - Tentative de connexion à localhost:8600
+2025-06-25 01:01:21,576 - core.client - INFO - Socket connecté avec succès
+2025-06-25 01:01:21,576 - core.client - INFO - En attente du message de bienvenue...
+2025-06-25 01:01:21,576 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:21,576 - core.client - DEBUG - Données reçues: WELCOME
+2025-06-25 01:01:21,576 - core.client - INFO - Message reçu: WELCOME
+2025-06-25 01:01:21,576 - core.client - INFO - Envoi du nom d'équipe: name1
+2025-06-25 01:01:21,576 - core.client - DEBUG - Envoyé (7.0s): name1
+2025-06-25 01:01:21,576 - core.client - INFO - En attente de la réponse du serveur...
+2025-06-25 01:01:21,576 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:21,576 - core.client - DEBUG - Données reçues: 8
+2025-06-25 01:01:21,576 - core.client - INFO - Réponse reçue: 8
+2025-06-25 01:01:21,576 - core.client - INFO - Numéro de client reçu: 8
+2025-06-25 01:01:21,576 - core.client - INFO - En attente des dimensions de la carte...
+2025-06-25 01:01:21,576 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:21,617 - core.client - DEBUG - Données reçues: 25 10
+2025-06-25 01:01:21,618 - core.client - INFO - Dimensions de la carte reçues: 25 10
+2025-06-25 01:01:21,618 - core.client - INFO - Dimensions de la carte parsées: (25, 10)
+2025-06-25 01:01:21,618 - core.client - INFO - Connecté au serveur. Client #8, Carte: 25x10
+2025-06-25 01:01:21,618 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:21,618 - __main__ - INFO - player 8 created on team name1 at (12, 5)
+2025-06-25 01:01:21,618 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,618 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,618 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,618 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,618 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,618 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,618 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,619 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,620 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,621 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,622 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,623 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,624 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,625 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,626 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,627 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,628 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,628 - models.map - INFO - map tile created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0} []
+2025-06-25 01:01:21,628 - __main__ - INFO - inventory created: {'food': 0, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:21,628 - __main__ - INFO - Joueur initialisé: ID=8, Équipe=name1, Position=(12, 5)
+2025-06-25 01:01:21,628 - __main__ - INFO - Carte initialisée: 25x10
+2025-06-25 01:01:21,628 - __main__ - INFO - IA initialisée avec succès
+2025-06-25 01:01:21,629 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-25 01:01:21,629 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:23,030 - core.client - DEBUG - Données reçues: [food food food linemate linemate linemate sibur phiras,food food food food food linemate linemate linemate deraumere,food food food food food food linemate linemate linemate deraumere deraumere deraumere sibur mendiane,food food food linemate linemate deraumere deraumere thystame thystame]
+2025-06-25 01:01:23,030 - __main__ - DEBUG - Vision mise à jour: [['food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'sibur', 'phiras'], ['food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'deraumere', 'sibur', 'mendiane'], ['food', 'food', 'food', 'linemate', 'linemate', 'deraumere', 'deraumere', 'thystame', 'thystame']]
+2025-06-25 01:01:23,031 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-25 01:01:23,031 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:23,231 - core.client - DEBUG - Données reçues: [food 9, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0]
+2025-06-25 01:01:23,231 - __main__ - DEBUG - Inventaire mis à jour: {'food': 9, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:23,231 - __main__ - DEBUG - Pas assez de linemate dans l'inventaire pour l'élévation
+2025-06-25 01:01:23,231 - __main__ - DEBUG - État changé: collecting linemate (priorité)
+2025-06-25 01:01:23,231 - __main__ - CRITICAL - 🚨🚨 MODE URGENCE : Survie immédiate prioritaire.
+2025-06-25 01:01:23,231 - __main__ - CRITICAL - 🚨 MODE URGENCE : Recherche prioritaire de nourriture
+2025-06-25 01:01:23,231 - __main__ - CRITICAL - 🚨 NOURRITURE TROUVÉE À (0, 0), DÉPLACEMENT URGENT
+2025-06-25 01:01:23,231 - __main__ - DEBUG - 🎯 Déplacement itératif vers (12, 5) depuis (12, 5)
+2025-06-25 01:01:23,231 - __main__ - INFO - ✅ Arrivé à la destination (12, 5)
+2025-06-25 01:01:23,231 - __main__ - CRITICAL - ✅ DÉPLACEMENT URGENT RÉUSSI, COLLECTE IMMÉDIATE
+2025-06-25 01:01:23,231 - __main__ - INFO - 🔄 Collecte intensive de food à la position (12, 5)
+2025-06-25 01:01:23,231 - __main__ - INFO - 🕵️ Vérification finale de la présence de la ressource...
+2025-06-25 01:01:23,231 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-25 01:01:23,231 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-25 01:01:23,232 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:24,632 - core.client - DEBUG - Données reçues: [food food food linemate linemate linemate sibur phiras,food food food food food linemate linemate linemate deraumere,food food food food food food linemate linemate linemate deraumere deraumere deraumere sibur mendiane,food food food linemate linemate deraumere deraumere thystame thystame]
+2025-06-25 01:01:24,633 - __main__ - DEBUG - Vision forcée mise à jour: [['food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'sibur', 'phiras'], ['food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'deraumere', 'sibur', 'mendiane'], ['food', 'food', 'food', 'linemate', 'linemate', 'deraumere', 'deraumere', 'thystame', 'thystame']]
+2025-06-25 01:01:24,633 - core.client - DEBUG - Envoyé (7s): Take food
+2025-06-25 01:01:24,633 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:26,034 - core.client - DEBUG - Données reçues: ok
+2025-06-25 01:01:26,034 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-25 01:01:26,034 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:26,234 - core.client - DEBUG - Données reçues: [food 10, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0]
+2025-06-25 01:01:26,234 - __main__ - DEBUG - Inventaire mis à jour: {'food': 10, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:26,234 - __main__ - DEBUG - ✅ food pris avec succès, inventaire: {'food': 10, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:26,234 - __main__ - INFO - ✅ food #1 collecté(e)
+2025-06-25 01:01:26,234 - __main__ - INFO - 🔄 Forçage de la mise à jour de la vision post-collecte.
+2025-06-25 01:01:26,234 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-25 01:01:26,235 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-25 01:01:26,235 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:27,635 - core.client - DEBUG - Données reçues: [food food linemate linemate linemate sibur phiras,food food food food food food linemate linemate linemate deraumere,food food food food food food linemate linemate linemate linemate deraumere deraumere deraumere sibur mendiane,food food food food linemate linemate linemate deraumere deraumere thystame thystame]
+2025-06-25 01:01:27,635 - __main__ - DEBUG - Vision forcée mise à jour: [['food', 'food', 'linemate', 'linemate', 'linemate', 'sibur', 'phiras'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'deraumere', 'sibur', 'mendiane'], ['food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'thystame', 'thystame']]
+2025-06-25 01:01:27,735 - core.client - DEBUG - Envoyé (7s): Take food
+2025-06-25 01:01:27,735 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:29,137 - core.client - DEBUG - Données reçues: ok
+2025-06-25 01:01:29,137 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-25 01:01:29,137 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:29,337 - core.client - DEBUG - Données reçues: [food 11, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0]
+2025-06-25 01:01:29,337 - __main__ - DEBUG - Inventaire mis à jour: {'food': 11, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:29,337 - __main__ - DEBUG - ✅ food pris avec succès, inventaire: {'food': 11, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:29,337 - __main__ - INFO - ✅ food #2 collecté(e)
+2025-06-25 01:01:29,337 - __main__ - INFO - 🔄 Forçage de la mise à jour de la vision post-collecte.
+2025-06-25 01:01:29,337 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-25 01:01:29,338 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-25 01:01:29,338 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:30,738 - core.client - DEBUG - Données reçues: [food linemate linemate linemate sibur phiras,food food food food food food linemate linemate linemate linemate deraumere,food food food food food food linemate linemate linemate linemate deraumere deraumere deraumere sibur mendiane,food food food food linemate linemate linemate deraumere deraumere thystame thystame]
+2025-06-25 01:01:30,738 - __main__ - DEBUG - Vision forcée mise à jour: [['food', 'linemate', 'linemate', 'linemate', 'sibur', 'phiras'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'linemate', 'deraumere'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'deraumere', 'sibur', 'mendiane'], ['food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'thystame', 'thystame']]
+2025-06-25 01:01:30,838 - core.client - DEBUG - Envoyé (7s): Take food
+2025-06-25 01:01:30,839 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:32,240 - core.client - DEBUG - Données reçues: ok
+2025-06-25 01:01:32,240 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-25 01:01:32,240 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:32,440 - core.client - DEBUG - Données reçues: [food 12, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0]
+2025-06-25 01:01:32,440 - __main__ - DEBUG - Inventaire mis à jour: {'food': 12, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:32,440 - __main__ - DEBUG - ✅ food pris avec succès, inventaire: {'food': 12, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:32,440 - __main__ - INFO - ✅ food #3 collecté(e)
+2025-06-25 01:01:32,440 - __main__ - INFO - 🔄 Forçage de la mise à jour de la vision post-collecte.
+2025-06-25 01:01:32,440 - __main__ - DEBUG - 🔄 Mise à jour forcée de la vision (ignorant le cooldown)
+2025-06-25 01:01:32,441 - core.client - DEBUG - Envoyé (7s): Look
+2025-06-25 01:01:32,441 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:33,841 - core.client - DEBUG - Données reçues: [linemate linemate linemate sibur phiras,food food food food food food linemate linemate linemate linemate deraumere,food food food food food food linemate linemate linemate linemate deraumere deraumere deraumere sibur mendiane,food food food food linemate linemate linemate deraumere deraumere thystame thystame]
+2025-06-25 01:01:33,841 - __main__ - DEBUG - Vision forcée mise à jour: [['linemate', 'linemate', 'linemate', 'sibur', 'phiras'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'linemate', 'deraumere'], ['food', 'food', 'food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'deraumere', 'sibur', 'mendiane'], ['food', 'food', 'food', 'food', 'linemate', 'linemate', 'linemate', 'deraumere', 'deraumere', 'thystame', 'thystame']]
+2025-06-25 01:01:33,941 - core.client - DEBUG - Envoyé (7s): Take food
+2025-06-25 01:01:33,941 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:35,342 - core.client - DEBUG - Données reçues: ko
+2025-06-25 01:01:35,342 - __main__ - DEBUG - ❌ Impossible de prendre food: échec de la commande
+2025-06-25 01:01:35,342 - __main__ - INFO - 📦 Collecte intensive terminée : 3 food collecté(s)
+2025-06-25 01:01:35,342 - __main__ - INFO - 📦 Inventaire après collecte intensive : {'food': 12, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:35,342 - __main__ - CRITICAL - ✅ NOURRITURE COLLECTÉE EN MODE URGENCE
+2025-06-25 01:01:35,443 - core.client - DEBUG - Envoyé (1s): Inventory
+2025-06-25 01:01:35,443 - core.client - DEBUG - En attente de données du serveur...
+2025-06-25 01:01:35,643 - core.client - DEBUG - Données reçues: [food 12, linemate 0, deraumere 0, sibur 0, mendiane 0, phiras 0, thystame 0]
+2025-06-25 01:01:35,644 - __main__ - DEBUG - Inventaire mis à jour: {'food': 12, 'linemate': 0, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0}
+2025-06-25 01:01:35,644 - __main__ - DEBUG - Pas assez de linemate dans l'inventaire pour l'élévation
+2025-06-25 01:01:35,644 - __main__ - DEBUG - État changé: collecting linemate (priorité)
+2025-06-25 01:01:35,644 - __main__ - INFO - ✅ Niveau de nourriture sécurisé (12). Objectif : Élévation.
+2025-06-25 01:01:35,645 - __main__ - DEBUG - Situation d'élévation non couverte, exploration par défaut.
+2025-06-25 01:01:35,645 - __main__ - ERROR - Erreur lors de l'exécution de l'action: 'Player' object has no attribute 'x'
+2025-06-25 01:01:35,645 - __main__ - INFO - Arrêt de l'IA.

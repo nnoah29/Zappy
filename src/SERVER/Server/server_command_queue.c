@@ -21,18 +21,9 @@ const size_t cmd_table_size = sizeof(command_table) / sizeof(command_info_t);
 
 double get_exec_duration(const char *cmd, int freq)
 {
-    char *cmd_cpy = NULL;
-    char *token = NULL;
-
-    if (!cmd)
-        return -1.0;
-    cmd_cpy = strdup(cmd);
-    token = strtok(cmd_cpy, " \t\n\r");
-    free(cmd_cpy);
-    if (!token)
-        return -1.0;
     for (size_t i = 0; i < cmd_table_size; i++) {
-        if (strcmp(token, command_table[i].name) == 0) {
+        if (strncmp(cmd, command_table[i].name,
+            strlen(command_table[i].name)) == 0) {
             return (double)command_table[i].units / freq;
         }
     }
@@ -41,7 +32,8 @@ double get_exec_duration(const char *cmd, int freq)
 
 void process_command(char *cmd, const session_client_t *client, int freq)
 {
-    const char *line = strtok(cmd, "\n");
+    char *cmd_cpy = strdup(cmd);
+    const char *line = strtok(cmd_cpy, "\n");
     struct timespec now;
     double exec_duration = 1.0;
 
@@ -57,22 +49,22 @@ void process_command(char *cmd, const session_client_t *client, int freq)
 void receive_client_data(server_t *server, int client_idx)
 {
     char buffer[1024];
-    const long int len = recv(server->fds[client_idx].fd,
-        buffer, sizeof(buffer) - 1, 0);
-    const session_client_t *client = &server->clients[client_idx];
+    const session_client_t *client = &server->players[client_idx];
+    const long int len = read(client->fd, buffer, sizeof(buffer) - 1);
 
     if (len <= 0) {
-        printf("Client %d déconnecté.\n", client_idx);
+        LOG(LOG_ERROR, "Client %d à été subitement déconnecté.", client_idx);
         close_client_connection(server, client_idx);
         return;
     }
     buffer[len] = '\0';
+    LOG(LOG_DEBUG, "Client %d à envoyé : '%s'", client_idx, buffer);
     process_command(buffer, client, server->config->freq);
 }
 
 void exec_cmd(server_t *server, int client_idx)
 {
-    session_client_t *client = &server->clients[client_idx];
+    session_client_t *client = &server->players[client_idx];
     struct timespec now;
     int cmdIdx = 0;
     const command_t *cmd = NULL;
@@ -83,5 +75,6 @@ void exec_cmd(server_t *server, int client_idx)
         return;
     cmd = &client->queue->commands[cmdIdx];
     handle_command(server, client, cmd);
-    remove_command_at(client->queue, cmdIdx);
+    if (client->fd != -1)
+        remove_command_at(client->queue, cmdIdx);
 }

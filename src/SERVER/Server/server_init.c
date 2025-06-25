@@ -15,6 +15,7 @@
 
 void put_online(server_t *server)
 {
+    LOG(LOG_INFO, "Mis en ligne du serveur...");
     server->server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server->server_fd == -1)
         exit_error("socket", 0);
@@ -31,11 +32,13 @@ void put_online(server_t *server)
 
 void init_clients(server_t *server)
 {
+    LOG(LOG_DEBUG, "Initialisation des clients...");
     for (int i = 0; i < MAX_CLIENTS; ++i) {
         server->fds[i].fd = -1;
-        server->clients[i].fd = -1;
-        server->clients[i].active = false;
-        server->clients[i].idx = -1;
+        server->players[i].fd = -1;
+        server->players[i].active = false;
+        server->players[i].idx = -1;
+        server->players[i].is_egg = false;
     }
 }
 
@@ -43,11 +46,13 @@ void initialize_teams(server_t *server)
 {
     char **names = server->config->names;
 
-    for (int i = 0; i < server->config->nb_teams; ++i) {
+    LOG(LOG_DEBUG, "Initialisation des équipes...");
+    for (int i = 0; i < server->config->nb_teams; i++) {
         server->teams[i].name = strdup(names[i]);
         server->teams[i].nbPlayers = 0;
         server->teams[i].nbMaxPlayers = server->config->nbClients;
         server->teams[i].nbEggs = server->config->nbClients * 2 / 3;
+        init_eggs(i, server);
     }
 }
 
@@ -55,24 +60,26 @@ server_t *setup_server(config_server_t *config)
 {
     server_t *server = malloc(sizeof(server_t));
 
+    LOG(LOG_INFO, "Configuration du serveur...");
     srandom((unsigned int)time(NULL));
     memset(server, 0, sizeof(server_t));
     server->config = config;
     server->port = config->port;
     server->nfds = 1;
+    server->map = map_create(config->map_w, config->map_h);
     init_clients(server);
     initialize_teams(server);
-    server->map = map_create(config->map_w, config->map_h);
     put_online(server);
     server->fds[0].fd = server->server_fd;
     server->fds[0].events = POLLIN;
     map_spawn_resources(server);
     re_spawn_ressources_duration(server);
     signal(SIGINT, handle_signal);
-    printf("Serveur en attente de connexions sur le port %d\n", server->port);
+    LOG(LOG_INFO, "Serveur en attente de connexions sur le port %d", server->port);
     return server;
 }
 
+// TODO: Ajoutez ici le free pour les autres ressources (map, teams, etc.)
 void cleanup_server(server_t *server)
 {
     if (server->server_fd != -1)
@@ -81,7 +88,6 @@ void cleanup_server(server_t *server)
         if (server->fds[i].fd >= 0)
             close(server->fds[i].fd);
     }
-    // TODO: Ajoutez ici le free pour les autres ressources (map, teams, etc.)
     if (server->config) {
         map_destroy(server->map, server->config->map_w,
             server->config->map_h);

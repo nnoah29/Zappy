@@ -17,6 +17,8 @@ typedef struct {
 } int_pair_t;
 
 void exit_error(char *error, int degree);
+int fail_cmd(int fd);
+resource_t string_to_resource(const char *str);
 void re_spawn_ressources_duration(server_t *server);
 void get_next_food_consumption(session_client_t *client, server_t *server);
 int calculate_next_event_timeout(server_t *server);

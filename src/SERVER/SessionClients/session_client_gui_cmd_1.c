@@ -1,5 +1,5 @@
 /*
-** EPITECH PROJECT, 2024
+** EPITECH PROJECT, 2025
 ** B-YEP-400-COT-4-1-zappy-noah.toffa
 ** File description:
 ** session_client_gui.c
@@ -14,15 +14,16 @@
 #include "../my.h"
 
 /// Envoie la taille de la map (msz)
-void msz_h(server_t *server, session_client_t *client, const command_t *cmd)
+int msz_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     (void)cmd;
     dprintf(client->fd, "msz %d %d\n", server->config->map_w,
         server->config->map_h);
+    return 0;
 }
 
 /// Envoie le contenu d’une case spécifique (bct X Y)
-void bct_h(server_t *server, session_client_t *client, const command_t *cmd)
+int bct_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     int x = 0;
     int y = 0;
@@ -30,14 +31,14 @@ void bct_h(server_t *server, session_client_t *client, const command_t *cmd)
 
     if (cmd->args[0] == NULL || cmd->args[1] == NULL) {
         dprintf(client->fd, "sbp\n");
-        return;
+        return 84;
     }
     x = atoi(cmd->args[0]);
     y = atoi(cmd->args[1]);
     if (x < 0 || x >= server->config->map_w || y < 0 ||
         y >= server->config->map_h) {
         dprintf(client->fd, "sbp\n");
-        return;
+        return 84;
     }
     tile = &server->map[y][x];
     dprintf(client->fd, "bct %d %d %d %d %d %d %d %d %d\n",
@@ -47,7 +48,7 @@ void bct_h(server_t *server, session_client_t *client, const command_t *cmd)
 }
 
 /// Envoie le contenu de toute la map (mct)
-void mct_h(server_t *server, session_client_t *client, const command_t *cmd)
+int mct_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     const tile_t *tile = NULL;
 
@@ -61,32 +62,35 @@ void mct_h(server_t *server, session_client_t *client, const command_t *cmd)
         }
     }
     (void)cmd;
+    return 0;
 }
 
 /// Envoie la liste des équipes (tna)
-void tna_h(server_t *server, session_client_t *client, const command_t *cmd)
+int tna_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     for (int i = 0; i < server->config->nb_teams; i++) {
         dprintf(client->fd, "tna %s\n", server->teams[i].name);
     }
     (void)cmd;
+    return 0;
 }
 
 /// Envoie la position d’un joueur (#n) (ppo)
-void ppo_h(server_t *server, session_client_t *client, const command_t *cmd)
+int ppo_h(server_t *server, session_client_t *client, const command_t *cmd)
 {
     int player_idx = 0;
     const session_client_t *player = NULL;
 
     if (cmd->args[0] == NULL || cmd->args[0][0] != '#') {
         dprintf(client->fd, "sbp\n");
-        return;
+        return 84;
     }
     player_idx = atoi(&cmd->args[0][1]);
-    player = &server->clients[player_idx];
+    player = &server->players[player_idx];
     if (player_idx != -1) {
         dprintf(client->fd, "ppo %d %d %d %d\n", player->idx,
             player->x, player->y, player->orientation);
     }
     (void)server;
+    return 0;
 }

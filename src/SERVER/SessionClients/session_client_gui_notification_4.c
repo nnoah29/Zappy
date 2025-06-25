@@ -40,7 +40,7 @@ void pnw_f(server_t *server, session_client_t *client)
         client->idx, client->x, client->y, client->orientation,
         client->level, server->teams[client->team_idx].name);
     send_to_all_guis(server, buffer);
-    printf("pnw\n");
+    LOG(LOG_DEBUG, "Notifie qu’un joueur a rejoint le jeu au GUI");
 }
 
 void bct_f(server_t *server, int x, int y)

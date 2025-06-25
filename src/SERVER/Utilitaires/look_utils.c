@@ -54,6 +54,8 @@ void calculate_direction_offset(int orientation, int *dx, int *dy,
             *dx = -rel.y;
             *dy = -rel.x;
             break;
+        default:
+            break;
     }
 }
 
@@ -75,4 +77,17 @@ void get_tile_content(server_t *server, session_client_t *client,
 
     get_absolute_position(server, client, rel, &pos);
     append_tile_content(tile_buffer, &server->map[pos.y][pos.x]);
+}
+
+resource_t string_to_resource(const char *str)
+{
+    static const char *names[] = {"food", "linemate", "deraumere", "sibur",
+        "mendiane", "phiras", "thystame"};
+
+    for (int i = 0; i < NB_RESOURCES; i++) {
+        if (strcmp(str, names[i]) == 0) {
+            return (resource_t)i;
+        }
+    }
+    return NB_RESOURCES;
 }

@@ -28,6 +28,7 @@ tile_t **map_create(int width, int height)
 {
     tile_t **map = malloc(sizeof(tile_t *) * height);
 
+    LOG(LOG_INFO, "Configuration de la map...");
     if (!map)
         exit_error("malloc map rows", 84);
     for (int y = 0; y < height; y++) {
@@ -39,7 +40,7 @@ tile_t **map_create(int width, int height)
             map[y][x].entities = NULL;
         }
     }
-    printf("Carte de %d x %d créée.\n", width, height);
+    LOG(LOG_INFO, "Map de dimensions %d x %d créée.", width, height);
     return map;
 }
 
@@ -75,5 +76,5 @@ void map_spawn_resources(server_t *server)
         }
     }
     mct_f(server);
-    printf("Ressources ont été générées sur la carte.\n");
+    LOG(LOG_DEBUG, "Ressources ont été générées sur la carte.");
 }

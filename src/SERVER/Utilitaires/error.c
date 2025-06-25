@@ -11,7 +11,12 @@
 
 void exit_error(char *error, int degree)
 {
-    printf("[ERROR] : %s\n", error);
-    exit(84);
-    (void)degree;
+    LOG(LOG_ERROR, "%s", error);
+    exit(degree);
+}
+
+int fail_cmd(int fd)
+{
+    dprintf(fd, "ko\n");
+    return 84;
 }

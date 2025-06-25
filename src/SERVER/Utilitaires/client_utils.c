@@ -12,7 +12,7 @@
 int find_free_client_slot(server_t *server)
 {
     for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].fd == -1) {
+        if (server->players[i].fd == -1) {
             return i;
         }
     }
@@ -22,7 +22,7 @@ int find_free_client_slot(server_t *server)
 int find_client_by_fd(server_t *server, int fd)
 {
     for (int i = 0; i < MAX_CLIENTS; i++) {
-        if (server->clients[i].fd == fd) {
+        if (server->players[i].fd == fd) {
             return i;
         }
     }
