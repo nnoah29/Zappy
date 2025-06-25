@@ -72,7 +72,6 @@ int main(int argc, char **argv)
 {
     if (!parseArguments(argc, argv))
         return 84;
-
     Gui_client guiClient(port, machine);
     try {
         guiClient.run();
@@ -80,26 +79,5 @@ int main(int argc, char **argv)
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;
     }
-    // Network network;
-    // GameWorld gameWorld;
-    // Player player;
-    // try {
-    //     network.connect(machine, port);
-    //     std::string welcome = network.receive();
-    //     std::cout << "Server welcome: " << welcome << std::endl;
-    //     network.send("GRAPHIC\n");
-    //     std::string init = network.receive();
-    //     std::cout << init << std::endl;
-    //     parseMessage(init, gameWorld);
-    // } catch (const std::exception& e) {
-    //     std::cerr << "Error: " << e.what() << std::endl;
-    //     return 84;
-    // }
-    // Core core;
-    // if (!core.initialize()) {
-    //     std::cerr << "Failed to initialize Core system" << std::endl;
-    //     return 84;
-    // }
-    // core.run();
     return 0;
 }

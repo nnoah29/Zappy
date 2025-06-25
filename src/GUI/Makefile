@@ -5,11 +5,21 @@
 
 NAME = zappy_gui
 
-SRC = $(wildcard src/*.cpp)
+SRC = src/main.cpp \
+	  src/Gui_client.cpp \
+	  src/Network.cpp \
+	  src/Parser.cpp \
+	  src/Game_world.cpp \
+	  src/AnimationSystem.cpp \
+	  src/Core.cpp \
+	  src/Input_handler.cpp \
+	  src/RenderingEngine.cpp \
+	  src/Ressource_manager.cpp
+
 OBJ = $(SRC:.cpp=.o)
 
 CXX = g++
-CXXFLAGS = -Wall -Wextra -std=c++20 -Iinclude
+CXXFLAGS = -Wall -Wextra -std=c++20 -Iinclude -g3
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system -lpthread
 
 $(NAME): $(OBJ)

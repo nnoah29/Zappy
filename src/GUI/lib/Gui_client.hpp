@@ -18,6 +18,8 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <mutex>
+#include <thread>
 
 class Gui_client {
     public:
@@ -27,10 +29,15 @@ class Gui_client {
     private:
     int _port;
     std::string _machine;
-    std::shared_ptr<Network> network;
-    std::shared_ptr<GameWorld> gameWorld;
-    std::vector<std::string> message;
-    void parseMessage();
+    std::shared_ptr<Network> _network;
+    std::shared_ptr<GameWorld> _gameWorld;
+    std::vector<std::string> _message;
+    std::mutex _messageMutex;
+    std::thread _receiveThread;
+
+    void parseMessage(std::string);
+    void receiveMessage();
+
 };
 
 #endif /* !GUI_CLIENT_HPP_ */

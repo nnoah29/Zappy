@@ -8,8 +8,8 @@
 #include "../lib/Gui_client.hpp"
 
 Gui_client::Gui_client(int port, const std::string &machine)
-    : _port(port), _machine(machine), network(std::make_shared<Network>(port, machine)),
-      gameWorld(std::make_shared<GameWorld>()) {
+    : _port(port), _machine(machine), _network(std::make_shared<Network>()),
+      _gameWorld(std::make_shared<GameWorld>()) {
 }
 
 void Msz(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
@@ -255,9 +255,9 @@ void Smg(const std::vector<std::string>& oklm)
     std::cout << "Server message: " << message << std::endl;
 }
 
-void Gui_client::parseMessage()
+void Gui_client::parseMessage(std::string init)
 {
-    std::stringstream ss(message[0]);
+    std::stringstream ss(init);
     std::string line;
     std::vector<std::string> tab;
     Player player;
@@ -269,25 +269,25 @@ void Gui_client::parseMessage()
             continue;
         try {
             if (tab[0] == "msz") 
-                Msz(tab, gameWorld);
+                Msz(tab, _gameWorld);
             else if (tab[0] == "bct")
-                Bct(tab, gameWorld);
+                Bct(tab, _gameWorld);
             else if (tab[0] == "tna")
-                Tna(tab, gameWorld, &player);
+                Tna(tab, _gameWorld, &player);
             else if (tab[0] == "pnw")
-                Pnw(tab, gameWorld);
+                Pnw(tab, _gameWorld);
             else if (tab[0] == "ppo")
-                Ppo(tab, gameWorld);
+                Ppo(tab, _gameWorld);
             else if (tab[0] == "plv")
-                Plv(tab, gameWorld);
+                Plv(tab, _gameWorld);
             else if (tab[0] == "pin")
-                Pin(tab, gameWorld);
+                Pin(tab, _gameWorld);
             else if (tab[0] == "enw")
-                Enw(tab, gameWorld);
+                Enw(tab, _gameWorld);
             else if (tab[0] == "pdr")
-                Pdr(tab, gameWorld);
+                Pdr(tab, _gameWorld);
             else if (tab[0] == "pgt")
-                Pgt(tab, gameWorld);
+                Pgt(tab, _gameWorld);
             else if (tab[0] == "pic")
                 Pic(tab);
             else if (tab[0] == "pie")
@@ -295,9 +295,9 @@ void Gui_client::parseMessage()
             else if (tab[0] == "pfk")
                 Pfk(tab);
             else if (tab[0] == "pdi")
-                Pdi(tab, gameWorld);
+                Pdi(tab, _gameWorld);
             else if (tab[0] == "edi")
-                Edi(tab, gameWorld);
+                Edi(tab, _gameWorld);
             else if (tab[0] == "sgt")
                 Sgt(tab);
             else if (tab[0] == "sst")
@@ -311,15 +311,39 @@ void Gui_client::parseMessage()
     }
 }
 
-void Gui_client::run() {
+void Gui_client::receiveMessage()
+{
+    while (true) {
+        std::string message = _network->receive();
+        if (message.empty()) {
+            std::cerr << "Connection lost or empty message received." << std::endl;
+            break;
+        }
+        std::cout << message << std::endl;
+        _messageMutex.lock();
+        _message.push_back(message);
+        _messageMutex.unlock();
+        if (message == "seg") {
+            std::cout << "Game over. Exiting..." << std::endl;
+            _network->disconnect();
+            break;
+        }
+    }
+}
+
+void Gui_client::run() 
+{
     try {
-        network->connect(_machine, _port);
-        std::string welcome = network->receive();
+        _network->connect(_machine, _port);
+        std::string welcome = _network->receive();
         std::cout << "Server welcome: " << welcome << std::endl;
-        network->send("GRAPHIC\n");
-        std::string init = network->receive();
+        _network->send("GRAPHIC\n");
+        std::string init = _network->receive();
         std::cout << init << std::endl;
-        parseMessage();
+        parseMessage(init);
+        _receiveThread = std::thread(&Gui_client::receiveMessage, this);
+        if (_receiveThread.joinable())
+            _receiveThread.join();
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
