@@ -12,14 +12,14 @@ Gui_client::Gui_client(int port, const std::string &machine)
       gameWorld(std::make_shared<GameWorld>()) {
 }
 
-void Msz(const std::vector<std::string>& oklm, GameWorld& gw)
+void Msz(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid msz");
-    gw.initialize(std::stoi(oklm[1]), std::stoi(oklm[2]));
+    gw->initialize(std::stoi(oklm[1]), std::stoi(oklm[2]));
 }
 
-void Bct(const std::vector<std::string>& oklm, GameWorld& gw)
+void Bct(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 10)
         throw std::runtime_error("Invalid bct");
@@ -38,11 +38,11 @@ void Bct(const std::vector<std::string>& oklm, GameWorld& gw)
     std::cout << "phiras: " << res.phiras << std::endl;
     res.thystame = std::stoi(oklm[9]);
     std::cout << "thystame: " << res.thystame << std::endl;
-    gw.updateTileResources(std::stoi(oklm[1]), std::stoi(oklm[2]), res);
+    gw->updateTileResources(std::stoi(oklm[1]), std::stoi(oklm[2]), res);
     std::cout << "Tile at (" << oklm[1] << ", " << oklm[2] << ") updated with resources." << std::endl;
 }
 
-void Pnw(const std::vector<std::string>& oklm, GameWorld& gw)
+void Pnw(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 7)
         throw std::runtime_error("Invalid pnw");
@@ -53,14 +53,14 @@ void Pnw(const std::vector<std::string>& oklm, GameWorld& gw)
     p.orientation = std::stoi(oklm[4]);
     p.level = std::stoi(oklm[5]);
     p.team = oklm[6];
-    gw.addPlayer(p);
+    gw->addPlayer(p);
 }
 
-void Ppo(const std::vector<std::string>& oklm, GameWorld& gw)
+void Ppo(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 5)
         throw std::runtime_error("Invalid ppo");
-    gw.updatePlayerPosition(
+    gw->updatePlayerPosition(
         std::stoi(oklm[1].substr(1)),
         std::stoi(oklm[2]),
         std::stoi(oklm[3]),
@@ -68,14 +68,14 @@ void Ppo(const std::vector<std::string>& oklm, GameWorld& gw)
     );
 }
 
-void Plv(const std::vector<std::string>& oklm, GameWorld& gw)
+void Plv(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid plv");
-    gw.updatePlayerLevel(std::stoi(oklm[1].substr(1)), std::stoi(oklm[2]));
+    gw->updatePlayerLevel(std::stoi(oklm[1].substr(1)), std::stoi(oklm[2]));
 }
 
-void Enw(const std::vector<std::string>& oklm, GameWorld& gw)
+void Enw(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 5)
         throw std::runtime_error("Invalid enw");
@@ -88,40 +88,40 @@ void Enw(const std::vector<std::string>& oklm, GameWorld& gw)
     std::cout << "Egg X: " << egg.x << std::endl;
     egg.y = std::stoi(oklm[4]);
     std::cout << "Egg Y: " << egg.y << std::endl;
-    gw.addEgg(egg);
+    gw->addEgg(egg);
 }
 
-void Pdr(const std::vector<std::string>& oklm, GameWorld& gw)
+void Pdr(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid pdr");
-    Player* p = gw.findPlayer(std::stoi(oklm[1].substr(1)));
+    Player* p = gw->findPlayer(std::stoi(oklm[1].substr(1)));
     if (p)
-        gw.updateResource(p->x, p->y, std::stoi(oklm[2]), 1);
+        gw->updateResource(p->x, p->y, std::stoi(oklm[2]), 1);
 }
 
-void Pgt(const std::vector<std::string>& oklm, GameWorld& gw)
+void Pgt(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid pgt");
-    Player* p = gw.findPlayer(std::stoi(oklm[1]));
+    Player* p = gw->findPlayer(std::stoi(oklm[1]));
     if (p)
-        gw.updateResource(p->x, p->y, std::stoi(oklm[2]), -1);
+        gw->updateResource(p->x, p->y, std::stoi(oklm[2]), -1);
 }
 
-void Tna(const std::vector<std::string>& oklm, GameWorld& gw, Player* player)
+void Tna(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw, Player* player)
 {
     if (oklm.size() < 2)
         throw std::runtime_error("Invalid tna");
-    gw.addTeam(oklm[1], player);
+    gw->addTeam(oklm[1], player);
 }
 
-void Pin(const std::vector<std::string>& oklm, GameWorld& gw)
+void Pin(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 11)
         throw std::runtime_error("Invalid pin");
     
-    Player* player = gw.findPlayer(std::stoi(oklm[1].substr(1)));
+    Player* player = gw->findPlayer(std::stoi(oklm[1].substr(1)));
     if (!player)
         return;
     
@@ -203,23 +203,23 @@ void Pfk(const std::vector<std::string>& oklm)
     std::cout << "Player #" << playerId << " laid an egg" << std::endl;
 }
 
-void Pdi(const std::vector<std::string>& oklm, GameWorld& gw)
+void Pdi(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 2)
         throw std::runtime_error("Invalid pdi");
     
     int playerId = std::stoi(oklm[1].substr(1));
-    gw.removePlayer(playerId);
+    gw->removePlayer(playerId);
     std::cout << "Player #" << playerId << " died" << std::endl;
 }
 
-void Edi(const std::vector<std::string>& oklm, GameWorld& gw)
+void Edi(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 2)
         throw std::runtime_error("Invalid edi");
     
     int eggId = std::stoi(oklm[1].substr(1));
-    gw.removeEgg(eggId);
+    gw->removeEgg(eggId);
     std::cout << "Egg #" << eggId << " died" << std::endl;
 }
 
@@ -257,7 +257,7 @@ void Smg(const std::vector<std::string>& oklm)
 
 void Gui_client::parseMessage()
 {
-    std::stringstream ss(message);
+    std::stringstream ss(message[0]);
     std::string line;
     std::vector<std::string> tab;
     Player player;
@@ -313,13 +313,13 @@ void Gui_client::parseMessage()
 
 void Gui_client::run() {
     try {
-        network->connect(_port, _machine);
+        network->connect(_machine, _port);
         std::string welcome = network->receive();
         std::cout << "Server welcome: " << welcome << std::endl;
         network->send("GRAPHIC\n");
         std::string init = network->receive();
         std::cout << init << std::endl;
-        parseMessage(init, *gameWorld);
+        parseMessage();
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
