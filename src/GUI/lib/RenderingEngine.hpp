@@ -36,6 +36,7 @@ private:
     void renderResourceSprites(int x, int y, const Resource &resources);
     void renderResourceSpritesWithScale(int x, int y, const Resource &resources, float scale);
     ResourceType getPlayerResourceType(int orientation) const;
+    void renderUI();
 };
 
 #endif
