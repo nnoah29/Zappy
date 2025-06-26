@@ -36,7 +36,7 @@ bool ResourceManager::initialize()
         {ResourceType::PLAYER_EAST, "assets/player_east.png"},
         {ResourceType::PLAYER_SOUTH, "assets/player_south.png"},
         {ResourceType::PLAYER_WEST, "assets/player_west.png"},
-        {ResourceType::EGG, "/assets/egg.png"},
+        {ResourceType::EGG, "assets/egg.png"},
         {ResourceType::TILE_EMPTY, "assets/tile_empty.png"}
     };
     
