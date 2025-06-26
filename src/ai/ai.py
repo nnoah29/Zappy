@@ -34,7 +34,8 @@ class AI:
         
         self.update_cooldown = 1
         
-        self.FOOD_CRITICAL_LEVEL = 10
+        self.FOOD_CRITICAL_LEVEL = 5
+        self.FOOD_SAFE_LEVEL = 15
         
         self.vision_manager = VisionManager(protocol, player, map, logger)
         self.inventory_manager = InventoryManager(protocol, player, logger)
@@ -53,18 +54,6 @@ class AI:
         self.current_ritual_target = None
         self.ritual_participants_needed = 0
         self.target_resource = None
-        
-        self.available_states = [
-            "EMERGENCY_FOOD_SEARCH",
-            "SURVIVAL_BUFFERING", 
-            "NORMAL_OPERATIONS",
-            "ELEVATING",
-            "JOINING_RITUAL",
-            "WAITING_FOR_RITUAL_PARTNER",
-            "AWAITING_PARTICIPANTS",
-            "GATHERING_RESOURCES",
-            "FOLLOWING_ORDERS"
-        ]
 
     def update(self) -> bool:
         """Met à jour l'IA et exécute une action.
@@ -183,19 +172,15 @@ class AI:
     def _execute_action(self) -> bool:
         """Exécute l'action appropriée selon l'état actuel."""
         try:
-            # --- GESTION DE LA SURVIE (PRIORITÉ ABSOLUE) ---
             food_level = self.inventory_manager.inventory['food']
-            
-            # Si on est en état critique, on ne fait RIEN d'autre que chercher à survivre.
-            # On force un Look pour avoir les données les plus fraîches possibles AVANT de décider.
+
             if food_level < self.FOOD_CRITICAL_LEVEL:
                 self.state = "EMERGENCY_FOOD_SEARCH"
                 self.logger.critical("🚨🚨 MODE URGENCE : Survie. Refresh de la vision immédiat.")
-                self.vision_manager.force_update_vision()  # <-- LA CORRECTION CRUCIALE
+                self.vision_manager.force_update_vision()
 
                 target = self.vision_manager.find_nearest_object("food")
                 
-                # Maintenant, la logique est basée sur des données fraîches
                 if target:
                     if target == (0, 0):
                         self.logger.critical("🚨 NOURRITURE SUR MA CASE (confirmé), COLLECTE IMMÉDIATE")
@@ -208,7 +193,6 @@ class AI:
                         if self.movement_manager.move_to(target):
                             self.logger.critical("✅ DÉPLACEMENT URGENT RÉUSSI, VÉRIFICATION FINALE...")
                             
-                            # Vérification finale avant collecte
                             self.vision_manager.force_update_vision()
                             current_tile = self.vision_manager.vision_data[0]
                             if 'food' in current_tile:
@@ -237,20 +221,55 @@ class AI:
                                 self.logger.critical("✅ RESSOURCES TROUVÉES EN MOUVEMENT ALÉATOIRE")
                 
                 return True  # On a géré le tour en mode urgence, on s'arrête là.
+
+            if food_level < self.FOOD_SAFE_LEVEL:
+                self.state = "SURVIVAL_BUFFERING"
+                self.logger.warning(f"⚠️ MODE SÉCURITÉ : Constitution des réserves (actuel: {food_level}/{self.FOOD_SAFE_LEVEL}). Objectifs secondaires suspendus.")
+                
+                target = self.vision_manager.find_nearest_object("food")
+                if target:
+                    if target == (0, 0):
+                        self.logger.info("🎯 Nourriture sur ma case, collecte directe.")
+                        if self._collect_resource_intensively("food"):
+                            self.logger.info("✅ Nourriture collectée pour les réserves")
+                        else:
+                            self.logger.warning("❌ Échec de la collecte de sécurité")
+                    else:
+                        self.logger.info(f"🎯 Cible de sécurité : nourriture à {target}.")
+                        if self.movement_manager.move_to(target):
+                            self.logger.info("✅ Déplacement réussi, vérification finale...")
+                            
+                            self.vision_manager.force_update_vision()
+                            current_tile = self.vision_manager.vision_data[0]
+                            if 'food' in current_tile:
+                                self.logger.info("✅ Nourriture confirmée, collecte...")
+                                if self._collect_resource_intensively("food"):
+                                    self.logger.info("✅ Nourriture collectée pour les réserves")
+                                else:
+                                    self.logger.warning("❌ Échec de la collecte (Post-vérification)")
+                            else:
+                                self.logger.warning("❌ La nourriture a disparu juste avant la collecte !")
+                else:
+                    self.logger.info("🔍 Pas de nourriture en vue, exploration pour les réserves...")
+                    self._explore_for_food()
+                
+                return True  # On ne fait RIEN d'autre ce tour-ci.
+
+            self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}/{self.FOOD_SAFE_LEVEL}). Reprise des opérations normales.")
             
-            # Si on n'est pas en crise, on peut continuer avec les autres états...
+            self._update_state_when_safe()
+
             if self.state == "ELEVATING":
                 self.logger.info("🌟 Élévation en cours...")
                 
                 if self.elevation_in_progress:
                     elapsed_time = time.time() - self.elevation_start_time
-                    if elapsed_time > 10.0:  # Timeout de 10 secondes
+                    if elapsed_time > 10.0:
                         self.logger.warning("⏰ Timeout de l'élévation, retour aux opérations normales")
                         self.elevation_in_progress = False
                         self.state = "NORMAL_OPERATIONS"
                         return True
                     
-                    # Vérification du résultat de l'élévation
                     response = self.protocol.receive_message()
                     if response:
                         if "Current level:" in response:
@@ -377,209 +396,7 @@ class AI:
                 self._explore()
                 return True
             
-            # --- MODE SÉCURITÉ (nourriture faible mais pas critique) ---
-            if food_level < 10:
-                self.state = "SURVIVAL_BUFFERING"
-                self.logger.warning(f"⚠️ MODE SÉCURITÉ : Constitution des réserves de nourriture (actuel: {food_level}). Objectifs secondaires suspendus.")
-                
-                target = self.vision_manager.find_nearest_object("food")
-                if target:
-                    if target == (0, 0):
-                        self.logger.info("🎯 Nourriture sur ma case, collecte directe.")
-                        if self._collect_resource_intensively("food"):
-                            self.logger.info("✅ Nourriture collectée pour les réserves")
-                        else:
-                            self.logger.warning("❌ Échec de la collecte de sécurité")
-                        return True
-                    else:
-                        self.logger.info(f"🎯 Cible de sécurité : nourriture à {target}.")
-                        if self.movement_manager.move_to(target):
-                            self.logger.info("✅ Déplacement réussi, vérification finale...")
-                            
-                            # Vérification finale avant collecte
-                            self.vision_manager.force_update_vision()
-                            current_tile = self.vision_manager.vision_data[0]
-                            if 'food' in current_tile:
-                                self.logger.info("✅ Nourriture confirmée, collecte...")
-                                if self._collect_resource_intensively("food"):
-                                    self.logger.info("✅ Nourriture collectée pour les réserves")
-                                else:
-                                    self.logger.warning("❌ Échec de la collecte (Post-vérification)")
-                            else:
-                                self.logger.warning("❌ La nourriture a disparu juste avant la collecte !")
-                            
-                            return True
-                else:
-                    self.logger.info("🔍 Exploration ciblée pour la nourriture.")
-                    exploration_target = self._generate_emergency_exploration_target()
-                    if exploration_target:
-                        self.logger.info(f"🎯 Exploration vers {exploration_target} pour trouver de la nourriture")
-                        if self.movement_manager.move_to(exploration_target):
-                            self.vision_manager.force_update_vision()
-                            if self._collect_available_resources():
-                                self.logger.info("✅ Ressources trouvées lors de l'exploration de sécurité")
-                            return True
-                
-                return True
-            
-            # --- OPÉRATIONS NORMALES (nourriture suffisante) ---
-            self.logger.info(f"✅ Niveau de nourriture sécurisé ({food_level}). Joueur Niveau {self.player.level}. Objectif : Élévation.")
             self.state = "NORMAL_OPERATIONS"
-            
-            if self._handle_team_messages():
-                return True
-            
-            if self._detect_and_counter_enemy_rituals():
-                return True
-            
-            if self._should_fork_emergency():
-                self.logger.warning("🥚 Reproduction d'urgence pour maintenir l'effectif de l'équipe")
-                if self.reproduction_manager.reproduce():
-                    self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
-                return True
-            
-            if 1 <= self.player.level <= 7:
-                next_level = self.player.level + 1
-                self.logger.info(f"🎯 Objectif : Préparer l'élévation pour le niveau {next_level}.")
-                
-                if self.player.level >= 4:
-                    self.logger.info("👑 Mode Reine : Je reste sur place et coordonne l'équipe")
-                    
-                    self._announce_leadership()
-                    
-                    requirements = self.elevation_manager.ELEVATION_REQUIREMENTS.get(next_level, {})
-                    for res, count in requirements.items():
-                        if res != "players" and self.inventory_manager.inventory.get(res, 0) < count:
-                            needed = count - self.inventory_manager.inventory.get(res, 0)
-                            self.logger.info(f"📢 Demande à l'équipe : {needed} {res}")
-                            self.communicator.send_team_message("GATHER_REQUEST", res)
-                    
-                    if self.reproduction_manager.can_fork() and food_level > 25:
-                        self.logger.info("🥚 Reproduction royale pour maintenir l'effectif")
-                        if self.reproduction_manager.reproduce():
-                            self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
-                        return True
-                    
-                    return True
-                    
-                else:
-                    self.logger.info("🔨 Mode Ouvrière : Je collecte activement et aide aux rituels")
-                    
-                    if self.player.level >= 3:
-                        self._announce_leadership()
-                    
-                    requirements = self.elevation_manager.ELEVATION_REQUIREMENTS.get(next_level, {})
-                    needed = []
-                    for res, count in requirements.items():
-                        if res != "players" and self.inventory_manager.inventory.get(res, 0) < count:
-                            needed.extend([res] * (count - self.inventory_manager.inventory.get(res, 0)))
-                    
-                    if needed:
-                        target_resource = self._prioritize_resources(list(set(needed)))[0]
-                        self.logger.info(f"🔍 Ressources manquantes pour niveau {next_level} : {needed}. Recherche de {target_resource}...")
-                        
-                        if self.team_leader_id == str(self.player.id):
-                            self.communicator.send_team_message("GATHER_REQUEST", target_resource)
-                        
-                        target = self.vision_manager.find_nearest_object(target_resource)
-                        if target:
-                            self.logger.info(f"🎯 {target_resource} trouvé à {target}, déplacement...")
-                            if self.movement_manager.move_to(target):
-                                if self._collect_resource_intensively(target_resource):
-                                    self.logger.info(f"✅ {target_resource} collecté avec succès")
-                                    
-                                    if self.team_leader_id != str(self.player.id):
-                                        self.communicator.send_team_message("RESOURCE_FOUND", f"{target_resource}:{self.player.x},{self.player.y}")
-                                else:
-                                    self.logger.warning(f"❌ Échec de la collecte de {target_resource}")
-                            else:
-                                self.logger.info(f"🔍 Aucun {target_resource} en vue, exploration...")
-                                exploration_target = self._generate_smart_exploration_target()
-                                if exploration_target:
-                                    self.logger.info(f"🎯 Exploration vers {exploration_target} pour trouver du {target_resource}")
-                                    if self.movement_manager.move_to(exploration_target):
-                                        self.logger.info("✅ Déplacement d'exploration réussi")
-                            return True
-                        
-                        current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
-                        player_count = current_tile_content.count('player')
-                        required_players = self.elevation_manager._get_required_players(next_level)
-                        
-                        if player_count < required_players:
-                            if self.player.level > 1:
-                                self.logger.info(f"👥 Pas assez de joueurs pour le rituel niveau {next_level} ({player_count}/{required_players}). J'appelle à l'aide.")
-                                self.communicator.send_team_message("RITUAL_CALL", f"{next_level}:{self.player.id}:{self.player.x},{self.player.y}")
-                                self.state = "AWAITING_PARTICIPANTS"
-                                self.ritual_participants_needed = required_players
-                                return True
-                            else:
-                                self.logger.info(f"👥 Pas assez de joueurs pour le rituel niveau {next_level} ({player_count}/{required_players}). Je continue à chercher des ressources.")
-                                return True
-                        
-                        resources_deposited = False
-                        for res, count in requirements.items():
-                            if res == "players":
-                                continue
-                            for _ in range(count):
-                                if self.inventory_manager.inventory.get(res, 0) > 0:
-                                    if self.protocol.set(res):
-                                        self.logger.info(f"✅ {res} déposé sur la case")
-                                        resources_deposited = True
-                                    else:
-                                        self.logger.warning(f"❌ Échec du dépôt de {res}")
-                        
-                        if resources_deposited:
-                            current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
-                            ready = True
-                            for res, count in requirements.items():
-                                if res != "players" and current_tile_content.count(res) < count:
-                                    ready = False
-                                    break
-                            
-                            if ready and player_count >= required_players:
-                                self.logger.info(f"✨ Conditions parfaites ! Lancement de l'incantation pour le niveau {next_level} !")
-                                response = self.protocol.incantation()
-                                
-                                if response == "Elevation underway":
-                                    self.logger.info("🌟 Élévation en cours ! Attente du résultat...")
-                                    self.elevation_in_progress = True
-                                    self.elevation_start_time = time.time()
-                                    self.state = "ELEVATING"
-                                    return True
-                                elif response == "ko":
-                                    self.logger.error("❌ Échec de l'incantation")
-                                    return True
-                                else:
-                                    self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation: {response}")
-                                    return True
-                        
-                        return True
-            
-            elif self.player.level == 8:
-                self.logger.info("🏆 Niveau maximum atteint ! Je me concentre sur la reproduction et l'aide à l'équipe.")
-                
-                if self.reproduction_manager.can_fork() and food_level > 20:
-                    self.logger.info("🥚 Conditions optimales pour la reproduction.")
-                    if self.reproduction_manager.reproduce():
-                        self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
-                    return True
-                
-                if self.team_status:
-                    for player_id, status in self.team_status.items():
-                        if status.get('task') == 'gathering_resources':
-                            self.logger.info("🤝 Aide à l'équipe en cherchant des ressources")
-                            self._explore()
-                            return True
-                
-                return True
-            
-            if self.reproduction_manager.can_fork() and food_level > 20:
-                self.logger.info("🥚 Conditions optimales pour la reproduction.")
-                if self.reproduction_manager.reproduce():
-                    self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
-                return True
-            
-            self.logger.debug("Aucune action spécifique, exploration par défaut.")
             self._explore()
             return True
             
@@ -1098,3 +915,182 @@ class AI:
         except Exception as e:
             self.logger.error(f"Erreur lors de l'évaluation de la reproduction d'urgence: {str(e)}")
             return False
+
+    def _explore_for_food(self):
+        """Fonction d'exploration spécifiquement pour trouver de la nourriture."""
+        self.logger.info("🗺 Exploration ciblée pour la nourriture...")
+        exploration_target = self._generate_emergency_exploration_target()
+        if exploration_target:
+            self.logger.info(f"🎯 Exploration vers {exploration_target} pour trouver de la nourriture")
+            if self.movement_manager.move_to(exploration_target):
+                self.vision_manager.force_update_vision()
+                if self._collect_available_resources():
+                    self.logger.info("✅ Ressources trouvées lors de l'exploration de sécurité")
+        else:
+            random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
+            if self.movement_manager.move_to(random_direction):
+                self.vision_manager.force_update_vision()
+                if self._collect_available_resources():
+                    self.logger.info("✅ Ressources trouvées lors du mouvement aléatoire")
+
+    def _update_state_when_safe(self) -> None:
+        """Met à jour l'état de l'IA uniquement quand la survie est assurée."""
+        try:
+            if self._handle_team_messages():
+                return
+            
+            if self._detect_and_counter_enemy_rituals():
+                return
+            
+            if self._should_fork_emergency():
+                self.logger.warning("🥚 Reproduction d'urgence pour maintenir l'effectif de l'équipe")
+                if self.reproduction_manager.reproduce():
+                    self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
+                return
+            
+            if 1 <= self.player.level <= 7:
+                next_level = self.player.level + 1
+                self.logger.info(f"🎯 Objectif : Préparer l'élévation pour le niveau {next_level}.")
+                
+                if self.player.level >= 4:
+                    self.logger.info("👑 Mode Reine : Je reste sur place et coordonne l'équipe")
+                    
+                    self._announce_leadership()
+                    
+                    requirements = self.elevation_manager.ELEVATION_REQUIREMENTS.get(next_level, {})
+                    for res, count in requirements.items():
+                        if res != "players" and self.inventory_manager.inventory.get(res, 0) < count:
+                            needed = count - self.inventory_manager.inventory.get(res, 0)
+                            self.logger.info(f"📢 Demande à l'équipe : {needed} {res}")
+                            self.communicator.send_team_message("GATHER_REQUEST", res)
+                    
+                    if self.reproduction_manager.can_fork() and self.inventory_manager.inventory['food'] > 25:
+                        self.logger.info("🥚 Reproduction royale pour maintenir l'effectif")
+                        if self.reproduction_manager.reproduce():
+                            self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
+                    return
+                    
+                else:
+                    self.logger.info("🔨 Mode Ouvrière : Je collecte activement et aide aux rituels")
+                    
+                    if self.player.level >= 3:
+                        self._announce_leadership()
+                    
+                    requirements = self.elevation_manager.ELEVATION_REQUIREMENTS.get(next_level, {})
+                    needed = []
+                    for res, count in requirements.items():
+                        if res != "players" and self.inventory_manager.inventory.get(res, 0) < count:
+                            needed.extend([res] * (count - self.inventory_manager.inventory.get(res, 0)))
+                    
+                    if needed:
+                        target_resource = self._prioritize_resources(list(set(needed)))[0]
+                        self.logger.info(f"🔍 Ressources manquantes pour niveau {next_level} : {needed}. Recherche de {target_resource}...")
+                        
+                        if self.team_leader_id == str(self.player.id):
+                            self.communicator.send_team_message("GATHER_REQUEST", target_resource)
+                        
+                        target = self.vision_manager.find_nearest_object(target_resource)
+                        if target:
+                            self.logger.info(f"🎯 {target_resource} trouvé à {target}, déplacement...")
+                            if self.movement_manager.move_to(target):
+                                if self._collect_resource_intensively(target_resource):
+                                    self.logger.info(f"✅ {target_resource} collecté avec succès")
+                                    
+                                    if self.team_leader_id != str(self.player.id):
+                                        self.communicator.send_team_message("RESOURCE_FOUND", f"{target_resource}:{self.player.x},{self.player.y}")
+                            else:
+                                self.logger.info(f"🔍 Aucun {target_resource} en vue, exploration...")
+                                exploration_target = self._generate_smart_exploration_target()
+                                if exploration_target:
+                                    self.logger.info(f"🎯 Exploration vers {exploration_target} pour trouver du {target_resource}")
+                                    if self.movement_manager.move_to(exploration_target):
+                                        self.logger.info("✅ Déplacement d'exploration réussi")
+                        return
+                    
+                    current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
+                    player_count = current_tile_content.count('player')
+                    required_players = self.elevation_manager._get_required_players(next_level)
+                    
+                    if player_count < required_players:
+                        if self.player.level > 1:
+                            self.logger.info(f"👥 Pas assez de joueurs pour le rituel niveau {next_level} ({player_count}/{required_players}). J'appelle à l'aide.")
+                            self.communicator.send_team_message("RITUAL_CALL", f"{next_level}:{self.player.id}:{self.player.x},{self.player.y}")
+                            self.state = "AWAITING_PARTICIPANTS"
+                            self.ritual_participants_needed = required_players
+                            return
+                        else:
+                            self.logger.info(f"👥 Pas assez de joueurs pour le rituel niveau {next_level} ({player_count}/{required_players}). Je continue à chercher des ressources.")
+                            return
+                    
+                    resources_deposited = False
+                    for res, count in requirements.items():
+                        if res == "players":
+                            continue
+                        for _ in range(count):
+                            if self.inventory_manager.inventory.get(res, 0) > 0:
+                                if self.protocol.set(res):
+                                    self.logger.info(f"✅ {res} déposé sur la case")
+                                    resources_deposited = True
+                                else:
+                                    self.logger.warning(f"❌ Échec du dépôt de {res}")
+                    
+                    if resources_deposited:
+                        current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
+                        ready = True
+                        for res, count in requirements.items():
+                            if res != "players" and current_tile_content.count(res) < count:
+                                ready = False
+                                break
+                        
+                        if ready and player_count >= required_players:
+                            self.logger.info(f"✨ Conditions parfaites ! Lancement de l'incantation pour le niveau {next_level} !")
+                            response = self.protocol.incantation()
+                            
+                            if response == "Elevation underway":
+                                self.logger.info("🌟 Élévation en cours ! Attente du résultat...")
+                                self.elevation_in_progress = True
+                                self.elevation_start_time = time.time()
+                                self.state = "ELEVATING"
+                                return
+                            elif response == "ko":
+                                self.logger.error("❌ Échec de l'incantation")
+                                return
+                            else:
+                                self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation: {response}")
+                                return
+                    
+                    return
+            
+            # Logique pour le niveau maximum (8)
+            elif self.player.level == 8:
+                self.logger.info("🏆 Niveau maximum atteint ! Je me concentre sur la reproduction et l'aide à l'équipe.")
+                
+                if self.reproduction_manager.can_fork() and self.inventory_manager.inventory['food'] > 20:
+                    self.logger.info("🥚 Conditions optimales pour la reproduction.")
+                    if self.reproduction_manager.reproduce():
+                        self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
+                    return
+                
+                if self.team_status:
+                    for player_id, status in self.team_status.items():
+                        if status.get('task') == 'gathering_resources':
+                            self.logger.info("🤝 Aide à l'équipe en cherchant des ressources")
+                            self._explore()
+                            return
+                
+                return
+            
+            # Reproduction normale si conditions réunies
+            if self.reproduction_manager.can_fork() and self.inventory_manager.inventory['food'] > 20:
+                self.logger.info("🥚 Conditions optimales pour la reproduction.")
+                if self.reproduction_manager.reproduce():
+                    self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
+                return
+            
+            # État par défaut : exploration
+            self.logger.debug("Aucune action spécifique, exploration par défaut.")
+            self._explore()
+                
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour de l'état: {str(e)}")
+            self.state = "NORMAL_OPERATIONS"
