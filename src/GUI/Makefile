@@ -14,6 +14,7 @@ SRC = src/main.cpp \
 	  src/Core.cpp \
 	  src/Input_handler.cpp \
 	  src/RenderingEngine.cpp \
+	  src/PlayerInfoPanel.cpp \
 	  src/Ressource_manager.cpp
 
 OBJ = $(SRC:.cpp=.o)
