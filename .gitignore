@@ -2,4 +2,8 @@ src/SERVER/cmake-build-debug
 src/SERVER/.qodo
 src/SERVER/.idea
 src/SERVER/CMakeLists.txt
+zappy_ai
+zappy_gui
+zappy_server
+zappy.log
 .venv

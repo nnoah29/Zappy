@@ -58,6 +58,15 @@ void map_destroy(tile_t **map, int width, int height)
     free(map);
 }
 
+void map_cleanup_resources(server_t *server)
+{
+    for (int y = 0; y < server->config->map_h; y++) {
+        for (int x = 0; x < server->config->map_w; x++) {
+            memset(server->map[y][x].resources, 0, sizeof(int) * NB_RESOURCES);
+        }
+    }
+}
+
 /// Repartager les ressources sur la Map
 void map_spawn_resources(server_t *server)
 {
@@ -67,6 +76,7 @@ void map_spawn_resources(server_t *server)
     int x = 0;
     int y = 0;
 
+    map_cleanup_resources(server);
     for (int res_idx = 0; res_idx < NB_RESOURCES; res_idx++) {
         quantity_to_spawn = map_size * densities[res_idx];
         for (int i = 0; i < quantity_to_spawn; i++) {

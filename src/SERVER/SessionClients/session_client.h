@@ -15,6 +15,7 @@
 
 
 int find_client_by_fd(server_t *server, int fd);
+void send_initial_gui_state(server_t *server, session_client_t *gui_client);
 char *write_vision_(server_t *server, session_client_t *client);
 void write_vision(server_t *server, session_client_t *client,
     dynamic_buffer_t *db);

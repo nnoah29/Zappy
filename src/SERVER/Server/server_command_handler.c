@@ -99,7 +99,7 @@ void connec_t(server_t *server, session_client_t *client, const command_t *cmd)
         client->is_gui = true;
         client->active = true;
         LOG(LOG_DEBUG, "Client %d authentifié comme GUI.", client->idx);
-        send_to_all_guis(server, "nfnvbvnlvn");
+        send_initial_gui_state(server, client);
         return;
     }
     assign_team(server, client->idx, team_name);

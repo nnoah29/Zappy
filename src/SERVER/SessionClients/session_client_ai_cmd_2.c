@@ -78,6 +78,6 @@ int take_object_f(server_t *server, session_client_t *client,
         bct_f(server, client->x, client->y);
     } else
         dprintf(client->fd, "ko\n");
-    printf("take_object\n");
+    LOG(LOG_DEBUG, "Player %d took %s", client->idx, cmd->args[0]);
     return 0;
 }

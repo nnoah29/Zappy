@@ -41,4 +41,5 @@ add_executable(SERVER main.c
         Logger/logger.h
         Utilitaires/dynamic_buffer.c
         Utilitaires/dynamic_buffer.h
+        Utilitaires/gui_utils.c
 )
