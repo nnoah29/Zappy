@@ -204,23 +204,10 @@ class AI:
                             else:
                                 self.logger.warning("❌ La nourriture a disparu juste avant la collecte !")
                 else:
-                    self.logger.critical("🚨 AUCUNE NOURRITURE EN VUE (confirmé), EXPLORATION D'URGENCE")
-                    exploration_target = self._generate_emergency_exploration_target()
-                    if exploration_target:
-                        self.logger.critical(f"🚨 EXPLORATION D'URGENCE VERS {exploration_target}")
-                        if self.movement_manager.move_to(exploration_target):
-                            self.vision_manager.force_update_vision()
-                            if self._collect_available_resources():
-                                self.logger.critical("✅ RESSOURCES TROUVÉES EN EXPLORATION D'URGENCE")
-                    else:
-                        self.logger.critical("🚨 MOUVEMENT ALÉATOIRE D'URGENCE")
-                        random_direction = random.choice([(1, 0), (-1, 0), (0, 1), (0, -1)])
-                        if self.movement_manager.move_to(random_direction):
-                            self.vision_manager.force_update_vision()
-                            if self._collect_available_resources():
-                                self.logger.critical("✅ RESSOURCES TROUVÉES EN MOUVEMENT ALÉATOIRE")
+                    self.logger.critical("🚨 AUCUNE NOURRITURE EN VUE (confirmé), EXPLORATION LOCALE D'URGENCE")
+                    self._explore_locally_for_food()
                 
-                return True  # On a géré le tour en mode urgence, on s'arrête là.
+                return True
 
             if food_level < self.FOOD_SAFE_LEVEL:
                 self.state = "SURVIVAL_BUFFERING"
@@ -1094,3 +1081,11 @@ class AI:
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de l'état: {str(e)}")
             self.state = "NORMAL_OPERATIONS"
+
+    def _explore_locally_for_food(self):
+        """Fait un pas en avant pour chercher de la nourriture à proximité."""
+        self.logger.info("🗺️ Pas de nourriture en vue. Un pas en avant pour rafraîchir la vision.")
+        if self.protocol.forward():
+            self.logger.info("✅ Pas en avant effectué, vision rafraîchie")
+        else:
+            self.logger.warning("❌ Impossible de faire un pas en avant")
