@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cmath>
 
-RenderingEngine::RenderingEngine(sf::RenderWindow& window, const GameWorld& gameWorld)
+RenderingEngine::RenderingEngine(sf::RenderWindow &window, const GameWorld &gameWorld)
     : m_window(window), m_gameWorld(gameWorld), m_resourceManager(ResourceManager::getInstance()),
       m_cameraPosition(0.0f, 0.0f), m_zoomLevel(1.0f)
 {
@@ -13,10 +13,17 @@ RenderingEngine::RenderingEngine(sf::RenderWindow& window, const GameWorld& game
 void RenderingEngine::render()
 {
     updateCamera();
+    m_window.setView(m_window.getDefaultView());
+    sf::RectangleShape seaBg;
+    seaBg.setSize(sf::Vector2f(m_window.getSize().x, m_window.getSize().y));
+    seaBg.setPosition(0, 0);
+    seaBg.setFillColor(sf::Color(30, 144, 255));
+    m_window.draw(seaBg);
     m_window.setView(m_gameView);
     renderTiles();
     renderPlayers();
     renderEggs();
+    renderUI();
 }
 
 void RenderingEngine::updateCamera()
@@ -139,6 +146,8 @@ void RenderingEngine::renderEggs()
     for (const Egg& egg : eggs) {
         sf::Vector2f position = tileToScreen(egg.x, egg.y);
         sf::Sprite eggSprite = m_resourceManager.createSprite(ResourceType::EGG, position.x, position.y);
+        eggSprite.setScale(0.1f, 0.1f);
+        
         m_window.draw(eggSprite);
     }
 }
@@ -165,8 +174,9 @@ void RenderingEngine::renderPlayerSprite(const Player& player)
     else if (player.team == "team2") teamColor = sf::Color::Blue;
     else if (player.team == "team3") teamColor = sf::Color::Green;
     else if (player.team == "team4") teamColor = sf::Color::Yellow;
-    
+
     playerSprite.setColor(teamColor);
+    playerSprite.setScale(0.25f, 0.25f);
     m_window.draw(playerSprite);
 }
 
@@ -238,6 +248,62 @@ void RenderingEngine::renderResourceSprites(int x, int y, const Resource& resour
     }
 }
 
+void RenderingEngine::renderUI()
+{
+    m_window.setView(m_window.getDefaultView());
+    
+    sf::Font font;
+    if (!font.loadFromFile("assets/fonts/ARIAL.TTF")) {
+        return;
+    }
+    sf::Text infoText;
+    
+    sf::RectangleShape uiBackground(sf::Vector2f(300, 150));
+    uiBackground.setPosition(10, 10);
+    uiBackground.setFillColor(sf::Color(0, 0, 0, 128));
+    uiBackground.setOutlineThickness(2);
+    uiBackground.setOutlineColor(sf::Color::White);
+    m_window.draw(uiBackground);
+
+    int totalFood = 0, totalLinemate = 0, totalDeraumere = 0, totalSibur = 0, totalMendiane = 0, totalPhiras = 0, totalThystame = 0;
+    for (int y = 0; y < m_gameWorld.getHeight(); ++y) {
+        for (int x = 0; x < m_gameWorld.getWidth(); ++x) {
+            const Resource& res = m_gameWorld.getTile(x, y).resources;
+            totalFood += res.food;
+            totalLinemate += res.linemate;
+            totalDeraumere += res.deraumere;
+            totalSibur += res.sibur;
+            totalMendiane += res.mendiane;
+            totalPhiras += res.phiras;
+            totalThystame += res.thystame;
+        }
+    }
+
+    float textY = 20.f;
+    float textX = 20.f;
+    unsigned int textSize = 16;
+
+    std::vector<std::string> lines = {
+        "Ressources sur la map:",
+        "Food: " + std::to_string(totalFood),
+        "Linemate: " + std::to_string(totalLinemate),
+        "Deraumere: " + std::to_string(totalDeraumere),
+        "Sibur: " + std::to_string(totalSibur),
+        "Mendiane: " + std::to_string(totalMendiane),
+        "Phiras: " + std::to_string(totalPhiras),
+        "Thystame: " + std::to_string(totalThystame)
+    };
+    for (const auto& line : lines) {
+        infoText.setFont(font);
+        infoText.setString(line);
+        infoText.setCharacterSize(textSize);
+        infoText.setFillColor(sf::Color::White);
+        infoText.setPosition(textX, textY);
+        m_window.draw(infoText);
+        textY += 18.f;
+    }
+}
+
 ResourceType RenderingEngine::getPlayerResourceType(int orientation) const
 {
     switch (orientation) {
@@ -248,4 +314,3 @@ ResourceType RenderingEngine::getPlayerResourceType(int orientation) const
         default: return ResourceType::PLAYER_NORTH;
     }
 }
-
