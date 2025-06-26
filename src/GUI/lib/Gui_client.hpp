@@ -20,6 +20,7 @@
 #include <iostream>
 #include <mutex>
 #include <thread>
+#include <atomic>
 
 class Gui_client {
     public:
@@ -34,7 +35,8 @@ class Gui_client {
     std::vector<std::string> _message;
     std::mutex _messageMutex;
     std::thread _receiveThread;
-
+    Core _core;
+    std::atomic<bool> _stopRequested{false};
     void parseInit(std::string);
     void receiveMessage();
 };
