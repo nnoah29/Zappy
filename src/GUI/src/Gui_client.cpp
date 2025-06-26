@@ -16,6 +16,7 @@ void Msz(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 3)
         throw std::runtime_error("Invalid msz");
+    std::cout << "Map size: " << oklm[1] << "x" << oklm[2] << std::endl;
     gw->initialize(std::stoi(oklm[1]), std::stoi(oklm[2]));
 }
 
@@ -40,6 +41,7 @@ void Bct(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
     std::cout << "thystame: " << res.thystame << std::endl;
     gw->updateTileResources(std::stoi(oklm[1]), std::stoi(oklm[2]), res);
     std::cout << "Tile at (" << oklm[1] << ", " << oklm[2] << ") updated with resources." << std::endl;
+
 }
 
 void Pnw(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
@@ -54,6 +56,7 @@ void Pnw(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
     p.level = std::stoi(oklm[5]);
     p.team = oklm[6];
     gw->addPlayer(p);
+
 }
 
 void Ppo(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
@@ -375,7 +378,12 @@ void Gui_client::run()
         std::string init = _network->receive();
         std::cout << init << std::endl;
         parseInit(init);
+        if (!_core.initialize(_gameWorld)) {
+            std::cerr << "Failed to initialize Core system" << std::endl;
+            return;
+        }
         _receiveThread = std::thread(&Gui_client::receiveMessage, this);
+        _core.run();
         if (_receiveThread.joinable())
             _receiveThread.join();
     } catch (const std::exception &e) {
