@@ -4,6 +4,7 @@
 #include "../lib/Input_handler.hpp"
 #include "../lib/AnimationSystem.hpp"
 #include "../lib/Ressource_manager.hpp"
+#include "../lib/PlayerInfoPanel.hpp"
 #include <iostream>
 #include <random>
 
@@ -17,7 +18,7 @@ Core::~Core()
     shutdown(); 
 }
 
-bool Core::initialize()
+bool Core::initialize(std::shared_ptr<GameWorld> gameWorld)
 {
     try {
         m_window = std::make_unique<sf::RenderWindow>(
@@ -30,13 +31,9 @@ bool Core::initialize()
             std::cerr << "Failed to initialize ResourceManager" << std::endl;
             return false;
         }
-        m_gameWorld = std::make_unique<GameWorld>();
-        if (!m_gameWorld->initialize(10, 10)) {
-            std::cerr << "Failed to initialize GameWorld" << std::endl;
-            return false;
-        }
-        initializeTestData();
+        m_gameWorld = gameWorld;
         m_renderingEngine = std::make_unique<RenderingEngine>(*m_window, *m_gameWorld);
+        m_playerInfoPanel = std::make_unique<PlayerInfoPanel>(*m_window, *m_gameWorld);
         m_inputHandler = std::make_unique<InputHandler>(*m_window, *m_renderingEngine);
         m_animationSystem = std::make_unique<AnimationSystem>();
         m_clock.restart();        
@@ -48,90 +45,6 @@ bool Core::initialize()
         std::cerr << "Failed to initialize Core: " << e.what() << std::endl;
         return false;
     }
-}
-
-void Core::initializeTestData()
-{
-    int width = m_gameWorld->getWidth();
-    int height = m_gameWorld->getHeight();
-    int totalTiles = width * height;
-
-    struct { float density; int Resource::*field; } densities[] = {
-        {0.5f,  &Resource::food},
-        {0.3f,  &Resource::linemate},
-        {0.15f, &Resource::deraumere},
-        {0.1f,  &Resource::sibur},
-        {0.1f,  &Resource::mendiane},
-        {0.08f, &Resource::phiras},
-        {0.05f, &Resource::thystame}
-    };
-
-    int nbTypes = sizeof(densities) / sizeof(densities[0]);
-    std::vector<int> totalPerType(nbTypes);
-    for (int i = 0; i < nbTypes; ++i)
-        totalPerType[i] = static_cast<int>(totalTiles * densities[i].density);
-
-    std::vector<std::pair<int, int>> positions;
-    for (int y = 0; y < height; ++y)
-        for (int x = 0; x < width; ++x)
-            positions.emplace_back(x, y);
-
-    std::random_device rd;
-    std::mt19937 g(rd());
-
-    for (int t = 0; t < nbTypes; ++t) {
-        std::shuffle(positions.begin(), positions.end(), g);
-        for (int i = 0; i < totalPerType[t] && i < (int)positions.size(); ++i) {
-            int x = positions[i].first;
-            int y = positions[i].second;
-            Resource res = m_gameWorld->getTile(x, y).resources;
-            res.*(densities[t].field) += 1;
-            m_gameWorld->updateTileResources(x, y, res);
-        }
-    }
-    
-    Player player1;
-    player1.id = 1;
-    player1.x = 5;
-    player1.y = 5;
-    player1.orientation = 1;
-    player1.level = 1;
-    player1.team = "team1";
-    m_gameWorld->addPlayer(player1);
-    
-    Player player2;
-    player2.id = 2;
-    player2.x = 10;
-    player2.y = 8;
-    player2.orientation = 2;
-    player2.level = 2;
-    player2.team = "team2";
-    m_gameWorld->addPlayer(player2);
-    
-    Player player3;
-    player3.id = 3;
-    player3.x = 15;
-    player3.y = 12;
-    player3.orientation = 3;
-    player3.level = 1;
-    player3.team = "team3";
-    m_gameWorld->addPlayer(player3);
-    
-    Egg egg1;
-    egg1.id = 1;
-    egg1.x = 7;
-    egg1.y = 3;
-    egg1.team = "team1";
-    m_gameWorld->addEgg(egg1);
-    
-    Egg egg2;
-    egg2.id = 2;
-    egg2.x = 12;
-    egg2.y = 15;
-    egg2.team = "team2";
-    m_gameWorld->addEgg(egg2);
-    
-    std::cout << "Test data initialized" << std::endl;
 }
 
 void Core::run()
@@ -156,6 +69,8 @@ void Core::run()
         update(deltaTime);
         render();
     }
+    if (m_window->isOpen())
+        m_window->close();
 }
 
 void Core::shutdown()
@@ -210,8 +125,8 @@ void Core::updateGameLogic(float deltaTime)
                 AnimationType::PLAYER_EJECT
             };
             
-            AnimationType randomType = types[rand() % 4];
-            m_animationSystem->addEffect(randomType, worldPos.x, worldPos.y, 2.0f, sf::Color::Cyan);
+            // AnimationType randomType = types[rand() % 4];
+            // m_animationSystem->addEffect(randomType, worldPos.x, worldPos.y, 2.0f, sf::Color::Cyan);
         }
     }
 }
@@ -227,9 +142,7 @@ void Core::render()
     if (m_animationSystem) {
         m_animationSystem->render(*m_window);
     }
-    
     renderUI();
-    
     m_window->display();
 }
 
@@ -298,7 +211,7 @@ void Core::handleWindowEvents()
                 }
             }
             break;
-            
+
         default:
             break;
     }
