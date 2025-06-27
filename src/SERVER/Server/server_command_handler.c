@@ -35,6 +35,7 @@ static const option_cmd_t ai_cmds[] = {
     {"Eject", eject_f},
     {"Take", take_object_f},
     {"Set", set_object_f},
+    {"Incantation", incantation_f},
 };
 
 static void handle_command_gui(server_t *server, session_client_t *client,

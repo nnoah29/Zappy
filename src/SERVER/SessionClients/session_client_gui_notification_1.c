@@ -29,7 +29,7 @@ void ppo_f(server_t *server, session_client_t *client)
     char buffer[100];
 
     snprintf(buffer, sizeof(buffer), "ppo #%d %d %d %d\n",
-        client->idx, client->x, client->y, client->orientation);
+        client->idx, client->x, client->y, client->orientation + 1);
     send_to_all_guis(server, buffer);
 }
 

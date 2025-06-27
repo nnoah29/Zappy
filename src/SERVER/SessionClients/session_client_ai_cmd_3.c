@@ -31,3 +31,27 @@ int set_object_f(server_t *server, session_client_t *client,
     printf("set_object\n");
     return 0;
 }
+
+int incantation_f(server_t *server, session_client_t *client,
+    const command_t *cmd)
+{
+    const int incantation_idx = find_slot_incantation(server);
+    incantation_t *inc = NULL;
+
+    (void)cmd;
+    if (!check_incantation_prerequisites(server, client->x, client->y,
+        client->level))
+        return fail_cmd(client->fd);
+    if (incantation_idx == -1)
+        return fail_cmd(client->fd);
+    inc = &server->incantations[incantation_idx];
+    inc->active = true;
+    inc->x = client->x;
+    inc->y = client->y;
+    inc->level = client->level;
+    get_current_time(&inc->end_time);
+    add_seconds_to_timespec(&inc->end_time, 300.0 / server->config->freq);
+    dprintf(client->fd, "Elevation underway\n");
+    collect_elevating_players(server, client);
+    return 0;
+}

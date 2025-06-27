@@ -805,7 +805,9 @@
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/dynamic_buffer.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/error.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/event_scheduler.c.o:1: MAJOR:C-O1
+./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/fork_utils.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/gui_utils.c.o:1: MAJOR:C-O1
+./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/incantation_utils.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Utilitaires/look_utils.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/main.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/SERVER:1: MAJOR:C-O1

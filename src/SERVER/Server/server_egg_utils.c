@@ -46,7 +46,7 @@ void setup_player_from_egg(session_client_t *egg,
     egg->is_egg = false;
     egg->active = true;
     egg->level = 1;
-    egg->orientation = ((int)random() % 4) + 1;
+    egg->orientation = ((int)random() % 4);
     for (int k = 0; k < 7; k++)
         egg->inventory[k] = 0;
     egg->inventory[FOOD] = 10;

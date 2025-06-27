@@ -19,6 +19,7 @@
 
     #define MAX_TEAMS 10
     #define MAX_CLIENTS 1000
+    #define MAX_INCANTATIONS 10
 
 typedef enum {
     NORTH,
@@ -26,6 +27,10 @@ typedef enum {
     SOUTH,
     WEST
 } orientation_t;
+
+typedef struct {
+    int level; int players; int res[7];
+} incantation_req_t;
 
 typedef struct session_client_s {
     int x, y;
@@ -53,6 +58,14 @@ typedef struct configServer {
     int nbClients, nb_teams, freq;
 } config_server_t;
 
+typedef struct {
+    int x, y;
+    int level;
+    struct timespec end_time;
+    bool active;
+    int idx_players[6];
+} incantation_t;
+
 typedef struct server {
     int port, server_fd, nfds;
     struct sockaddr_in server_addr;
@@ -62,6 +75,7 @@ typedef struct server {
     config_server_t *config;
     struct timespec next_respawn_time;
     tile_t **map;
+    incantation_t incantations[MAX_INCANTATIONS];
 } server_t;
 
 typedef struct {

@@ -7,6 +7,7 @@
 
 #include "session_client.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 int broadcast_f(server_t *server, session_client_t *client,
     const command_t *cmd)
@@ -25,15 +26,22 @@ int connect_nbr_f(server_t *server, session_client_t *client,
         remaining_slots = server->teams[team_idx].nbMaxPlayers;
     }
     dprintf(client->fd, "%d\n", remaining_slots);
-    printf("connect_nbr\n");
+    LOG(LOG_DEBUG, "Player %d requested the number of remaining "
+        "slots.", client->idx);
     (void)cmd;
     return 0;
 }
 
-int fork_f(server_t *server, session_client_t *client,
-    const command_t *cmd)
+int fork_f(server_t *server, session_client_t *client, const command_t *cmd)
 {
-    printf("fork\n");
+    const int egg_idx = find_free_slot(server, client);
+
+    (void)cmd;
+    if (egg_idx == -1)
+        return fail_cmd(client->fd);
+    LOG(LOG_DEBUG, "Player %d is forking. New egg will be at index %d.",
+        client->idx, egg_idx);
+    laying_process(server, client, egg_idx);
     return 0;
 }
 

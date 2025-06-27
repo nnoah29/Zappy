@@ -55,6 +55,7 @@ void check_life(server_t *server, int client_idx)
 void handle_game_logic(server_t *server)
 {
     spawn_ressources(server);
+    check_and_finish_incantations(server);
     for (int i = 0; i < MAX_CLIENTS; i++) {
         if (server->players[i].fd == -1 || server->players[i].is_egg)
             continue;

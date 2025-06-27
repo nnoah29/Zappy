@@ -21,7 +21,7 @@ void send_initial_gui_state(server_t *server, session_client_t *gui_client)
     mct_h(server, gui_client, NULL);
     for (int i = 0; i < MAX_CLIENTS; i++) {
         p = &server->players[i];
-        if (p->fd != -1 || p->is_egg) {
+        if (p->fd != -1) {
             enw_f(server, p);
             pnw_f(server, p);
         }

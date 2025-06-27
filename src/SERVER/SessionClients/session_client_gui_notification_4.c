@@ -38,6 +38,7 @@ void pnw_f(server_t *server, session_client_t *client)
 
     if (client->is_gui)
         return;
+    printf("ok\n");
     snprintf(buffer, sizeof(buffer), "pnw #%d %d %d %d %d %s\n",
         client->idx, client->x, client->y, client->orientation,
         client->level, server->teams[client->team_idx].name);

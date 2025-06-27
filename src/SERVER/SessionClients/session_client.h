@@ -15,8 +15,14 @@
 
 
 int find_client_by_fd(server_t *server, int fd);
+int find_free_slot(server_t *server, session_client_t *client);
+void laying_process(server_t *server, session_client_t *client, int egg_idx);
 void send_initial_gui_state(server_t *server, session_client_t *gui_client);
-char *write_vision_(server_t *server, session_client_t *client);
+void collect_elevating_players(server_t *server, session_client_t *client);
+bool check_incantation_prerequisites(server_t *server, int x, int y,
+    int level);
+void check_and_finish_incantations(server_t *server);
+int find_slot_incantation(server_t *server);
 void write_vision(server_t *server, session_client_t *client,
     dynamic_buffer_t *db);
 void calculate_direction(server_t *server, session_client_t *client,
@@ -44,6 +50,8 @@ int eject_f(server_t *server, session_client_t *client,
 int take_object_f(server_t *server, session_client_t *client,
     const command_t *cmd);
 int set_object_f(server_t *server, session_client_t *client,
+    const command_t *cmd);
+int incantation_f(server_t *server, session_client_t *client,
     const command_t *cmd);
 void send_to_all_guis(server_t *server, const char *msg);
 

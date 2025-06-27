@@ -42,4 +42,6 @@ add_executable(SERVER main.c
         Utilitaires/dynamic_buffer.c
         Utilitaires/dynamic_buffer.h
         Utilitaires/gui_utils.c
+        Utilitaires/incantation_utils.c
+        Utilitaires/fork_utils.c
 )

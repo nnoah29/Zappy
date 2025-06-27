@@ -40,6 +40,9 @@ void init_clients(server_t *server)
         server->players[i].idx = -1;
         server->players[i].is_egg = false;
     }
+    for (int i = 0; i < MAX_INCANTATIONS; i++) {
+        server->incantations[i].active = false;
+    }
 }
 
 void initialize_teams(server_t *server)
