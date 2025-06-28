@@ -97,19 +97,16 @@ class AI:
     def _update_state(self) -> None:
         """Met à jour l'état de l'IA."""
         try:
-            # === PRIORITÉ 1: ÉLÉVATION (même en mode survie si on a tout) ===
             if self.elevation_manager.can_elevate():
                 self.logger.debug("État changé: ELEVATING (priorité absolue)")
                 self.state = "ELEVATING"
                 return
             
-            # === PRIORITÉ 2: SURVIE ===
             if self.inventory_manager.inventory['food'] < 5:
                 self.logger.debug("État changé: EMERGENCY_FOOD_SEARCH (critique)")
                 self.state = "EMERGENCY_FOOD_SEARCH"
                 return
                 
-            # === PRIORITÉ 3: COLLECTE DE RESSOURCES ===
             needed_resources = self.elevation_manager.get_needed_resources()
             if needed_resources:
                 prioritized_resources = self._prioritize_resources(needed_resources)
@@ -118,13 +115,11 @@ class AI:
                 self.target_resource = prioritized_resources[0]
                 return
                 
-            # === PRIORITÉ 4: MAINTENANCE DE SURVIE ===
             if self.inventory_manager.inventory['food'] < 10:
                 self.logger.debug("État changé: SURVIVAL_BUFFERING (maintenance)")
                 self.state = "SURVIVAL_BUFFERING"
                 return
                 
-            # === PRIORITÉ 5: OPÉRATIONS NORMALES ===
             self.logger.debug("NORMAL_OPERATIONS")
             self.state = "NORMAL_OPERATIONS"
             self.target_resource = None
@@ -179,20 +174,16 @@ class AI:
         try:
             food_level = self.inventory_manager.inventory['food']
 
-            # Collecter toutes les ressources disponibles sur la case actuelle
             self._collect_available_resources()
 
-            # === PRIORITÉ 1: ÉLÉVATION (priorité absolue) ===
             if self.state == "ELEVATING":
                 self.logger.info("🚀 LANCEMENT DE L'ÉLÉVATION !")
                 return self._handle_elevation()
 
-            # === PRIORITÉ 2: SURVIE ===
             if food_level < self.FOOD_SAFE_LEVEL:
                 self.handle_survival()
                 return True
 
-            # === PRIORITÉ 3: REPRODUCTION (uniquement si on a rien de mieux à faire) ===
             needed_for_next_level = self.elevation_manager.get_needed_resources()
             if not needed_for_next_level and self.reproduction_manager.can_fork():
                 self.logger.info("✅ Objectifs atteints, conditions optimales pour la reproduction - FORK.")
@@ -200,11 +191,9 @@ class AI:
                     self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
                 return True
 
-            # === PRIORITÉ 4: OBJECTIFS PRINCIPAUX ===
             self.logger.info(f"✅ Nourriture sécurisée ({food_level}). Reprise des opérations.")
-            self._update_state_when_safe() # Met à jour l'état
+            self._update_state_when_safe()
 
-            # Maintenant, on exécute l'action de l'état
             if self.state == "ELEVATING":
                 self._handle_elevation()
             
@@ -214,9 +203,9 @@ class AI:
             elif self.state == "AWAITING_PARTICIPANTS":
                 self.logger.info(f"👥 Appel à l'aide pour le rituel niveau {self.player.level + 1}. Besoin de {self.ritual_participants_needed} joueurs.")
                 self.communicator.send_team_message("RITUAL_CALL", f"{self.player.level + 1}:{self.player.id}:{self.player.x},{self.player.y}")
-                time.sleep(1) # Attente simple
+                time.sleep(1)
 
-            else: # NORMAL_OPERATIONS ou autre
+            else:
                 self._explore()
                 
             return True
@@ -267,27 +256,22 @@ class AI:
             self.logger.info(f"🎯 Préparation de l'élévation niveau {current_level} → {next_level}")
             self.logger.info(f"📋 Exigences : {requirements}")
             
-            # 1. Poser les pierres nécessaires
             for resource, count in requirements.items():
                 if resource == "players":
                     continue
-                # Combien de cette ressource sont déjà sur la case ?
                 on_tile = self.vision_manager.vision_data[0].count(resource) if self.vision_manager.vision_data else 0
                 needed_on_tile = count - on_tile
                 
-                # Combien en ai-je à déposer ?
                 to_set = min(self.inventory_manager.inventory.get(resource, 0), needed_on_tile)
                 
                 if to_set > 0:
                     self.logger.info(f"📦 Dépose {to_set} {resource} pour le rituel (déjà {on_tile} sur la case, besoin de {count})")
                     for _ in range(to_set):
                         self.protocol.set(resource)
-                        time.sleep(0.1) # Petite pause pour éviter de spammer le serveur
+                        time.sleep(0.1)
 
-            # 2. Après avoir posé, refaire un Look pour être sûr de l'état de la case
             self.vision_manager.force_update_vision()
             
-            # 3. Lancer l'incantation si les conditions sont remplies
             if self.elevation_manager.can_elevate():
                 self.logger.info(f"✨ Conditions parfaites ! Lancement de l'incantation pour le niveau {next_level} !")
                 response = self.protocol.incantation()
@@ -305,7 +289,6 @@ class AI:
                     self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation: {response}")
                     return False
             else:
-                # Si les pierres sont bonnes mais qu'il manque des joueurs, Broadcast RITUAL_CALL
                 current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
                 player_count = current_tile_content.count('player')
                 required_players = requirements.get('players', 1)
@@ -878,13 +861,11 @@ class AI:
                 next_level = self.player.level + 1
                 self.logger.info(f"🎯 Objectif : Préparer l'élévation pour le niveau {next_level}.")
                 
-                # Priorité 1 : Peut-on s'élever MAINTENANT ?
                 if self.elevation_manager.can_elevate():
                     self.logger.info("✨ Conditions d'élévation remplies !")
                     self.state = "ELEVATING"
                     return
 
-                # Priorité 2 : A-t-on besoin de ressources pour le niveau actuel ?
                 needed_resources = self.elevation_manager.get_needed_resources()
                 if needed_resources:
                     self.logger.info(f"🔍 Ressources manquantes pour niveau {self.player.level} : {needed_resources}")
@@ -892,8 +873,6 @@ class AI:
                     self.target_resource = self._prioritize_resources(needed_resources)[0]
                     return
 
-                # Priorité 3 : A-t-on besoin de plus de joueurs pour le rituel ?
-                # (Cette condition n'est vraie que si on a déjà toutes les pierres)
                 required_players = self.elevation_manager.ELEVATION_REQUIREMENTS.get(self.player.level, {}).get("players", 1)
                 player_count_on_tile = self.vision_manager.vision_data[0].count('player') if self.vision_manager.vision_data else 0
                 
@@ -903,17 +882,14 @@ class AI:
                     self.ritual_participants_needed = required_players
                     return
 
-                # Si on n'a rien de tout ça à faire, on explore
                 self.state = "NORMAL_OPERATIONS"
                 return
             
-            # Logique pour le niveau maximum (8)
             elif self.player.level == 8:
                 self.logger.info("🏆 Niveau maximum atteint ! Je me concentre sur la reproduction et l'aide à l'équipe.")
                 self.state = "NORMAL_OPERATIONS"
                 return
             
-            # État par défaut : exploration
             self.logger.debug("Aucune action spécifique, exploration par défaut.")
             self.state = "NORMAL_OPERATIONS"
                 

@@ -15,7 +15,7 @@ class ReproductionManager:
         self.protocol = protocol
         self.logger = logger
         self.last_fork_time = 0
-        self.cooldown = 42  # 42/f où f = 100 par défaut
+        self.cooldown = 42
 
     def can_fork(self) -> bool:
         """Vérifie si le joueur peut exécuter un fork maintenant.

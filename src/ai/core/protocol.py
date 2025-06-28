@@ -1,6 +1,5 @@
 import logging
-import time
-from typing import Optional, List, Dict, Any
+from typing import Optional
 from .client import ZappyClient
 
 class ZappyProtocol:

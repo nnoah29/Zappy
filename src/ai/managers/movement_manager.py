@@ -80,12 +80,10 @@ class MovementManager:
             while attempts < max_attempts:
                 current_x, current_y = self.player.get_position()
                 
-                # Vérifier si on est arrivé à destination
                 if (current_x, current_y) == (target_x, target_y):
                     self.logger.info(f"✅ Arrivé à la destination ({target_x}, {target_y})")
                     return True
                 
-                # Vérifier si on est bloqué
                 if self._is_stuck():
                     self.logger.warning("Joueur bloqué pendant le déplacement.")
                     self._handle_stuck()
@@ -97,7 +95,6 @@ class MovementManager:
                     attempts += 1
                     continue
                 
-                # Gestion des collisions
                 if self.collision_manager.check_collision():
                     self.logger.debug("Collision détectée, tentative d'éjection")
                     if self.collision_manager.eject_other_players():

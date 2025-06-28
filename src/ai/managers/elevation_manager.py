@@ -33,7 +33,6 @@ class ElevationManager:
         }
         self.ritual_in_progress = False
         
-        # Dans la classe ElevationManager
 
     def can_elevate(self) -> bool:
         """
@@ -50,26 +49,19 @@ class ElevationManager:
                 self.logger.error(f"Aucun prérequis défini pour le niveau {current_level}")
                 return False
                 
-            # === VÉRIFICATION 1 : AI-JE LES RESSOURCES DANS MON INVENTAIRE ? ===
             for resource, count in requirements.items():
                 if resource == 'players':
                     continue
-                # La ligne ci-dessous est la seule vérification d'inventaire nécessaire
                 if self.inventory_manager.inventory.get(resource, 0) < count:
                     self.logger.debug(f"Pas assez de {resource} dans l'inventaire pour l'élévation (j'ai {self.inventory_manager.inventory.get(resource, 0)}, besoin de {count})")
                     return False
             
-            # === VÉRIFICATION 2 : Y A-T-IL ASSEZ DE JOUEURS SUR LA CASE ? ===
             current_tile = self.vision_manager.get_case_content(0, 0)
             if not current_tile:
                 return False
                 
             required_players = requirements.get('players', 1)
             player_count = current_tile.count('player')
-            
-            # On vérifie aussi que tous les joueurs sont du même niveau
-            # (Cette partie est plus avancée, mais cruciale pour les niveaux > 1)
-            # Pour l'instant, laissons-la simple.
             
             if player_count < required_players:
                 self.logger.debug(f"Pas assez de joueurs sur la case ({player_count}/{required_players})")
@@ -171,7 +163,6 @@ class ElevationManager:
         try:
             current_level = self.vision_manager.player.level
             
-            # UTILISER current_level, PAS next_level !
             if current_level not in self.ELEVATION_REQUIREMENTS:
                 return []
                 

@@ -15,8 +15,8 @@ class Tile:
             "thystame": 0,
         }
         self.players = []
-        self.last_updated = None  # Timestamp de la dernière mise à jour
-        self.is_explored = False  # Indique si la tuile a été explorée
+        self.last_updated = None
+        self.is_explored = False
         self.logger = logging.getLogger(__name__)
         # self.logger.info(f"map tile created: {self.resources} {self.players}")
 
@@ -80,16 +80,13 @@ class Map:
         try:
             tile = self.get_tile(x, y)
             
-            # Réinitialiser les ressources
             for resource in tile.resources:
                 tile.resources[resource] = 0
             
-            # Compter les ressources dans le contenu
             for item in content:
                 if item in tile.resources:
                     tile.resources[item] += 1
             
-            # Marquer la tuile comme explorée
             tile.is_explored = True
             tile.last_updated = time.time()
             
