@@ -782,6 +782,7 @@
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Logger/logger.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Map/map_entities.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Map/map_management.c.o:1: MAJOR:C-O1
+./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_cleanup.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_command_handler.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_command_queue.c.o:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/SERVER.dir/Server/server_core.c.o:1: MAJOR:C-O1

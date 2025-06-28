@@ -72,7 +72,6 @@ static void handle_command_ai(server_t *server, session_client_t *client,
 
 void assign_team(server_t *server, int client_temp_idx, const char *team_name)
 {
-    char buffer[128];
     const int team_idx = find_team_by_name(server, team_name);
     const int egg_idx = find_egg_in_team(server, team_idx);
 

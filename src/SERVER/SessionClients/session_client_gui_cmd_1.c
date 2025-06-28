@@ -29,10 +29,8 @@ int bct_h(server_t *server, session_client_t *client, const command_t *cmd)
     int y = 0;
     const tile_t *tile = NULL;
 
-    if (cmd->args[0] == NULL || cmd->args[1] == NULL) {
-        dprintf(client->fd, "sbp\n");
-        return 84;
-    }
+    if (cmd->args[0] == NULL || cmd->args[1] == NULL)
+        return dprintf(client->fd, "sbp\n");
     x = atoi(cmd->args[0]);
     y = atoi(cmd->args[1]);
     if (x < 0 || x >= server->config->map_w || y < 0 ||
@@ -45,6 +43,7 @@ int bct_h(server_t *server, session_client_t *client, const command_t *cmd)
         x, y, tile->resources[0], tile->resources[1], tile->resources[2],
         tile->resources[3], tile->resources[4], tile->resources[5],
         tile->resources[6]);
+    return 0;
 }
 
 /// Envoie le contenu de toute la map (mct)

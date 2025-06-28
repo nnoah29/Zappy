@@ -12,6 +12,7 @@
 #include "my.h"
 #include "Server/server.h"
 #include "Logger/logger.h"
+const server_t *server_ptr = NULL;
 
 static const option_parser_t parsers[] = {
     {"-p", parse_port},
@@ -67,11 +68,13 @@ config_server_t *parse_args(int argc, char **argv)
 
 int main(int ac, char *av[])
 {
-    int a = log_set_level(LOG_DEBUG);
+    const int a = log_set_level(LOG_DEBUG);
     config_server_t *conf = parse_args(ac, av);
     server_t *server = setup_server(conf);
 
+    server_ptr = server;
     run_server(server);
     cleanup_server(server);
+    (void)a;
     return 0;
 }

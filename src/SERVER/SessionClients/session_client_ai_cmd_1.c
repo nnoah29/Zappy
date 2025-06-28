@@ -57,6 +57,8 @@ int look_f(server_t *server, session_client_t *client, const command_t *cmd)
 int inventory_f(server_t *server, session_client_t *client,
     const command_t *cmd)
 {
+    (void)cmd;
+    (void)server;
     dprintf(client->fd, "[food %d, linemate %d, deraumere %d, sibur %d, "
         "mendiane %d, phiras %d, thystame %d]\n",
         client->inventory[FOOD], client->inventory[LINEMATE],

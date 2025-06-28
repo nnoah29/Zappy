@@ -40,7 +40,7 @@ tile_t **map_create(int width, int height)
             map[y][x].entities = NULL;
         }
     }
-    LOG(LOG_INFO, "Map de dimensions %d x %d créée.", width, height);
+    LOG(LOG_DEBUG, "Map de dimensions %d x %d créée.", width, height);
     return map;
 }
 
@@ -81,7 +81,7 @@ static void map_count_resources(server_t *server,
 /// Complète les ressources sur la carte pour atteindre les densités cibles.
 void map_spawn_resources(server_t *server)
 {
-    const double dens[] = {0.5, 0.3, 0.15, 0.1, 0.1, 0.08, 0.05};
+    static const double dens[] = {0.5, 0.3, 0.15, 0.1, 0.1, 0.08, 0.05};
     const int map_size = server->config->map_w * server->config->map_h;
     int res_counts[NB_RESOURCES];
     int quantity_to_spawn = 0;

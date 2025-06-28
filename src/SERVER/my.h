@@ -17,6 +17,8 @@ typedef struct {
     int y;
 } int_pair_t;
 
+extern const server_t *server_ptr;
+
 void exit_error(char *error, int degree);
 int fail_cmd(int fd);
 resource_t string_to_resource(const char *str);

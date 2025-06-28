@@ -21,7 +21,6 @@ SFML_LIBS   := -lsfml-graphics -lsfml-window -lsfml-system
 
 # Python configuration
 PYTHON          := python3
-#PYINSTALLER     := $(PYTHON) -m PyInstaller
 AI_REQUIREMENTS := src/ai/requirements.txt
 VENV_DIR := .venv
 PIP := $(VENV_DIR)/bin/pip
@@ -64,7 +63,7 @@ BLUE   := $(shell echo -e "\033[0;34m")
 NC     := $(shell echo -e "\033[0m")
 
 # === RULES ===
-all: $(NAME_SERVER) build_ai
+all: $(NAME_SERVER) $(NAME_GUI) $(NAME_AI)
 	@echo "$(GREEN)[OK] Full build complete.$(NC)"
 
 $(OBJ_DIR)/%.o: $(SERVER_DIR)/%.c
@@ -88,7 +87,7 @@ $(OBJ_DIR):
 
 setup_ai: $(VENV_DIR)/bin/activate
 	@echo "$(BLUE)[SETUP] Installing Python dependencies...$(NC)"
-	$(SILENT)$(PIP) install -r $(AI_REQUIREMENTS)
+	$(SILENT)$(PIP) install -q -r $(AI_REQUIREMENTS)
 	@echo "$(GREEN)[OK] Python dependencies installed.$(NC)"
 
 $(VENV_DIR)/bin/activate:
@@ -96,9 +95,9 @@ $(VENV_DIR)/bin/activate:
 	$(SILENT)$(PYTHON) -m venv $(VENV_DIR)
 	@echo "$(GREEN)[OK] Virtual environment ready.$(NC)"
 
-build_ai: setup_ai
+$(NAME_AI): setup_ai
 	@echo "$(BLUE)[BUILD] Building AI binary...$(NC)"
-	$(PYINSTALLER) --onefile --name $(NAME_AI) $(AI_DIR)/main.py
+	$(SILENT)$(PYINSTALLER) --onefile --log-level=ERROR --name $(NAME_AI) $(AI_DIR)/main.py
 	$(SILENT)mv dist/$(NAME_AI) .
 	$(SILENT)rm -rf build dist $(NAME_AI).spec
 	@echo "$(GREEN)[OK] AI binary built.$(NC)"
@@ -127,4 +126,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re setup_ai test_ai clean_ai build_ai
+.PHONY: all clean fclean re setup_ai test_ai clean_ai

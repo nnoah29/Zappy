@@ -15,6 +15,7 @@
 void exit_error(char *error, int degree)
 {
     LOG(LOG_ERROR, "%s failed: %s", error, strerror(errno));
+    cleanup_server((server_t *)server_ptr);
     exit(degree);
 }
 

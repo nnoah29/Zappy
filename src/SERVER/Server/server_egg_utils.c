@@ -37,9 +37,6 @@ int find_egg_in_team(server_t *server, int team_idx)
 void setup_player_from_egg(session_client_t *egg,
     session_client_t *client_temp, server_t *server, int egg_idx)
 {
-    teams_t *team = &server->teams[egg->team_idx];
-    char buffer[128];
-
     egg->fd = client_temp->fd;
     egg->idx = egg_idx;
     egg->queue = client_temp->queue;
