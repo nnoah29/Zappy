@@ -253,7 +253,7 @@ void RenderingEngine::renderUI()
     m_window.setView(m_window.getDefaultView());
     
     sf::Font font;
-    if (!font.loadFromFile("assets/fonts/ARIAL.TTF")) {
+    if (!font.loadFromFile("src/GUI/assets/fonts/ARIAL.TTF")) {
         return;
     }
     sf::Text infoText;

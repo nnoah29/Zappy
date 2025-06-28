@@ -18,7 +18,7 @@ PlayerInfoPanel::PlayerInfoPanel(sf::RenderWindow &window, GameWorld &gameWorld)
 
 bool PlayerInfoPanel::initialize()
 {
-    if (!m_font.loadFromFile("assets/fonts/ARIAL.TTF")) {
+    if (!m_font.loadFromFile("/src/GUI/assets/fonts/ARIAL.TTF")) {
         std::cout << "Warning: Could not load font, using default font" << std::endl;
     }
     return true;
