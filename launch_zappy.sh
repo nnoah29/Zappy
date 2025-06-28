@@ -70,8 +70,7 @@ trap cleanup SIGINT SIGTERM
 
 # 1. Compilation conditionnelle
 if [ ! -x "${BINARIES[0]}" ] || [ ! -x "${BINARIES[1]}" ] || [ ! -x "${BINARIES[2]}" ]; then
-    echo "Info: Un ou plusieurs binaires sont manquants. Lancement de 'make re'..." >&2
-    make re > /dev/null
+    make re
     if [ $? -ne 0 ]; then
         echo "Erreur: La compilation a échoué. Arrêt du script." >&2
         exit 1
