@@ -84,6 +84,7 @@ void map_spawn_resources(server_t *server)
     static const double dens[] = {0.5, 0.3, 0.15, 0.1, 0.1, 0.08, 0.05};
     const int map_size = server->config->map_w * server->config->map_h;
     int res_counts[NB_RESOURCES];
+    bool respawn = false;
     int quantity_to_spawn = 0;
     int x = 0;
     int y = 0;
@@ -99,6 +100,8 @@ void map_spawn_resources(server_t *server)
             server->map[y][x].resources[res_idx]++;
             bct_f(server, x, y);
         }
+        respawn = true;
     }
-    LOG(LOG_DEBUG, "Ressources ont été générées sur la carte.");
+    if (respawn)
+        LOG(LOG_DEBUG, "Ressources ont été générées sur la carte.");
 }
