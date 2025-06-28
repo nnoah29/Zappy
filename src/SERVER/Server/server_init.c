@@ -18,16 +18,16 @@ void put_online(server_t *server)
     LOG(LOG_INFO, "Mis en ligne du serveur...");
     server->server_fd = socket(AF_INET, SOCK_STREAM, 0);
     if (server->server_fd == -1)
-        exit_error("socket", 0);
+        exit_error("Socket", 84);
     memset(&server->server_addr, 0, sizeof(server->server_addr));
     server->server_addr.sin_family = AF_INET;
     server->server_addr.sin_addr.s_addr = INADDR_ANY;
     server->server_addr.sin_port = htons(server->port);
     if (bind(server->server_fd, (struct sockaddr *)&server->server_addr,
         sizeof(server->server_addr)) < 0)
-        exit_error("bind", 0);
+        exit_error("Bind", 84);
     if (listen(server->server_fd, 5) < 0)
-        exit_error("listen", 0);
+        exit_error("Listen", 84);
 }
 
 void init_clients(server_t *server)
@@ -81,24 +81,4 @@ server_t *setup_server(config_server_t *config)
     LOG(LOG_INFO, "Serveur en attente de connexions sur le port %d",
         server->port);
     return server;
-}
-
-// TODO: Ajoutez ici le free pour les autres ressources (map, teams, etc.)
-void cleanup_server(server_t *server)
-{
-    if (server->server_fd != -1)
-        close(server->server_fd);
-    for (int i = 0; i < server->nfds; i++) {
-        if (server->fds[i].fd >= 0)
-            close(server->fds[i].fd);
-    }
-    if (server->config) {
-        map_destroy(server->map, server->config->map_w,
-            server->config->map_h);
-        for (int i = 0; i < server->config->nb_teams; i++)
-            free(server->config->names[i]);
-        free(server->config);
-    }
-    free(server);
-    printf("Serveur nettoyé et arrêté.\n");
 }

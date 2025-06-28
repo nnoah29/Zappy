@@ -126,8 +126,7 @@ void run_server(server_t *server);
 void handle_signal(int signal);
 void handle_game_logic(server_t *server);
 void spawn_ressources(server_t *server);
-void check_life(server_t *server, int client_idx);
-
+void check_win_condition(server_t *server);
 // server_command_queue.c
 void receive_client_data(server_t *server, int client_idx);
 void process_command(char *cmd, const session_client_t *client, int freq);

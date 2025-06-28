@@ -44,4 +44,5 @@ add_executable(SERVER main.c
         Utilitaires/gui_utils.c
         Utilitaires/incantation_utils.c
         Utilitaires/fork_utils.c
+        Server/server_cleanup.c
 )

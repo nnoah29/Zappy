@@ -93,6 +93,7 @@ static void finish_incantation_success(server_t *server, incantation_t *inc)
         }
         current = current->next;
     }
+    check_win_condition(server);
 }
 
 static void finish_incantation_failure(server_t *server, incantation_t *inc)

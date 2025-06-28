@@ -25,6 +25,8 @@ void check_and_finish_incantations(server_t *server);
 int find_slot_incantation(server_t *server);
 void write_vision(server_t *server, session_client_t *client,
     dynamic_buffer_t *db);
+void distribute_message(server_t *server, session_client_t *client,
+    const char *message_text);
 void calculate_direction(server_t *server, session_client_t *client,
     int *x, int *y);
 int process_ejection_on_entity(entity_on_tile_t *current_node,

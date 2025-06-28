@@ -70,6 +70,7 @@ int remove_command_at(command_queue_t *queue, int index)
     free(queue->commands[index].raw_cmd);
     for (int i = 0; i < queue->commands[index].argc; ++i)
         free(queue->commands[index].args[i]);
+    free(queue->commands[index].args);
     for (int i = index; i != queue->tail; i = (i + 1) % MAX_COMMANDS) {
         next = (i + 1) % MAX_COMMANDS;
         queue->commands[i] = queue->commands[next];

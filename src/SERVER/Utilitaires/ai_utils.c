@@ -68,11 +68,29 @@ int process_ejection_on_entity(entity_on_tile_t *current_node,
         close_client_connection(server, other_player->idx);
         return 1;
     }
-    calculate_direction(server, other_player, &pos.x, &pos.y);
-    printf("process \n");
+    calculate_direction(server, ejector, &pos.x, &pos.y);
     map_move_entity(server->map, other_player, pos.x, pos.y);
-    printf("ok\n");
     ppo_f(server, other_player);
     pex_f(server, other_player);
     return 1;
+}
+
+void distribute_message(server_t *server, session_client_t *client,
+    const char *message_text)
+{
+    char message_to_send[2048];
+    int k = 0;
+    const session_client_t *receiver = NULL;
+
+    for (int i = 0; i < MAX_CLIENTS; i++) {
+        receiver = &server->players[i];
+        if (!receiver->active || receiver->is_gui || receiver->is_egg)
+            continue;
+        k = (receiver->idx == client->idx) ? 0 : 1;
+        snprintf(message_to_send, sizeof(message_to_send),
+            "message %d, %s\n", k, message_text);
+        send(receiver->fd, message_to_send, strlen(message_to_send), 0);
+    }
+    dprintf(client->fd, "ok\n");
+    pbc_f(server, client, message_text);
 }

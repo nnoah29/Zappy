@@ -8,11 +8,31 @@
 #include "session_client.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+/**
+ * @brief Gère la commande Broadcast.
+ *        Version simplifiée : envoie le message à tous les autres joueurs avec
+ *        une direction factice K=0.
+ * @param server Le pointeur du serveur.
+ * @param client Le joueur qui envoie le message.
+ * @param cmd La commande parsée.
+ * @return int 0 en cas de succès.
+ */
 int broadcast_f(server_t *server, session_client_t *client,
     const command_t *cmd)
 {
-    printf("broadcast\n");
+    char message_text[1024] = {0};
+
+    if (cmd->argc < 1)
+        return fail_cmd(client->fd);
+    for (int i = 0; i < cmd->argc; i++) {
+        strcat(message_text, cmd->args[i]);
+        if (i < cmd->argc - 1)
+            strcat(message_text, " ");
+    }
+    LOG(LOG_DEBUG, "Player %d broadcasts: '%s'", client->idx, message_text);
+    distribute_message(server, client, message_text);
     return 0;
 }
 
@@ -53,7 +73,6 @@ int eject_f(server_t *server, session_client_t *client,
     entity_on_tile_t *next_entity = NULL;
     bool ejected_someone = false;
 
-    printf("eject\n");
     while (current != NULL) {
         next_entity = current->next;
         if (process_ejection_on_entity(current, server, client)) {

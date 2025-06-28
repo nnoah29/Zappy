@@ -44,6 +44,7 @@ void process_command(char *cmd, const session_client_t *client, int freq)
             send(client->fd, "ko\n", 3, 0);
         line = strtok(NULL, "\n");
     }
+    free(cmd_cpy);
 }
 
 void receive_client_data(server_t *server, int client_idx)

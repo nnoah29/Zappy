@@ -8,7 +8,7 @@
 #ifndef COMMANDES_H
     #define COMMANDES_H
     #define MAX_COMMANDS 10
-    #define MAX_ARGS 10
+    #define MAX_ARGS 100
     #include <time.h>
     #include "../Clock/clock.h"
 

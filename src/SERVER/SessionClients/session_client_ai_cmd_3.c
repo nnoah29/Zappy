@@ -28,7 +28,7 @@ int set_object_f(server_t *server, session_client_t *client,
         bct_f(server, client->x, client->y);
     } else
         dprintf(client->fd, "ko\n");
-    printf("set_object\n");
+    LOG(LOG_DEBUG, "Player %d set %s", client->idx, cmd->args[0]);
     return 0;
 }
 

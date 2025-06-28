@@ -51,6 +51,7 @@ void setup_player_from_egg(session_client_t *egg,
         egg->inventory[k] = 0;
     egg->inventory[FOOD] = 10;
     get_current_time(&egg->next_food_time);
+    get_next_food_consumption(egg, server);
     client_temp->fd = -1;
     client_temp->queue = NULL;
     close_client_connection(server, client_temp->idx);

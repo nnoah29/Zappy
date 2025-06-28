@@ -5,13 +5,16 @@
 ** error.c
 */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 #include "../my.h"
 
 void exit_error(char *error, int degree)
 {
-    LOG(LOG_ERROR, "%s", error);
+    LOG(LOG_ERROR, "%s failed: %s", error, strerror(errno));
     exit(degree);
 }
 

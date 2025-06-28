@@ -1,4 +1,3 @@
-./Server/server_core.c:13: MAJOR:C-G4
 ./cmake-build-debug/CMakeFiles/3.31.6/CMakeDetermineCompilerABI_C.bin:1: MAJOR:C-O1
 ./cmake-build-debug/CMakeFiles/3.31.6/CompilerIdC/CMakeCCompilerId.c:1: MINOR:C-G1
 ./cmake-build-debug/CMakeFiles/3.31.6/CompilerIdC/CMakeCCompilerId.c:1: MINOR:C-O4
