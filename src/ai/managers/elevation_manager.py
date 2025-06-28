@@ -1,87 +1,85 @@
 from typing import Dict, List
+from managers.inventory_manager import InventoryManager
 from core.protocol import ZappyProtocol
 import logging
 import time
 from managers.vision_manager import VisionManager
-from managers.movement_manager import MovementManager
 
 class ElevationManager:
     """Gère la logique d'élévation et les rituels."""
 
-    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager, movement_manager: MovementManager, logger: logging.Logger):
+    def __init__(self, protocol: ZappyProtocol, vision_manager: VisionManager, inventory_manager: InventoryManager, logger: logging.Logger):
         """Initialise le gestionnaire d'élévation.
         
         Args:
             protocol (ZappyProtocol): Protocole de communication
             vision_manager (VisionManager): Gestionnaire de vision
-            movement_manager (MovementManager): Gestionnaire de déplacement
-            logger (Logger): Logger pour les messages
+            logger (logging.Logger): Logger
         """
         self.protocol = protocol
         self.vision_manager = vision_manager
-        self.movement_manager = movement_manager
+        self.inventory_manager = inventory_manager
         self.logger = logger
         self.last_elevation_time = 0
         self.elevation_cooldown = 300
         self.ELEVATION_REQUIREMENTS = {
-            1: {'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
-            2: {'linemate': 1, 'deraumere': 1, 'sibur': 1, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
-            3: {'linemate': 2, 'deraumere': 0, 'sibur': 1, 'mendiane': 0, 'phiras': 2, 'thystame': 0},
-            4: {'linemate': 1, 'deraumere': 1, 'sibur': 2, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
-            5: {'linemate': 1, 'deraumere': 2, 'sibur': 1, 'mendiane': 3, 'phiras': 0, 'thystame': 0},
-            6: {'linemate': 1, 'deraumere': 2, 'sibur': 3, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
-            7: {'linemate': 2, 'deraumere': 2, 'sibur': 2, 'mendiane': 2, 'phiras': 2, 'thystame': 1}
+            1: {'players': 1, 'linemate': 1, 'deraumere': 0, 'sibur': 0, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
+            2: {'players': 2, 'linemate': 1, 'deraumere': 1, 'sibur': 1, 'mendiane': 0, 'phiras': 0, 'thystame': 0},
+            3: {'players': 2, 'linemate': 2, 'deraumere': 0, 'sibur': 1, 'mendiane': 0, 'phiras': 2, 'thystame': 0},
+            4: {'players': 4, 'linemate': 1, 'deraumere': 1, 'sibur': 2, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
+            5: {'players': 4, 'linemate': 1, 'deraumere': 2, 'sibur': 1, 'mendiane': 3, 'phiras': 0, 'thystame': 0},
+            6: {'players': 6, 'linemate': 1, 'deraumere': 2, 'sibur': 3, 'mendiane': 0, 'phiras': 1, 'thystame': 0},
+            7: {'players': 6, 'linemate': 2, 'deraumere': 2, 'sibur': 2, 'mendiane': 2, 'phiras': 2, 'thystame': 1}
         }
+        self.ritual_in_progress = False
+        
+        # Dans la classe ElevationManager
 
     def can_elevate(self) -> bool:
-        """Vérifie si le joueur peut s'élever.
-        
-        Returns:
-            bool: True si le joueur peut s'élever
+        """
+        Vérifie si les conditions sont réunies POUR COMMENCER le processus d'élévation.
+        Cela signifie : avoir les ressources dans l'inventaire et le bon nombre de joueurs sur la case.
         """
         try:
-            if time.time() - self.last_elevation_time < self.elevation_cooldown:
-                return False
-                
             current_level = self.vision_manager.player.level
             if current_level >= 8:
                 return False
                 
-            next_level = current_level + 1
-            if next_level not in self.ELEVATION_REQUIREMENTS:
+            requirements = self.ELEVATION_REQUIREMENTS.get(current_level)
+            if not requirements:
+                self.logger.error(f"Aucun prérequis défini pour le niveau {current_level}")
                 return False
                 
-            requirements = self.ELEVATION_REQUIREMENTS[next_level]
-            
+            # === VÉRIFICATION 1 : AI-JE LES RESSOURCES DANS MON INVENTAIRE ? ===
             for resource, count in requirements.items():
                 if resource == 'players':
                     continue
-                if self.vision_manager.player.inventory.inventory[resource] < count:
-                    self.logger.debug(f"Pas assez de {resource} dans l'inventaire pour l'élévation")
+                # La ligne ci-dessous est la seule vérification d'inventaire nécessaire
+                if self.inventory_manager.inventory.get(resource, 0) < count:
+                    self.logger.debug(f"Pas assez de {resource} dans l'inventaire pour l'élévation (j'ai {self.inventory_manager.inventory.get(resource, 0)}, besoin de {count})")
                     return False
             
+            # === VÉRIFICATION 2 : Y A-T-IL ASSEZ DE JOUEURS SUR LA CASE ? ===
             current_tile = self.vision_manager.get_case_content(0, 0)
             if not current_tile:
                 return False
                 
-            for resource, count in requirements.items():
-                if resource == 'players':
-                    continue
-                if current_tile.count(resource) < count:
-                    self.logger.debug(f"Pas assez de {resource} sur la case pour l'élévation")
-                    return False
-                    
-            required_players = self._get_required_players(next_level)
+            required_players = requirements.get('players', 1)
             player_count = current_tile.count('player')
+            
+            # On vérifie aussi que tous les joueurs sont du même niveau
+            # (Cette partie est plus avancée, mais cruciale pour les niveaux > 1)
+            # Pour l'instant, laissons-la simple.
+            
             if player_count < required_players:
                 self.logger.debug(f"Pas assez de joueurs sur la case ({player_count}/{required_players})")
                 return False
                 
-            self.logger.debug(f"Conditions d'élévation remplies pour le niveau {next_level}")
+            self.logger.info(f"✅ Toutes les conditions sont remplies pour INITIET le rituel du niveau {current_level}.")
             return True
-            
+                
         except Exception as e:
-            self.logger.error(f"Erreur lors de la vérification de l'élévation: {str(e)}")
+            self.logger.error(f"Erreur dans can_elevate: {str(e)}", exc_info=True)
             return False
 
     def start_elevation(self) -> bool:
@@ -169,19 +167,18 @@ class ElevationManager:
         return requirements.get(level, 0)
 
     def get_needed_resources(self) -> List[str]:
-        """Récupère la liste des ressources nécessaires pour l'élévation.
-        
-        Returns:
-            List[str]: Liste des ressources nécessaires
-        """
+        """Récupère la liste des ressources nécessaires pour l'élévation."""
         try:
-            level = self.vision_manager.player.level
-            if level not in self.ELEVATION_REQUIREMENTS:
+            current_level = self.vision_manager.player.level
+            
+            # UTILISER current_level, PAS next_level !
+            if current_level not in self.ELEVATION_REQUIREMENTS:
                 return []
                 
             needed = []
-            for resource, count in self.ELEVATION_REQUIREMENTS[level].items():
-                if count > 0:
+            requirements = self.ELEVATION_REQUIREMENTS[current_level]
+            for resource, count in requirements.items():
+                if resource != 'players' and self.vision_manager.player.inventory.inventory.get(resource, 0) < count:
                     needed.append(resource)
             return needed
         except Exception as e:
@@ -194,7 +191,7 @@ class ElevationManager:
         Returns:
             bool: True si les conditions sont remplies
         """
-        if self.vision_manager.player.level >= 8:
+        if self.vision_manager.player.level >= 7:
             return False
 
         requirements = self.ELEVATION_REQUIREMENTS[self.vision_manager.player.level]

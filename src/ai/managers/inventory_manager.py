@@ -71,6 +71,19 @@ class InventoryManager:
             self.logger.error(f"Erreur lors de la mise à jour de l'inventaire: {str(e)}")
             return False
 
+    def force_update_inventory(self) -> bool:
+        """Force la mise à jour de l'inventaire en ignorant les cooldowns.
+        
+        Returns:
+            bool: True si la mise à jour a réussi
+        """
+        try:
+            self.logger.debug("🔄 Mise à jour forcée de l'inventaire")
+            return self.update_inventory()
+        except Exception as e:
+            self.logger.error(f"Erreur lors de la mise à jour forcée de l'inventaire: {str(e)}")
+            return False
+
     def take_object(self, object_type: str) -> bool:
         """Prend un objet.
         
