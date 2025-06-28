@@ -116,7 +116,7 @@ class ElevationManager:
                 
             self.logger.info(f"✅ Incantation lancée: {response}")
             
-            if response == "elevation underway":
+            if response == "Elevation underway":
                 self.logger.info("⏳ Rituel en cours... (300 secondes)")
                 time.sleep(300 / 1000)
                 
