@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "../lib/MusicManager.hpp"
 
 class GameWorld;
 class RenderingEngine;
@@ -18,6 +19,7 @@ private:
     std::unique_ptr<PlayerInfoPanel> m_playerInfoPanel;
     std::unique_ptr<InputHandler> m_inputHandler;
     std::unique_ptr<AnimationSystem> m_animationSystem;
+    std::unique_ptr<MusicManager> m_musicManager;
     
     sf::Event m_event;
     sf::Clock m_clock;

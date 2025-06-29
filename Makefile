@@ -79,7 +79,7 @@ $(NAME_SERVER): $(SERVER_OBJS)
 	@echo "$(GREEN)[OK] Server built.$(NC)"
 
 $(NAME_GUI): $(GUI_OBJS)
-	$(SILENT)$(CXX) $(CXXFLAGS) $^ -o $@ $(SFML_LIBS)
+	$(SILENT)$(CXX) $(CXXFLAGS) $^ -o $@ $(SFML_LIBS) -lsfml-audio
 	@echo "$(GREEN)[OK] GUI built.$(NC)"
 
 $(OBJ_DIR):

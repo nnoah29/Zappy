@@ -5,11 +5,14 @@
 #include "../lib/AnimationSystem.hpp"
 #include "../lib/Ressource_manager.hpp"
 #include "../lib/PlayerInfoPanel.hpp"
+#include "../lib/MusicManager.hpp"
+#include <fstream>
+#include <filesystem>
 #include <iostream>
 #include <random>
 
 Core::Core() : m_running(false), m_gameWorld(nullptr), m_renderingEngine(nullptr), 
-               m_inputHandler(nullptr), m_animationSystem(nullptr)
+               m_inputHandler(nullptr), m_animationSystem(nullptr), m_musicManager(std::make_unique<MusicManager>())
 {
 }
 
@@ -40,7 +43,21 @@ bool Core::initialize(std::shared_ptr<GameWorld> gameWorld)
         m_inputHandler = std::make_unique<InputHandler>(*m_window, *m_renderingEngine);
         m_clock.restart();        
         m_running = true;
-        std::cout << "Core initialized successfully" << std::endl;
+        std::string musicPath = "src/GUI/assets/music/game_music.ogg";
+        std::cout << "Tentative de chargement de la musique : " << musicPath << std::endl;
+        std::ifstream file(musicPath);
+        if (!file.good()) {
+            std::cerr << "ERREUR: Fichier musical introuvable : " << musicPath << std::endl;
+            std::cerr << "Répertoire de travail actuel : " << std::filesystem::current_path() << std::endl;
+        } else {
+            std::cout << "Fichier musical trouvé" << std::endl;
+        }
+        file.close();
+        if (!m_musicManager->playMusic(musicPath, 50.f)) {
+            std::cerr << "ERREUR: Impossible de jouer la musique : " << musicPath << std::endl;
+        } else {
+            std::cout << "Musique lancée avec succès" << std::endl;
+        }
         return true;
     }
     catch (const std::exception &e) {
@@ -52,7 +69,7 @@ bool Core::initialize(std::shared_ptr<GameWorld> gameWorld)
 void Core::run()
 {
     if (!m_running) {
-        std::cerr << "Core not initialized or network disconnected!" << std::endl;
+         std::cerr << "Core not initialized or network disconnected!" << std::endl;
         return;
     }
     
@@ -77,6 +94,7 @@ void Core::run()
 
 void Core::shutdown()
 {
+    if (m_musicManager) m_musicManager->stopMusic();
     m_inputHandler.reset();
     m_renderingEngine.reset();
     m_animationSystem.reset();

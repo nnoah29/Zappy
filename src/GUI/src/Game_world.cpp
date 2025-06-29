@@ -118,40 +118,16 @@ bool GameWorld::isValidPosition(int x, int y) const
     return x >= 0 && x < m_width && y >= 0 && y < m_height;
 }
 
-void GameWorld::updateResource(int x, int y, int resourceType, int amount)
+void GameWorld::updateResource(int x, int y, int resourceType, int amount, int playerId)
 {
     if (!isValidPosition(x, y))
         return;
-    
     Tile& tile = m_map[y][x];
-    
-    if (m_animationSystem && m_renderingEngine && amount < 0) {
-        if (!tile.playerIds.empty()) {
-            Player* player = findPlayer(tile.playerIds[0]);
-            if (player) {
-                sf::Vector2f playerPos = m_renderingEngine->tileToScreen(player->x, player->y);
-                playerPos.x += 32;
-                playerPos.y += 32;
-                sf::Color animColor = sf::Color::Yellow;
-                switch (resourceType) {
-                    case 0: animColor = sf::Color::Yellow; break;
-                    case 1: animColor = sf::Color::Blue; break;
-                    case 2: animColor = sf::Color::Cyan; break;
-                    case 3: animColor = sf::Color::Magenta; break;
-                    case 4: animColor = sf::Color::Green; break;
-                    case 5: animColor = sf::Color::Red; break;
-                    case 6: animColor = sf::Color::White; break;
-                }
-                m_animationSystem->addEffect(AnimationType::RESOURCE_PICKUP, 
-                                           playerPos.x, playerPos.y, 1.5f, animColor);
-                std::cout << "Animation de collecte de ressource créée sur le joueur " 
-                          << player->id << " pour le type " << resourceType << std::endl;
-            }
-        } else {
-            sf::Vector2f pos = m_renderingEngine->tileToScreen(x, y);
-            pos.x += 32;
-            pos.y += 32;
-            m_animationSystem->addEffect(AnimationType::RESOURCE_PICKUP, pos.x, pos.y, 1.0f, sf::Color::Yellow);
+    if (resourceType == 0 && amount < 0 && playerId != -1) {
+        Player* player = findPlayer(playerId);
+        if (player) {
+            player->scale += 0.05f;
+            if (player->scale > 1.5f) player->scale = 1.5f;
         }
     }
     switch (resourceType) {

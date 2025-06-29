@@ -8,7 +8,6 @@
 #include "RenderingEngine.hpp"
 #include <memory>
 
-// Forward declaration pour éviter les problèmes de dépendance croisée
 class RenderingEngine;
 
 struct Resource {
@@ -28,7 +27,8 @@ struct Player {
     int id, x, y, orientation, level;
     std::string team;
     PlayerInventory inventory;
-    Player() : id(-1), x(0), y(0), orientation(1), level(1) {}
+    float scale;
+    Player() : id(-1), x(0), y(0), orientation(1), level(1), scale(1.0f) {}
 };
 
 struct Egg {
@@ -49,7 +49,7 @@ private:
     std::vector<std::vector<Tile>> m_map;
     std::vector<Player> m_players;
     std::vector<Egg> m_eggs;
-    std::shared_ptr<Network> m_network; // Ajout du membre réseau
+    std::shared_ptr<Network> m_network;
     AnimationSystem* m_animationSystem = nullptr;
     RenderingEngine* m_renderingEngine = nullptr;
 
@@ -64,7 +64,7 @@ public:
     void removeEgg(int eggId);
     Player *findPlayer(int playerId);
     bool isValidPosition(int x, int y) const;
-    void updateResource(int, int, int, int);
+    void updateResource(int x, int y, int resourceType, int amount, int playerId = -1);
     void updatePlayerLevel(int, int);
     int getWidth() const { return m_width; }
     int getHeight() const { return m_height; }
