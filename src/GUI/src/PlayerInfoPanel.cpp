@@ -17,6 +17,8 @@ PlayerInfoPanel::PlayerInfoPanel(sf::RenderWindow &window, GameWorld &gameWorld)
     m_background.setFillColor(sf::Color(30, 30, 60, 220));
     m_background.setOutlineColor(sf::Color(255, 215, 0));
     m_background.setOutlineThickness(4.0f);
+    if (!initialize())
+        throw std::runtime_error("Failed to initialize PlayerInfoPanel");
 }
 
 bool PlayerInfoPanel::initialize()

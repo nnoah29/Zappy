@@ -72,8 +72,8 @@ int main(int argc, char **argv)
 {
     if (!parseArguments(argc, argv))
         return 84;
-    Gui_client guiClient(port, machine);
     try {
+        Gui_client guiClient(port, machine);
         guiClient.run();
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

@@ -52,7 +52,7 @@ bool Core::initialize(std::shared_ptr<GameWorld> gameWorld)
 void Core::run()
 {
     if (!m_running) {
-        std::cerr << "Core not initialized!" << std::endl;
+        std::cerr << "Core not initialized or network disconnected!" << std::endl;
         return;
     }
     

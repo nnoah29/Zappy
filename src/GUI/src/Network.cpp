@@ -38,17 +38,18 @@ void Network::connect(std::string ip, int port)
 
     if (::connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
         close(clientSocket);
-        throw Error("Connection failed");
+        throw Error("Connection failed to " + ip + ":" + std::to_string(port) + 
+                   " - " + strerror(errno));
     }
     connected = true;
 }
 
 void Network::disconnect()
 {
-    if (!connected)
-        throw Error("Not connected");
-    close(clientSocket);
-    connected = false;
+     if (connected) {
+        close(clientSocket);
+        connected = false;
+    }
 }
 
 void Network::send(const std::string &message)
