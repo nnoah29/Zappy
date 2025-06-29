@@ -25,7 +25,8 @@
 class Gui_client {
     public:
         Gui_client(int port, const std::string &machine);
-        ~Gui_client() = default;
+        ~Gui_client();
+        void disconnect();
         void run();
     private:
     int _port;

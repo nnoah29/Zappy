@@ -365,6 +365,19 @@ void Gui_client::receiveMessage()
     }
 }
 
+Gui_client::~Gui_client() {
+    disconnect();
+}
+
+void Gui_client::disconnect() {
+    if (_network) {
+        _network->disconnect();
+    }
+    if (_receiveThread.joinable()) {
+        _receiveThread.join();
+    }
+}
+
 void Gui_client::run() 
 {
     try {
@@ -381,6 +394,8 @@ void Gui_client::run()
         }
         _receiveThread = std::thread(&Gui_client::receiveMessage, this);
         _core.run();
+        if (_receiveThread.joinable())
+            _receiveThread.join();
     } catch (const std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
         if (_receiveThread.joinable())
