@@ -109,11 +109,21 @@ def main() -> int:
             logger.error(f"Échec de la connexion au serveur: {e}")
             return 84
 
+        logger.info("🚀 IA démarrée et connectée au serveur")
+        
         while True:
             try:
+                if not client.is_connected():
+                    logger.error("🔌 Connexion au serveur perdue, arrêt de l'IA")
+                    break
+                
                 async_message = client.check_for_messages()
                 if async_message:
                     logger.info(f"📨 Message asynchrone reçu: {async_message}")
+                    
+                    if async_message == "dead":
+                        logger.critical("💀💀💀 LE SERVEUR A ANNONCÉ NOTRE MORT ! ARRÊT IMMÉDIAT ! 💀💀💀")
+                        break
                     
                     if async_message.startswith("Current level:"):
                         new_level = int(async_message.split(": ")[1])
@@ -157,7 +167,7 @@ def main() -> int:
                     continue
                 
                 if not client.run():
-                    logger.info("Arrêt de l'IA.")
+                    logger.info("Arrêt de l'IA demandé par l'IA elle-même.")
                     break
                 
                 if hasattr(client.ai, 'state') and client.ai.state == "EMERGENCY_FOOD_SEARCH":
@@ -165,16 +175,30 @@ def main() -> int:
                 else:
                     time.sleep(0.2)
                     
+            except ConnectionError as e:
+                logger.error(f"🔌 Erreur de connexion: {e}")
+                if "dead" in str(e).lower():
+                    logger.critical("💀💀💀 Le serveur a annoncé notre mort ! 💀💀💀")
+                else:
+                    logger.error("🔌 Le serveur s'est probablement arrêté, arrêt de l'IA")
+                break
             except Exception as e:
                 logger.error(f"Erreur dans la boucle principale: {e}")
-                break
+                if "Connection" in str(e) or "socket" in str(e).lower() or "Broken pipe" in str(e):
+                    logger.error("🔌 Erreur de connexion détectée, arrêt de l'IA")
+                    break
+                else:
+                    logger.error(f"Erreur non critique, continuation...")
+                    time.sleep(1)
                 
     except Exception as e:
         logger.error(f"Erreur fatale: {e}")
         return 84
     finally:
         if 'client' in locals():
+            logger.info("🔌 Fermeture de la connexion au serveur")
             client.close()
+        logger.info("👋 Arrêt de l'IA")
     return 0
 
 if __name__ == "__main__":

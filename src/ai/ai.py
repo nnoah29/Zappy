@@ -74,6 +74,17 @@ class AI:
             
             self.last_update = current_time
             
+            if not self.protocol.client.is_connected():
+                self.logger.error("🔌 Connexion au serveur perdue, arrêt de l'IA")
+                return False
+            
+            if self.elevation_in_progress:
+                elevation_timeout = 60
+                if current_time - self.elevation_start_time > elevation_timeout:
+                    self.logger.warning(f"⏰ Timeout de l'élévation ({elevation_timeout}s), reprise des opérations normales")
+                    self.elevation_in_progress = False
+                    self.state = "NORMAL_OPERATIONS"
+            
             if not self.vision_manager.update_vision():
                 self.logger.warning("Échec de la mise à jour de la vision")
                 return True
@@ -83,13 +94,16 @@ class AI:
                 return True
             
             if self.inventory_manager.inventory['food'] <= 0:
-                self.logger.error("Le joueur est mort de faim")
-                return False
+                self.logger.critical("🚨🚨 NOURRITURE CRITIQUE (0) - Le serveur va probablement nous tuer ! 🚨🚨")
+                self.state = "EMERGENCY_FOOD_SEARCH"
             
             self._update_state()
             
             return self._execute_action()
             
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion dans l'IA: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de l'IA: {str(e)}")
             return True
@@ -177,8 +191,17 @@ class AI:
             self._collect_available_resources()
 
             if self.state == "ELEVATING":
-                self.logger.info("🚀 LANCEMENT DE L'ÉLÉVATION !")
-                return self._handle_elevation()
+                if self.elevation_in_progress:
+                    self.logger.debug("⏳ Élévation en cours, attente du résultat...")
+                    return True
+                else:
+                    self.logger.info("🚀 LANCEMENT DE L'ÉLÉVATION !")
+                    success = self._handle_elevation()
+                    if not success:
+                        self.logger.warning("❌ Échec de l'élévation, retour aux opérations normales")
+                        self.state = "NORMAL_OPERATIONS"
+                        self.elevation_in_progress = False
+                    return True
 
             if food_level < self.FOOD_SAFE_LEVEL:
                 self.handle_survival()
@@ -188,7 +211,16 @@ class AI:
             self._update_state_when_safe()
 
             if self.state == "ELEVATING":
-                self._handle_elevation()
+                if self.elevation_in_progress:
+                    self.logger.debug("⏳ Élévation en cours, attente du résultat...")
+                    return True
+                else:
+                    success = self._handle_elevation()
+                    if not success:
+                        self.logger.warning("❌ Échec de l'élévation, retour aux opérations normales")
+                        self.state = "NORMAL_OPERATIONS"
+                        self.elevation_in_progress = False
+                    return True
             
             elif self.state == "GATHERING_RESOURCES":
                 self._handle_gathering_resources()
@@ -267,19 +299,16 @@ class AI:
             
             if self.elevation_manager.can_elevate():
                 self.logger.info(f"✨ Conditions parfaites ! Lancement de l'incantation pour le niveau {next_level} !")
-                response = self.protocol.incantation()
+                success = self.protocol.incantation()
                 
-                if response == "Elevation underway":
+                if success:
                     self.logger.info("🌟 Élévation en cours ! Attente du résultat...")
                     self.elevation_in_progress = True
                     self.elevation_start_time = time.time()
                     self.state = "ELEVATING"
                     return True
-                elif response == "ko":
-                    self.logger.error("❌ Échec de l'incantation")
-                    return False
                 else:
-                    self.logger.warning(f"⚠️ Réponse inattendue lors de l'incantation: {response}")
+                    self.logger.error("❌ Échec de l'incantation")
                     return False
             else:
                 current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []

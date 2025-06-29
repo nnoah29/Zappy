@@ -14,6 +14,15 @@ class ZappyProtocol:
         self.last_response: Optional[str] = None
         self.last_error: Optional[str] = None
 
+    def _check_connection(self):
+        """Vérifie si la connexion au serveur est toujours active.
+        
+        Raises:
+            ConnectionError: Si la connexion est perdue
+        """
+        if not self.client.is_connected():
+            raise ConnectionError("Connexion au serveur perdue")
+
     def _handle_response(self, response: str) -> bool:
         """Gère la réponse du serveur.
         
@@ -41,9 +50,12 @@ class ZappyProtocol:
             bool: True si le mouvement a réussi, False sinon
         """
         try:
+            self._check_connection()
             self.client._send("Forward\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors du déplacement: {e}"
             raise
@@ -55,9 +67,12 @@ class ZappyProtocol:
             bool: True si la rotation a réussi, False sinon
         """
         try:
+            self._check_connection()
             self.client._send("Right\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de la rotation: {e}"
             raise
@@ -69,9 +84,12 @@ class ZappyProtocol:
             bool: True si la rotation a réussi, False sinon
         """
         try:
+            self._check_connection()
             self.client._send("Left\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de la rotation: {e}"
             raise
@@ -83,10 +101,13 @@ class ZappyProtocol:
             str: Réponse brute du serveur
         """
         try:
+            self._check_connection()
             self.client._send("Look\n")
             response = self.client._receive().strip()
             self.last_response = response
             return response
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de la vision: {e}"
             raise
@@ -98,10 +119,13 @@ class ZappyProtocol:
             str: Réponse brute du serveur
         """
         try:
+            self._check_connection()
             self.client._send("Inventory\n")
             response = self.client._receive().strip()
             self.last_response = response
             return response
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de la consultation de l'inventaire: {e}"
             raise
@@ -116,9 +140,12 @@ class ZappyProtocol:
             bool: True si le message a été envoyé, False sinon
         """
         try:
+            self._check_connection()
             self.client._send(f"Broadcast {message}\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de l'envoi du message: {e}"
             raise
@@ -130,10 +157,13 @@ class ZappyProtocol:
             int: Nombre de places disponibles
         """
         try:
+            self._check_connection()
             self.client._send("Connect_nbr\n")
             response = self.client._receive().strip()
             self.last_response = response
             return int(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de la demande de places: {e}"
             raise
@@ -145,9 +175,12 @@ class ZappyProtocol:
             bool: True si l'action a réussi, False sinon
         """
         try:
+            self._check_connection()
             self.client._send("Fork\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de la ponte: {e}"
             raise
@@ -159,9 +192,12 @@ class ZappyProtocol:
             bool: True si l'action a réussi, False sinon
         """
         try:
+            self._check_connection()
             self.client._send("Eject\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de l'expulsion: {e}"
             raise
@@ -176,9 +212,12 @@ class ZappyProtocol:
             bool: True si l'action a réussi, False sinon
         """
         try:
+            self._check_connection()
             self.client._send(f"Take {object_name}\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors de la prise d'objet: {e}"
             raise
@@ -193,26 +232,36 @@ class ZappyProtocol:
             bool: True si l'action a réussi, False sinon
         """
         try:
+            self._check_connection()
             self.client._send(f"Set {object_name}\n")
             response = self.client._receive().strip()
             return self._handle_response(response)
+        except ConnectionError:
+            raise
         except Exception as e:
             self.last_error = f"Erreur lors du dépôt d'objet: {e}"
             raise
 
-    def incantation(self) -> str:
+    def incantation(self) -> bool:
         """Commence un rituel d'élévation.
         
         Returns:
-            str: Réponse du serveur ("elevation underway", "ko", etc.)
+            bool: True si le rituel a commencé, False sinon
         """
         try:
+            self._check_connection()
             self.client._send("Incantation\n")
             response = self.client._receive().strip()
-            self.last_response = response
-            return response
+            if response == "Elevation underway":
+                self.last_response = response
+                return True
+            else:
+                self.last_error = f"Réponse inattendue pour l'incantation: {response}"
+                return False
+        except ConnectionError:
+            raise
         except Exception as e:
-            self.last_error = f"Erreur lors de l'élévation: {e}"
+            self.last_error = f"Erreur lors de l'incantation: {e}"
             raise
 
     def parse_look_response(self, response: str) -> list:

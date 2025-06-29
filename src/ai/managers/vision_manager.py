@@ -48,6 +48,9 @@ class VisionManager:
             
             self.logger.debug(f"Vision mise à jour: {self.vision}")
             return True
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion lors de la mise à jour de la vision: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de la vision: {str(e)}")
             return False
@@ -69,6 +72,9 @@ class VisionManager:
             
             self.logger.debug(f"Vision forcée mise à jour: {self.vision}")
             return True
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion lors de la mise à jour forcée de la vision: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour forcée de la vision: {str(e)}")
             return False

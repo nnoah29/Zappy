@@ -39,6 +39,7 @@ class ZappyClient:
         self.map_size = None
         self.client_num = None
         self.ai = None
+        self.server_disconnected = False
 
     def connect(self):
         """Établit la connexion avec le serveur et effectue le protocole d'authentification."""
@@ -95,6 +96,27 @@ class ZappyClient:
                 self.socket = None
             raise
 
+    def is_connected(self) -> bool:
+        """Vérifie si la connexion au serveur est toujours active.
+        
+        Returns:
+            bool: True si la connexion est active, False sinon
+        """
+        if self.server_disconnected:
+            return False
+            
+        if not self.socket:
+            return False
+            
+        try:
+            # Test de la connexion en envoyant un ping (0 octet)
+            self.socket.send(b'')
+            return True
+        except (socket.error, OSError, ConnectionError):
+            self.logger.warning("🔌 Connexion au serveur perdue")
+            self.server_disconnected = True
+            return False
+
     def _get_timeout(self, command: str) -> float:
         """Récupère le timeout pour une commande donnée.
         
@@ -116,9 +138,13 @@ class ZappyClient:
         Raises:
             socket.error: Si l'envoi échoue
             TimeoutError: Si le timeout est dépassé
+            ConnectionError: Si la connexion est perdue
         """
         if not self.socket:
             raise ConnectionError("Non connecté au serveur")
+            
+        if self.server_disconnected:
+            raise ConnectionError("Connexion au serveur perdue")
             
         try:
             timeout = self._get_timeout(message)
@@ -131,10 +157,11 @@ class ZappyClient:
             error_msg = f"Timeout d'envoi après {timeout}s pour: {message.strip()}"
             self.logger.error(error_msg)
             raise TimeoutError(error_msg)
-        except socket.error as e:
+        except (socket.error, OSError, ConnectionError) as e:
             error_msg = f"Erreur d'envoi: {str(e)}"
             self.logger.error(error_msg)
-            raise socket.error(error_msg)
+            self.server_disconnected = True
+            raise ConnectionError(error_msg)
         finally:
             self.socket.settimeout(None)
 
@@ -142,22 +169,35 @@ class ZappyClient:
         """Reçoit une réponse du serveur."""
         if not self.socket:
             raise Exception("Socket non connecté")
+            
+        if self.server_disconnected:
+            raise ConnectionError("Connexion au serveur perdue")
         
         try:
             self.logger.debug("En attente de données du serveur...")
             data = self.socket.recv(4096)
             if not data:
-                raise Exception("Connexion fermée par le serveur")
+                self.logger.warning("🔌 Serveur a fermé la connexion")
+                self.server_disconnected = True
+                raise ConnectionError("Connexion fermée par le serveur")
             
             response = data.decode('utf-8').strip()
             self.logger.debug(f"Données reçues: {response}")
+            
+            # Vérifier si c'est le message "dead"
+            if response == "dead":
+                self.logger.critical("💀 Message 'dead' reçu du serveur - le joueur est mort !")
+                self.server_disconnected = True
+                raise ConnectionError("Joueur mort - connexion fermée par le serveur")
+            
             return response
         except socket.timeout:
             self.logger.error("Timeout lors de la réception des données")
             raise
-        except socket.error as e:
+        except (socket.error, OSError, ConnectionError) as e:
             self.logger.error(f"Erreur lors de la réception: {e}")
-            raise socket.error("Erreur de réception")
+            self.server_disconnected = True
+            raise ConnectionError("Erreur de réception")
         except Exception as e:
             self.logger.error(f"Erreur lors de la réception: {e}")
             raise
@@ -169,7 +209,15 @@ class ZappyClient:
             bool: True si l'IA continue de fonctionner, False si elle doit s'arrêter
         """
         try:
+            # Vérifier la connexion avant d'exécuter l'IA
+            if not self.is_connected():
+                self.logger.error("🔌 Connexion au serveur perdue, arrêt de l'IA")
+                return False
+                
             return self.ai.update()
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion dans l'exécution de l'IA: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Erreur dans l'exécution de l'IA: {e}")
             return False
@@ -179,6 +227,7 @@ class ZappyClient:
         if self.socket:
             self.socket.close()
             self.socket = None
+        self.server_disconnected = True
 
     def check_for_messages(self) -> Optional[str]:
         """Vérifie s'il y a des messages en attente du serveur.
@@ -186,7 +235,7 @@ class ZappyClient:
         Returns:
             str: Message reçu, ou None s'il n'y en a pas
         """
-        if not self.socket:
+        if not self.socket or self.server_disconnected:
             return None
             
         try:
@@ -195,9 +244,18 @@ class ZappyClient:
             if data:
                 message = data.decode('utf-8').strip()
                 self.logger.debug(f"Message reçu: {message}")
+                
+                # Vérifier si c'est le message "dead"
+                if message == "dead":
+                    self.logger.critical("💀 Message 'dead' reçu du serveur - le joueur est mort !")
+                    self.server_disconnected = True
+                
                 return message
         except socket.timeout:
             pass
+        except (socket.error, OSError, ConnectionError) as e:
+            self.logger.error(f"Erreur lors de la vérification des messages: {e}")
+            self.server_disconnected = True
         except Exception as e:
             self.logger.error(f"Erreur lors de la vérification des messages: {e}")
         finally:

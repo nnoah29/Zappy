@@ -67,6 +67,9 @@ class InventoryManager:
                 
             self.logger.debug(f"Inventaire mis à jour: {self.inventory}")
             return True
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion lors de la mise à jour de l'inventaire: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour de l'inventaire: {str(e)}")
             return False
@@ -80,6 +83,9 @@ class InventoryManager:
         try:
             self.logger.debug("🔄 Mise à jour forcée de l'inventaire")
             return self.update_inventory()
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion lors de la mise à jour forcée de l'inventaire: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la mise à jour forcée de l'inventaire: {str(e)}")
             return False
@@ -103,6 +109,9 @@ class InventoryManager:
                 return True
             self.logger.debug(f"❌ Impossible de prendre {object_type}: échec de la commande")
             return False
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion lors de la prise d'objet: {e}")
+            return False
         except Exception as e:
             self.logger.error(f"Erreur lors de la prise d'objet: {str(e)}")
             return False
@@ -121,6 +130,9 @@ class InventoryManager:
             if success:
                 self.inventory[object_type] -= 1
                 return True
+            return False
+        except ConnectionError as e:
+            self.logger.error(f"🔌 Erreur de connexion lors du dépôt d'objet: {e}")
             return False
         except Exception as e:
             self.logger.error(f"Erreur lors du dépôt d'objet: {str(e)}")
