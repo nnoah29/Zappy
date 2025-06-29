@@ -184,13 +184,6 @@ class AI:
                 self.handle_survival()
                 return True
 
-            needed_for_next_level = self.elevation_manager.get_needed_resources()
-            if not needed_for_next_level and self.reproduction_manager.can_fork():
-                self.logger.info("✅ Objectifs atteints, conditions optimales pour la reproduction - FORK.")
-                if self.reproduction_manager.reproduce():
-                    self.communicator.send_team_message("EGG_LAID", f"{self.player.x},{self.player.y}")
-                return True
-
             self.logger.info(f"✅ Nourriture sécurisée ({food_level}). Reprise des opérations.")
             self._update_state_when_safe()
 
