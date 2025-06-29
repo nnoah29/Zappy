@@ -60,6 +60,14 @@ config_server_t *parse_args(int argc, char **argv)
 {
     config_server_t *conf = malloc(sizeof(config_server_t));
 
+    conf->port = 8500;
+    conf->map_w = 25;
+    conf->map_h = 25;
+    conf->nbClients = 10;
+    conf->names[0] = strdup("team1");
+    conf->names[1] = strdup("team2");
+    conf->nb_teams = 2;
+    conf->freq = 1;
     LOG(LOG_INFO, "Analyse des arguments en cours...");
     recursive_parse(conf, argv, 1, argc);
     check_config(conf);

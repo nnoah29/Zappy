@@ -19,6 +19,13 @@ void parse_names(config_server_t *conf, char **argv, int *i)
 {
     int j = 0;
 
+    for (int k = 0; k < conf->nb_teams; k++) {
+        if (conf->names[k]) {
+            free(conf->names[k]);
+            conf->names[k] = NULL;
+        }
+    }
+    conf->nb_teams = 0;
     (*i)++;
     while (argv[*i] && argv[*i][0] != '-' && j < MAX_TEAMS) {
         conf->names[j] = strdup(argv[*i]);

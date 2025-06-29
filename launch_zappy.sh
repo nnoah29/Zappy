@@ -12,7 +12,7 @@
 # --- Configuration par défaut ---
 DEFAULT_PORT=8600
 DEFAULT_FREQ=7
-DEFAULT_WIDTH=50
+DEFAULT_WIDTH=25
 DEFAULT_HEIGHT=25
 HOST="127.0.0.1"
 TEAMS=("team1" "team2" "team3")
