@@ -29,6 +29,7 @@ public:
     void setVisible(bool visible) { m_visible = visible; }
     bool isVisible() const { return m_visible; }
     void render();
+    void requestPlayerInventory(int playerId);
 
 private:
     void renderPlayerInfo(const Player &player);

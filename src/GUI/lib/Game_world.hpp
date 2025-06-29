@@ -3,6 +3,13 @@
 
 #include <vector>
 #include <string>
+#include "Network.hpp"
+#include "AnimationSystem.hpp"
+#include "RenderingEngine.hpp"
+#include <memory>
+
+// Forward declaration pour éviter les problèmes de dépendance croisée
+class RenderingEngine;
 
 struct Resource {
     int food, linemate, deraumere, sibur, mendiane, phiras, thystame;
@@ -42,6 +49,9 @@ private:
     std::vector<std::vector<Tile>> m_map;
     std::vector<Player> m_players;
     std::vector<Egg> m_eggs;
+    std::shared_ptr<Network> m_network; // Ajout du membre réseau
+    AnimationSystem* m_animationSystem = nullptr;
+    RenderingEngine* m_renderingEngine = nullptr;
 
 public:
     bool initialize(int width, int height);
@@ -62,6 +72,11 @@ public:
     const std::vector<Egg> &getEggs() const { return m_eggs; }
     void addTeam(const std::string &teamName, Player *player = nullptr);
     void updatePlayerInventory(int playerId, const PlayerInventory& inventory);
+    void setNetwork(std::shared_ptr<Network> network) { m_network = network; }
+    void requestPlayerInventory(int playerId);
+    void initializePlayerInventory(int playerId);
+    void setAnimationSystem(AnimationSystem* anim) { m_animationSystem = anim; }
+    void setRenderingEngine(RenderingEngine* engine) { m_renderingEngine = engine; }
 };
 
 #endif

@@ -2,8 +2,13 @@
 #define RENDERINGENGINE_HPP
 
 #include <SFML/Graphics.hpp>
-#include "Game_world.hpp"
 #include "Ressource_manager.hpp"
+#include "Game_world.hpp"
+
+struct Tile;
+struct Player;
+struct Resource;
+class GameWorld;
 
 class RenderingEngine {
 private:
@@ -26,6 +31,7 @@ public:
     void moveCamera(float deltaX, float deltaY);
     sf::Vector2i screenToTile(const sf::Vector2i &screenPos) const;
     sf::Vector2f tileToScreen(int tileX, int tileY) const;
+    int getPlayerIdAtScreenPosition(const sf::Vector2i& screenPos) const;
 
 private:
     void renderTiles();

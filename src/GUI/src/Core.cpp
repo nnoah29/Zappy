@@ -31,11 +31,13 @@ bool Core::initialize(std::shared_ptr<GameWorld> gameWorld)
             std::cerr << "Failed to initialize ResourceManager" << std::endl;
             return false;
         }
+        m_animationSystem = std::make_unique<AnimationSystem>();
         m_gameWorld = gameWorld;
+        m_gameWorld->setAnimationSystem(m_animationSystem.get());
         m_renderingEngine = std::make_unique<RenderingEngine>(*m_window, *m_gameWorld);
+        m_gameWorld->setRenderingEngine(m_renderingEngine.get());
         m_playerInfoPanel = std::make_unique<PlayerInfoPanel>(*m_window, *m_gameWorld);
         m_inputHandler = std::make_unique<InputHandler>(*m_window, *m_renderingEngine);
-        m_animationSystem = std::make_unique<AnimationSystem>();
         m_clock.restart();        
         m_running = true;
         std::cout << "Core initialized successfully" << std::endl;
@@ -110,23 +112,27 @@ void Core::updateGameLogic(float deltaTime)
     if (animationTimer > 3.0f) {
         animationTimer = 0.0f;
         
-        if (m_animationSystem && m_gameWorld) {
-            int randX = rand() % m_gameWorld->getWidth();
-            int randY = rand() % m_gameWorld->getHeight();
+        if (m_animationSystem && m_gameWorld && m_renderingEngine) {
+            const auto& players = m_gameWorld->getPlayers();
             
-            sf::Vector2f worldPos = m_renderingEngine->tileToScreen(randX, randY);
-            worldPos.x += 32;
-            worldPos.y += 32;
-            
-            AnimationType types[] = {
-                AnimationType::INCANTATION,
-                AnimationType::RESOURCE_PICKUP,
-                AnimationType::EGG_HATCH,
-                AnimationType::PLAYER_EJECT
-            };
-            
-            // AnimationType randomType = types[rand() % 4];
-            // m_animationSystem->addEffect(randomType, worldPos.x, worldPos.y, 2.0f, sf::Color::Cyan);
+            if (!players.empty()) {
+                int randomPlayerIndex = rand() % players.size();
+                const Player& randomPlayer = players[randomPlayerIndex];
+                sf::Vector2f playerScreenPos = m_renderingEngine->tileToScreen(randomPlayer.x, randomPlayer.y);
+                playerScreenPos.x += 32;
+                playerScreenPos.y += 32;
+                AnimationType types[] = {
+                    AnimationType::INCANTATION,
+                    AnimationType::RESOURCE_PICKUP,
+                    AnimationType::EGG_HATCH,
+                    AnimationType::PLAYER_EJECT
+                };
+                AnimationType randomType = types[rand() % 4];
+                m_animationSystem->addEffect(randomType, playerScreenPos.x, playerScreenPos.y, 2.0f, sf::Color::Cyan);                
+                std::cout << "Animation " << static_cast<int>(randomType) 
+                          << " créée sur le joueur " << randomPlayer.id 
+                          << " à la position (" << randomPlayer.x << ", " << randomPlayer.y << ")" << std::endl;
+            }
         }
     }
 }
@@ -138,47 +144,55 @@ void Core::render()
     if (m_renderingEngine) {
         m_renderingEngine->render();
     }
-    
     if (m_animationSystem) {
         m_animationSystem->render(*m_window);
     }
     renderUI();
+    if (m_playerInfoPanel && m_playerInfoPanel->isVisible()) {
+        m_playerInfoPanel->render();
+    }
     m_window->display();
 }
 
 void Core::renderUI()
 {
-    m_window->setView(m_window->getDefaultView());
-    
+    m_window->setView(m_window->getDefaultView());    
     sf::Font font;
     sf::Text infoText;
-    
     sf::RectangleShape uiBackground(sf::Vector2f(300, 150));
     uiBackground.setPosition(10, 10);
     uiBackground.setFillColor(sf::Color(0, 0, 0, 128));
     uiBackground.setOutlineThickness(2);
     uiBackground.setOutlineColor(sf::Color::White);
     m_window->draw(uiBackground);
-    
-    if (m_inputHandler && m_inputHandler->hasTileSelected()) {
-        sf::Vector2i selectedTile = m_inputHandler->getSelectedTile();
-        
-        sf::RectangleShape selectionInfo(sf::Vector2f(250, 60));
-        selectionInfo.setPosition(10, 170);
-        selectionInfo.setFillColor(sf::Color(0, 0, 100, 128));
-        selectionInfo.setOutlineThickness(1);
-        selectionInfo.setOutlineColor(sf::Color::Cyan);
-        m_window->draw(selectionInfo);
-    }
 }
 
 void Core::pollEvents()
 {
     while (m_window->pollEvent(m_event)) {
+        std::cout << "[DEBUG][Core] pollEvents: event type=" << m_event.type << std::endl;
         handleWindowEvents();
-        
         if (m_inputHandler) {
             m_inputHandler->handleEvent(m_event);
+        }
+        if (m_event.type == sf::Event::MouseButtonPressed && 
+            m_event.mouseButton.button == sf::Mouse::Left) {
+            
+            sf::Vector2i mousePos = sf::Mouse::getPosition(*m_window);
+            std::cout << "[DEBUG][Core] Mouse click at " << mousePos.x << "," << mousePos.y << std::endl;
+            
+            if (m_renderingEngine && m_playerInfoPanel) {
+                int clickedPlayerId = m_renderingEngine->getPlayerIdAtScreenPosition(mousePos);
+                std::cout << "[DEBUG][Core] getPlayerIdAtScreenPosition returned: " << clickedPlayerId << std::endl;
+                
+                if (clickedPlayerId != -1) {
+                    std::cout << "[DEBUG][Core] Setting selected player to: " << clickedPlayerId << std::endl;
+                    m_playerInfoPanel->setSelectedPlayer(clickedPlayerId);
+                    m_gameWorld->initializePlayerInventory(clickedPlayerId);
+                } else {
+                    m_playerInfoPanel->setSelectedPlayer(-1);
+                }
+            }
         }
     }
 }

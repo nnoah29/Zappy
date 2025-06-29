@@ -166,17 +166,21 @@ void RenderingEngine::renderPlayerSprite(const Player& player)
 {
     sf::Vector2f position = tileToScreen(player.x, player.y);
     ResourceType playerType = getPlayerResourceType(player.orientation);
-    
+
     sf::Sprite playerSprite = m_resourceManager.createSprite(playerType, position.x, position.y);
-    
+
     sf::Color teamColor = sf::Color::White;
     if (player.team == "team1") teamColor = sf::Color::Red;
     else if (player.team == "team2") teamColor = sf::Color::Blue;
     else if (player.team == "team3") teamColor = sf::Color::Green;
     else if (player.team == "team4") teamColor = sf::Color::Yellow;
-
     playerSprite.setColor(teamColor);
-    playerSprite.setScale(0.25f, 0.25f);
+    if (playerType == ResourceType::PLAYER_WEST) {
+        playerSprite.setScale(0.25f * 255.f/408.f, 0.25f * 341.f/612.f);
+    } else {
+        playerSprite.setScale(0.25f, 0.25f);
+    }
+
     m_window.draw(playerSprite);
 }
 
@@ -293,11 +297,21 @@ void RenderingEngine::renderUI()
         "Phiras: " + std::to_string(totalPhiras),
         "Thystame: " + std::to_string(totalThystame)
     };
-    for (const auto& line : lines) {
+    std::vector<sf::Color> colors = {
+        sf::Color(255, 255, 255), // Titre
+        sf::Color(255, 220, 120), // Food
+        sf::Color(120, 180, 255), // Linemate
+        sf::Color(120, 255, 255), // Deraumere
+        sf::Color(255, 120, 255), // Sibur
+        sf::Color(255, 255, 120), // Mendiane
+        sf::Color(255, 180, 180), // Phiras
+        sf::Color(180, 255, 180)  // Thystame
+    };
+    for (size_t i = 0; i < lines.size(); ++i) {
         infoText.setFont(font);
-        infoText.setString(line);
+        infoText.setString(lines[i]);
         infoText.setCharacterSize(textSize);
-        infoText.setFillColor(sf::Color::White);
+        infoText.setFillColor(colors[i % colors.size()]);
         infoText.setPosition(textX, textY);
         m_window.draw(infoText);
         textY += 18.f;
@@ -313,4 +327,23 @@ ResourceType RenderingEngine::getPlayerResourceType(int orientation) const
         case 4: return ResourceType::PLAYER_WEST;
         default: return ResourceType::PLAYER_NORTH;
     }
+}
+
+int RenderingEngine::getPlayerIdAtScreenPosition(const sf::Vector2i& screenPos) const
+{
+    sf::Vector2f worldPos = m_window.mapPixelToCoords(screenPos, m_gameView);
+    std::cout << "[DEBUG][RenderingEngine] getPlayerIdAtScreenPosition: screenPos=(" << screenPos.x << "," << screenPos.y << ") worldPos=(" << worldPos.x << "," << worldPos.y << ")" << std::endl;
+    const float playerRadius = TILE_SIZE * 0.6f; // Rayon augmenté pour faciliter la sélection
+    for (const Player& player : m_gameWorld.getPlayers()) {
+        sf::Vector2f playerPos = tileToScreen(player.x, player.y);
+        float dx = worldPos.x - playerPos.x;
+        float dy = worldPos.y - playerPos.y;
+        std::cout << "[DEBUG][RenderingEngine] Checking player id=" << player.id << " at tile (" << player.x << "," << player.y << ") playerPos=(" << playerPos.x << "," << playerPos.y << ") dx=" << dx << " dy=" << dy << " playerRadius=" << playerRadius << std::endl;
+        if (std::abs(dx) < playerRadius && std::abs(dy) < playerRadius) {
+            std::cout << "[DEBUG][RenderingEngine] Player detected: id=" << player.id << std::endl;
+            return player.id;
+        }
+    }
+    std::cout << "[DEBUG][RenderingEngine] No player detected at this position." << std::endl;
+    return -1;
 }

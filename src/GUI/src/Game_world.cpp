@@ -1,6 +1,8 @@
 #include "../lib/Game_world.hpp"
+#include "../lib/Network.hpp"
 #include <iostream>
 #include <algorithm>
+#include <sstream>
 
 bool GameWorld::initialize(int width, int height)
 {
@@ -120,8 +122,38 @@ void GameWorld::updateResource(int x, int y, int resourceType, int amount)
 {
     if (!isValidPosition(x, y))
         return;
+    
     Tile& tile = m_map[y][x];
     
+    if (m_animationSystem && m_renderingEngine && amount < 0) {
+        if (!tile.playerIds.empty()) {
+            Player* player = findPlayer(tile.playerIds[0]);
+            if (player) {
+                sf::Vector2f playerPos = m_renderingEngine->tileToScreen(player->x, player->y);
+                playerPos.x += 32;
+                playerPos.y += 32;
+                sf::Color animColor = sf::Color::Yellow;
+                switch (resourceType) {
+                    case 0: animColor = sf::Color::Yellow; break;
+                    case 1: animColor = sf::Color::Blue; break;
+                    case 2: animColor = sf::Color::Cyan; break;
+                    case 3: animColor = sf::Color::Magenta; break;
+                    case 4: animColor = sf::Color::Green; break;
+                    case 5: animColor = sf::Color::Red; break;
+                    case 6: animColor = sf::Color::White; break;
+                }
+                m_animationSystem->addEffect(AnimationType::RESOURCE_PICKUP, 
+                                           playerPos.x, playerPos.y, 1.5f, animColor);
+                std::cout << "Animation de collecte de ressource créée sur le joueur " 
+                          << player->id << " pour le type " << resourceType << std::endl;
+            }
+        } else {
+            sf::Vector2f pos = m_renderingEngine->tileToScreen(x, y);
+            pos.x += 32;
+            pos.y += 32;
+            m_animationSystem->addEffect(AnimationType::RESOURCE_PICKUP, pos.x, pos.y, 1.0f, sf::Color::Yellow);
+        }
+    }
     switch (resourceType) {
         case 0: 
             tile.resources.food = std::max(0, tile.resources.food + amount);
@@ -144,7 +176,6 @@ void GameWorld::updateResource(int x, int y, int resourceType, int amount)
         case 6:
             tile.resources.thystame = std::max(0, tile.resources.thystame + amount);
             break;
-        default: break;
     }
 }
 
@@ -168,10 +199,47 @@ void GameWorld::updatePlayerLevel(int playerId, int level)
     }
 }
 
+void GameWorld::requestPlayerInventory(int playerId)
+{
+    std::cout << "[DEBUG] GameWorld::requestPlayerInventory called for id: " << playerId << std::endl;
+    if (m_network) {
+        std::ostringstream oss;
+        oss << "pin #" << playerId << "\n";
+        std::cout << "[DEBUG] Sending to server: " << oss.str();
+        m_network->send(oss.str());
+    } else {
+        std::cout << "[DEBUG] m_network is nullptr!" << std::endl;
+    }
+}
+
 void GameWorld::updatePlayerInventory(int playerId, const PlayerInventory& inventory)
+{
+    std::cout << "[DEBUG] updatePlayerInventory called for id: " << playerId << std::endl;
+    std::cout << "[DEBUG] Inventory data: food=" << inventory.food 
+              << " linemate=" << inventory.linemate 
+              << " deraumere=" << inventory.deraumere << std::endl;
+              
+    Player* player = findPlayer(playerId);
+    if (player) {
+        std::cout << "[DEBUG] Player found, updating inventory..." << std::endl;
+        player->inventory = inventory;
+        std::cout << "[DEBUG] Inventory updated successfully" << std::endl;
+    } else {
+        std::cout << "[DEBUG] Player not found for inventory update: " << playerId << std::endl;
+    }
+}
+
+void GameWorld::initializePlayerInventory(int playerId)
 {
     Player* player = findPlayer(playerId);
     if (player) {
-        player->inventory = inventory;
+        player->inventory.food = 0;
+        player->inventory.linemate = 0;
+        player->inventory.deraumere = 0;
+        player->inventory.sibur = 0;
+        player->inventory.mendiane = 0;
+        player->inventory.phiras = 0;
+        player->inventory.thystame = 0;
+        std::cout << "[DEBUG] Initialized default inventory for player " << playerId << std::endl;
     }
 }

@@ -127,26 +127,23 @@ void Pin(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
     if (oklm.size() < 11)
         throw std::runtime_error("Invalid pin");
     
-    Player* player = gw->findPlayer(std::stoi(oklm[1].substr(1)));
-    if (!player)
+    int playerId = std::stoi(oklm[1].substr(1));
+    std::cout << "[DEBUG] Pin received for player #" << playerId << std::endl;
+    Player* player = gw->findPlayer(playerId);
+    if (!player) {
+        std::cout << "[DEBUG] Pin: Player not found in GameWorld for id: " << playerId << std::endl;
         return;
-    
-    player->inventory.food = std::stoi(oklm[4]);
-    player->inventory.linemate = std::stoi(oklm[5]);
-    player->inventory.deraumere = std::stoi(oklm[6]);
-    player->inventory.sibur = std::stoi(oklm[7]);
-    player->inventory.mendiane = std::stoi(oklm[8]);
-    player->inventory.phiras = std::stoi(oklm[9]);
-    player->inventory.thystame = std::stoi(oklm[10]);
-    std::cout << "Player #" << player->id << " inventory updated: "
-              << "Food: " << player->inventory.food
-              << ", Linemate: " << player->inventory.linemate
-              << ", Deraumere: " << player->inventory.deraumere
-              << ", Sibur: " << player->inventory.sibur
-              << ", Mendiane: " << player->inventory.mendiane
-              << ", Phiras: " << player->inventory.phiras
-              << ", Thystame: " << player->inventory.thystame
-              << std::endl;
+    }
+    PlayerInventory inv;
+    inv.food = std::stoi(oklm[4]);
+    inv.linemate = std::stoi(oklm[5]);
+    inv.deraumere = std::stoi(oklm[6]);
+    inv.sibur = std::stoi(oklm[7]);
+    inv.mendiane = std::stoi(oklm[8]);
+    inv.phiras = std::stoi(oklm[9]);
+    inv.thystame = std::stoi(oklm[10]);
+    std::cout << "[DEBUG] Pin: Updating inventory for player #" << playerId << " (Food: " << inv.food << ", Linemate: " << inv.linemate << ")" << std::endl;
+    gw->updatePlayerInventory(playerId, inv);
 }
 
 void Pex(const std::vector<std::string>& oklm)
