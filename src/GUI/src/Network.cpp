@@ -20,28 +20,33 @@ Network::~Network()
 
 void Network::connect(std::string ip, int port)
 {
-
     if (connected)
         throw Error("Already connected");
 
-    clientSocket = socket(AF_INET, SOCK_STREAM, 0);
+    struct addrinfo hints{}, *res, *p;
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
 
-    if (clientSocket < 0)
-        throw Error("Failed to create socket");
+    std::string portStr = std::to_string(port);
+    if (getaddrinfo(ip.c_str(), portStr.c_str(), &hints, &res) != 0)
+        throw Error("Failed to resolve host: " + ip);
 
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(port);
-    if (inet_pton(AF_INET, ip.c_str(), &serverAddr.sin_addr) <= 0) {
+    for (p = res; p != nullptr; p = p->ai_next) {
+        clientSocket = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+        if (clientSocket < 0)
+            continue;
+        if (::connect(clientSocket, p->ai_addr, p->ai_addrlen) == 0) {
+            connected = true;
+            break;
+        }
         close(clientSocket);
-        throw Error("Invalid IP address");
+        clientSocket = -1;
     }
 
-    if (::connect(clientSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
-        close(clientSocket);
-        throw Error("Connection failed to " + ip + ":" + std::to_string(port) + 
-                   " - " + strerror(errno));
-    }
-    connected = true;
+    freeaddrinfo(res);
+
+    if (!connected)
+        throw Error("Connection failed to " + ip + ":" + portStr + " - " + strerror(errno));
 }
 
 void Network::disconnect()
