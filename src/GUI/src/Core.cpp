@@ -12,7 +12,8 @@
 #include <random>
 
 Core::Core() : m_running(false), m_gameWorld(nullptr), m_renderingEngine(nullptr), 
-               m_inputHandler(nullptr), m_animationSystem(nullptr), m_musicManager(std::make_unique<MusicManager>())
+               m_inputHandler(nullptr), m_animationSystem(nullptr), m_musicManager(std::make_unique<MusicManager>()), 
+               Disconnected(false)
 {
 }
 
@@ -21,8 +22,16 @@ Core::~Core()
     shutdown(); 
 }
 
+void Core::setDisconnected()
+{
+    Disconnected = true;
+    m_running = false;
+}
+
 bool Core::initialize(std::shared_ptr<GameWorld> gameWorld)
 {
+    if (!m_running || Disconnected)
+        std::cerr << "Core not initialized or network disconnected!" << std::endl;
     try {
         m_window = std::make_unique<sf::RenderWindow>(
             sf::VideoMode(1920, 1080), 

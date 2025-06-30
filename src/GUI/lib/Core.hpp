@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include "../lib/MusicManager.hpp"
+#include <atomic>
 
 class GameWorld;
 class RenderingEngine;
@@ -38,12 +39,14 @@ public:
     sf::RenderWindow &getWindow() const { return *m_window; }
     bool isRunning() const { return m_running; }
     GameWorld *getGameWorld() const { return m_gameWorld.get(); }
+    void setDisconnected();
 
 private:
     void handleWindowEvents();
     void initializeTestData();
     void updateGameLogic(float deltaTime);
     void renderUI();
+    std::atomic<bool> Disconnected;
 };
 
 #endif

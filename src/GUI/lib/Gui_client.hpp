@@ -28,6 +28,7 @@ class Gui_client {
         ~Gui_client();
         void disconnect();
         void run();
+        bool isDisconnected() const;
     private:
     int _port;
     std::string _machine;

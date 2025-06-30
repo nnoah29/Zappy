@@ -75,6 +75,8 @@ int main(int argc, char **argv)
     try {
         Gui_client guiClient(port, machine);
         guiClient.run();
+        if (guiClient.isDisconnected())
+            return 84;
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 84;

@@ -12,6 +12,11 @@ Gui_client::Gui_client(int port, const std::string &machine)
       _gameWorld(std::make_shared<GameWorld>()) {
 }
 
+bool Gui_client::isDisconnected() const
+{ 
+    return !_network->isConnected();
+}
+
 void Msz(const std::vector<std::string>& oklm, std::shared_ptr<GameWorld> gw)
 {
     if (oklm.size() < 3)
@@ -348,8 +353,10 @@ void Gui_client::receiveMessage()
 {
     while (true) {
         std::string message = _network->receive();
-        if (message.empty()) {
+        if (message.empty() || !_network->isConnected()) {
             std::cerr << "Connection lost or empty message received." << std::endl;
+            _core.setDisconnected();
+            _network->disconnect();
             break;
         }
         parseInit(message);
