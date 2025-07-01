@@ -78,6 +78,16 @@ static void map_count_resources(server_t *server,
     }
 }
 
+void add_resource_to_map(server_t *server, int res_idx)
+{
+    int_pair_t pos;
+
+    pos.x = (int)random() % server->config->map_w;
+    pos.y = (int)random() % server->config->map_h;
+    server->map[pos.y][pos.x].resources[res_idx]++;
+    bct_f(server, pos.x, pos.y);
+}
+
 /// Complète les ressources sur la carte pour atteindre les densités cibles.
 void map_spawn_resources(server_t *server)
 {
@@ -86,20 +96,14 @@ void map_spawn_resources(server_t *server)
     int res_counts[NB_RESOURCES];
     bool respawn = false;
     int quantity_to_spawn = 0;
-    int x = 0;
-    int y = 0;
 
     map_count_resources(server, res_counts);
     for (int res_idx = 0; res_idx < NB_RESOURCES; res_idx++) {
         quantity_to_spawn = (map_size * dens[res_idx]) - res_counts[res_idx];
         if (quantity_to_spawn <= 0)
             continue;
-        for (int i = 0; i < quantity_to_spawn; i++) {
-            x = (int)random() % server->config->map_w;
-            y = (int)random() % server->config->map_h;
-            server->map[y][x].resources[res_idx]++;
-            bct_f(server, x, y);
-        }
+        for (int i = 0; i < quantity_to_spawn; i++)
+            add_resource_to_map(server, res_idx);
         respawn = true;
     }
     if (respawn)

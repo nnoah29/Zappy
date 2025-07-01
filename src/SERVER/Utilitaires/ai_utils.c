@@ -60,7 +60,7 @@ int process_ejection_on_entity(entity_on_tile_t *current_node,
     int_pair_t pos;
 
     other_player = current_node->entity;
-    if (other_player->idx == ejector->idx)
+    if (!other_player || other_player->idx == ejector->idx)
         return 0;
     if (other_player->is_egg) {
         edi_f(server, other_player->idx);

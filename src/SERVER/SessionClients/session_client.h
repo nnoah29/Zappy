@@ -15,6 +15,12 @@
 
 
 int find_client_by_fd(server_t *server, int fd);
+void eject_egg(server_t *server, session_client_t *other_player,
+    tile_t *tile);
+void just_eject(server_t *server, session_client_t *client,
+    session_client_t *other_player, tile_t *tile);
+void eject_player(server_t *server, session_client_t
+    *other_player, session_client_t *client);
 int find_free_slot(server_t *server, session_client_t *client);
 void laying_process(server_t *server, session_client_t *client, int egg_idx);
 void send_initial_gui_state(server_t *server, session_client_t *gui_client);

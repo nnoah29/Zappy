@@ -45,12 +45,5 @@ add_executable(SERVER main.c
         Utilitaires/incantation_utils.c
         Utilitaires/fork_utils.c
         Server/server_cleanup.c
-        tests/mock_server_setup.h
-        tests/mock_server_setup.c
-        tests/tests_clock.c
-        tests/test_command_queue.c
-        tests/tests_map.c
-        tests/tests_ai_commands.c
-        tests/tests_look_utils.c
-        tests/tests_incantation.c
+        Utilitaires/eject_utils.c
 )

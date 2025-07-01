@@ -68,21 +68,25 @@ int fork_f(server_t *server, session_client_t *client, const command_t *cmd)
 int eject_f(server_t *server, session_client_t *client,
     const command_t *cmd)
 {
-    const tile_t *tile = &server->map[client->y][client->x];
-    entity_on_tile_t *current = tile->entities;
-    entity_on_tile_t *next_entity = NULL;
+    tile_t *tile = &server->map[client->y][client->x];
+    entity_on_tile_t *current_node = tile->entities;
+    entity_on_tile_t *next_node = NULL;
+    session_client_t *other_player = NULL;
     bool ejected_someone = false;
 
-    while (current != NULL) {
-        next_entity = current->next;
-        if (process_ejection_on_entity(current, server, client)) {
-            ejected_someone = true;
-        }
-        current = next_entity;
-    }
-    dprintf(client->fd, ejected_someone ? "ok\n" : "ko\n");
     (void)cmd;
-    return 0;
+    while (current_node != NULL) {
+        next_node = current_node->next;
+        other_player = current_node->entity;
+        if (!(other_player && other_player->idx != client->idx)) {
+            current_node = next_node;
+            continue;
+        }
+        ejected_someone = true;
+        just_eject(server, client, other_player, tile);
+        current_node = next_node;
+    }
+    return dprintf(client->fd, ejected_someone ? "ok\n" : "ko\n");
 }
 
 int take_object_f(server_t *server, session_client_t *client,
