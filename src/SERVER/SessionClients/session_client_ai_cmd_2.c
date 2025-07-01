@@ -59,7 +59,7 @@ int fork_f(server_t *server, session_client_t *client, const command_t *cmd)
     (void)cmd;
     if (egg_idx == -1)
         return fail_cmd(client->fd);
-    LOG(LOG_DEBUG, "Player %d is forking. New egg will be at index %d.",
+    LOG(LOG_DEBUG, "Le joueur %d pond un œuf. Le nouvel œuf sera à l'index %d.",
         client->idx, egg_idx);
     laying_process(server, client, egg_idx);
     return 0;
@@ -109,6 +109,6 @@ int take_object_f(server_t *server, session_client_t *client,
         bct_f(server, client->x, client->y);
     } else
         dprintf(client->fd, "ko\n");
-    LOG(LOG_DEBUG, "Player %d took %s", client->idx, cmd->args[0]);
+    LOG(LOG_DEBUG, "Le joueur %d a pris %s", client->idx, cmd->args[0]);
     return 0;
 }
