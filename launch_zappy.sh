@@ -17,7 +17,7 @@ DEFAULT_HEIGHT=25
 HOST="127.0.0.1"
 TEAMS=("team1" "team2" "team3")
 AI_PER_TEAM=10
-GUI_COUNT=2
+GUI_COUNT=1
 BINARIES=("./zappy_server" "./zappy_ai" "./zappy_gui")
 
 # --- Fonctions ---
