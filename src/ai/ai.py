@@ -54,6 +54,9 @@ class AI:
         self.current_ritual_target = None
         self.ritual_participants_needed = 0
         self.target_resource = None
+        
+        # Variables pour rejoindre les rituels
+        self.ritual_target = None
 
     def update(self) -> bool:
         """Met à jour l'IA et exécute une action.
@@ -111,6 +114,7 @@ class AI:
     def _update_state(self) -> None:
         """Met à jour l'état de l'IA."""
         try:
+            # Vérifier si on peut s'élever (ressources + joueurs)
             if self.elevation_manager.can_elevate():
                 self.logger.debug("État changé: ELEVATING (priorité absolue)")
                 self.state = "ELEVATING"
@@ -210,11 +214,13 @@ class AI:
             self.logger.info(f"✅ Nourriture sécurisée ({food_level}). Reprise des opérations.")
             self._update_state_when_safe()
 
+            # Vérifier à nouveau l'état après _update_state_when_safe
             if self.state == "ELEVATING":
                 if self.elevation_in_progress:
                     self.logger.debug("⏳ Élévation en cours, attente du résultat...")
                     return True
                 else:
+                    self.logger.info("🚀 LANCEMENT DE L'ÉLÉVATION !")
                     success = self._handle_elevation()
                     if not success:
                         self.logger.warning("❌ Échec de l'élévation, retour aux opérations normales")
@@ -229,6 +235,25 @@ class AI:
                 self.logger.info(f"👥 Appel à l'aide pour le rituel niveau {self.player.level + 1}. Besoin de {self.ritual_participants_needed} joueurs.")
                 self.communicator.send_team_message("RITUAL_CALL", f"{self.player.level + 1}:{self.player.id}:{self.player.x},{self.player.y}")
                 time.sleep(1)
+            
+            elif self.state == "JOINING_RITUAL":
+                if self.ritual_target:
+                    self.logger.info(f"🎯 Rejoindre le rituel à la position {self.ritual_target}")
+                    if self.movement_manager.move_to(self.ritual_target):
+                        self.logger.info("✅ Arrivé à la position du rituel !")
+                        # Une fois arrivé, on peut s'élever si les conditions sont remplies
+                        if self.elevation_manager.can_elevate():
+                            self.logger.info("✨ Conditions d'élévation remplies, lancement du rituel !")
+                            self.state = "ELEVATING"
+                        else:
+                            self.logger.info("⏳ En attente que les conditions d'élévation soient remplies...")
+                            self.state = "AWAITING_PARTICIPANTS"
+                    else:
+                        self.logger.warning("❌ Impossible d'atteindre la position du rituel")
+                        self.state = "NORMAL_OPERATIONS"
+                else:
+                    self.logger.warning("❌ Pas de cible de rituel définie")
+                    self.state = "NORMAL_OPERATIONS"
 
             else:
                 self._explore()
@@ -281,6 +306,16 @@ class AI:
             self.logger.info(f"🎯 Préparation de l'élévation niveau {current_level} → {next_level}")
             self.logger.info(f"📋 Exigences : {requirements}")
             
+            # Envoyer un broadcast pour tous les niveaux qui nécessitent plusieurs joueurs
+            required_players = requirements.get('players', 1)
+            if required_players > 1:
+                self.logger.info(f"🔊 Envoi du broadcast pour rituel niveau {next_level} (besoin de {required_players} joueurs)")
+                self.communicator.send_team_message(
+                    "RITUAL_CALL", 
+                    f"{next_level}:{self.player.id}:{self.player.x},{self.player.y}"
+                )
+                time.sleep(1)  # Petit délai pour éviter le spam
+                
             for resource, count in requirements.items():
                 if resource == "players":
                     continue
@@ -313,10 +348,12 @@ class AI:
             else:
                 current_tile_content = self.vision_manager.vision_data[0] if self.vision_manager.vision_data else []
                 player_count = current_tile_content.count('player')
+                # L'IA se compte elle-même
+                total_players = player_count + 1
                 required_players = requirements.get('players', 1)
                 
-                if player_count < required_players:
-                    self.logger.info(f"👥 Pas assez de joueurs pour le rituel niveau {current_level} ({player_count}/{required_players}). J'appelle à l'aide.")
+                if total_players < required_players:
+                    self.logger.info(f"👥 Pas assez de joueurs pour le rituel niveau {current_level} ({total_players}/{required_players}). J'appelle à l'aide.")
                     self.communicator.send_team_message("RITUAL_CALL", f"{next_level}:{self.player.id}:{self.player.x},{self.player.y}")
                     self.state = "AWAITING_PARTICIPANTS"
                     self.ritual_participants_needed = required_players
@@ -328,7 +365,7 @@ class AI:
         except Exception as e:
             self.logger.error(f"Erreur lors de la gestion de l'élévation: {str(e)}")
             return False
-
+        
     def _update_map_from_vision(self) -> None:
         """Met à jour la carte avec les données de vision."""
         try:
@@ -600,11 +637,7 @@ class AI:
             return (0, 0)
 
     def _handle_team_messages(self) -> bool:
-        """Gère les messages de l'équipe reçus via broadcast.
-        
-        Returns:
-            bool: True si un message a été traité, False sinon
-        """
+        """Gère les messages de l'équipe reçus via broadcast."""
         try:
             message = self.communicator.receive_broadcast()
             if not message:
@@ -616,34 +649,17 @@ class AI:
             action = message.get("action")
             data = message.get("data", "")
             
-            sender_id = message.get("sender_id", "unknown")
-            self._update_team_status(sender_id, action, data)
-            
-            if action == "RITUAL_CALL":
-                try:
-                    parts = data.split(":")
-                    target_level = int(parts[0])
-                    initiator_id = parts[1]
-                    coords_str = parts[2]
-                    
-                    if (self.player.level == target_level - 1 and 
-                        self.state in ["NORMAL_OPERATIONS", "FOLLOWING_ORDERS"]):
-                        
-                        self.logger.info(f"🤝 Appel au rituel niveau {target_level} par {initiator_id} ! Je réponds.")
-                        
-                        coords = tuple(map(int, coords_str.split(',')))
-                        self.target_position = coords
-                        self.state = "JOINING_RITUAL"
-                        self.current_ritual_target = target_level
-                        
-                        self.communicator.send_team_message("RITUAL_JOIN", f"{target_level}:{self.player.id}")
-                        return True
-                    else:
-                        self.logger.info(f"⚠️ Je suis niveau {self.player.level}, je ne peux pas participer au rituel niveau {target_level}")
-                        return False
-                        
-                except (ValueError, IndexError) as e:
-                    self.logger.warning(f"❌ Format de message RITUAL_CALL invalide: {data}")
+            # Ajout pour gérer le message RITUAL_LVL3_START
+            if action == "RITUAL_LVL3_START":
+                if self.player.level == 2:
+                    self.logger.info("🤝 Réception appel rituel niveau 3 - je me dirige vers l'initiateur")
+                    coords = tuple(map(int, data.split(',')))
+                    self.target_position = coords
+                    self.state = "JOINING_RITUAL"
+                    self.current_ritual_target = 3
+                    return True
+                else:
+                    self.logger.info(f"⚠ Je suis niveau {self.player.level}, je ne peux pas participer")
                     return False
                     
             elif action == "RITUAL_JOIN":
@@ -716,7 +732,6 @@ class AI:
                     return False
                     
             return False
-            
         except Exception as e:
             self.logger.error(f"Erreur lors du traitement des messages d'équipe: {str(e)}")
             return False
@@ -883,11 +898,13 @@ class AI:
                 next_level = self.player.level + 1
                 self.logger.info(f"🎯 Objectif : Préparer l'élévation pour le niveau {next_level}.")
                 
+                # Vérifier d'abord si on peut s'élever directement
                 if self.elevation_manager.can_elevate():
                     self.logger.info("✨ Conditions d'élévation remplies !")
                     self.state = "ELEVATING"
                     return
 
+                # Vérifier les ressources manquantes
                 needed_resources = self.elevation_manager.get_needed_resources()
                 if needed_resources:
                     self.logger.info(f"🔍 Ressources manquantes pour niveau {self.player.level} : {needed_resources}")
@@ -895,11 +912,16 @@ class AI:
                     self.target_resource = self._prioritize_resources(needed_resources)[0]
                     return
 
+                # Si on a toutes les ressources, vérifier le nombre de joueurs
                 required_players = self.elevation_manager.ELEVATION_REQUIREMENTS.get(self.player.level, {}).get("players", 1)
                 player_count_on_tile = self.vision_manager.vision_data[0].count('player') if self.vision_manager.vision_data else 0
+                # L'IA se compte elle-même
+                total_players = player_count_on_tile + 1
                 
-                if player_count_on_tile < required_players:
-                    self.logger.info(f"👥 Pas assez de joueurs pour le rituel du niveau {self.player.level} ({player_count_on_tile}/{required_players}). Appel à l'aide.")
+                if total_players < required_players:
+                    self.logger.info(f"👥 Pas assez de joueurs pour le rituel du niveau {self.player.level} ({total_players}/{required_players}). Appel à l'aide.")
+                    # Envoyer un broadcast pour demander de l'aide
+                    self.communicator.send_team_message("RITUAL_CALL", f"{next_level}:{self.player.id}:{self.player.x},{self.player.y}")
                     self.state = "AWAITING_PARTICIPANTS"
                     self.ritual_participants_needed = required_players
                     return

@@ -62,10 +62,13 @@ class ElevationManager:
                 
             required_players = requirements.get('players', 1)
             player_count = current_tile.count('player')
+            # L'IA se compte elle-même
+            total_players = player_count + 1
             
-            if player_count < required_players:
-                self.logger.debug(f"Pas assez de joueurs sur la case ({player_count}/{required_players})")
+            if total_players < required_players:
+                self.logger.debug(f"Pas assez de joueurs sur la case ({total_players}/{required_players})")
                 return False
+            
                 
             self.logger.info(f"✅ Toutes les conditions sont remplies pour INITIET le rituel du niveau {current_level}.")
             return True
@@ -169,7 +172,7 @@ class ElevationManager:
             needed = []
             requirements = self.ELEVATION_REQUIREMENTS[current_level]
             for resource, count in requirements.items():
-                if resource != 'players' and self.vision_manager.player.inventory.inventory.get(resource, 0) < count:
+                if resource != 'players' and self.inventory_manager.inventory.get(resource, 0) < count:
                     needed.append(resource)
             return needed
         except Exception as e:

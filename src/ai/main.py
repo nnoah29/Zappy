@@ -151,7 +151,31 @@ def main() -> int:
                                 logger.info(f"🤝 Message d'équipe reçu: {parsed_message}")
                                 
                                 action = parsed_message.get("action")
-                                if action == "RITUAL_LVL3_START":
+                                if action == "RITUAL_CALL":
+                                    # Traiter l'appel de rituel
+                                    data = parsed_message.get("data", "")
+                                    try:
+                                        parts = data.split(":")
+                                        if len(parts) >= 3:
+                                            target_level = int(parts[0])
+                                            target_id = parts[1]
+                                            coords_str = parts[2]
+                                            target_x, target_y = map(int, coords_str.split(","))
+                                            
+                                            # Vérifier si on peut participer au rituel
+                                            if client.ai.player.level == target_level - 1:
+                                                logger.info(f"🤝 Je suis niveau {client.ai.player.level}, je peux participer au rituel niveau {target_level} !")
+                                                logger.info(f"🎯 Je me dirige vers ({target_x}, {target_y}) pour rejoindre le rituel")
+                                                
+                                                # Définir la cible de mouvement pour rejoindre le rituel
+                                                client.ai.ritual_target = (target_x, target_y)
+                                                client.ai.state = "JOINING_RITUAL"
+                                            else:
+                                                logger.info(f"⚠️ Je suis niveau {client.ai.player.level}, je ne peux pas participer au rituel niveau {target_level}")
+                                    except Exception as e:
+                                        logger.error(f"Erreur lors du parsing du message de rituel: {e}")
+                                        
+                                elif action == "RITUAL_LVL3_START":
                                     if client.ai.player.level == 2:
                                         logger.info("🤝 Je suis niveau 2, je peux participer au rituel niveau 3 !")
                                     else:
