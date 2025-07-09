@@ -38,7 +38,7 @@ void pex_f(server_t *server, session_client_t *client)
 {
     char buffer[64];
 
-    snprintf(buffer, sizeof(buffer), "pex %d\n", client->idx);
+    snprintf(buffer, sizeof(buffer), "pex #%d\n", client->idx);
     send_to_all_guis(server, buffer);
 }
 
@@ -47,7 +47,7 @@ void pbc_f(server_t *server, session_client_t *client, const char *message)
 {
     char buffer[1024];
 
-    snprintf(buffer, sizeof(buffer), "pbc %d %s\n", client->idx, message);
+    snprintf(buffer, sizeof(buffer), "pbc #%d %s\n", client->idx, message);
     send_to_all_guis(server, buffer);
 }
 
@@ -57,7 +57,7 @@ void pic_f(server_t *server, session_client_t *client,
 {
     char buffer[2048];
 
-    snprintf(buffer, sizeof(buffer), "pic %d %d %d %s\n", client->x,
+    snprintf(buffer, sizeof(buffer), "pic %d %d %d%s\n", client->x,
         client->y, client->level, player_list_str);
     send_to_all_guis(server, buffer);
 }

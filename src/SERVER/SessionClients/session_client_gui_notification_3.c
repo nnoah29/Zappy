@@ -20,7 +20,7 @@ void enw_f(server_t *server, session_client_t *egg)
 
     if (!egg->is_egg)
         return;
-    snprintf(buffer, sizeof(buffer), "enw %d %d %d %d\n",
+    snprintf(buffer, sizeof(buffer), "enw #%d %d %d %d\n",
         egg->idx, egg->parent_idx, egg->x, egg->y);
     send_to_all_guis(server, buffer);
 }
@@ -30,7 +30,7 @@ void ebo_f(server_t *server, int egg_id)
 {
     char buffer[64];
 
-    snprintf(buffer, sizeof(buffer), "ebo %d\n", egg_id);
+    snprintf(buffer, sizeof(buffer), "ebo #%d\n", egg_id);
     send_to_all_guis(server, buffer);
 }
 
@@ -39,7 +39,7 @@ void edi_f(server_t *server, int egg_id)
 {
     char buffer[64];
 
-    snprintf(buffer, sizeof(buffer), "edi %d\n", egg_id);
+    snprintf(buffer, sizeof(buffer), "edi #%d\n", egg_id);
     send_to_all_guis(server, buffer);
 }
 

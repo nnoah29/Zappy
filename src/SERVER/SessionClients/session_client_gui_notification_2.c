@@ -27,7 +27,7 @@ void pfk_f(server_t *server, session_client_t *player)
 {
     char buffer[64];
 
-    snprintf(buffer, sizeof(buffer), "pfk %d\n", player->idx);
+    snprintf(buffer, sizeof(buffer), "pfk #%d\n", player->idx);
     send_to_all_guis(server, buffer);
 }
 
@@ -36,7 +36,7 @@ void pdr_f(server_t *server, session_client_t *player, int resource_idx)
 {
     char buffer[64];
 
-    snprintf(buffer, sizeof(buffer), "pdr %d %d\n", player->idx, resource_idx);
+    snprintf(buffer, sizeof(buffer), "pdr #%d %d\n", player->idx, resource_idx);
     send_to_all_guis(server, buffer);
 }
 
@@ -45,7 +45,7 @@ void pgt_f(server_t *server, session_client_t *player, int resource_idx)
 {
     char buffer[64];
 
-    snprintf(buffer, sizeof(buffer), "pgt %d %d\n", player->idx, resource_idx);
+    snprintf(buffer, sizeof(buffer), "pgt #%d %d\n", player->idx, resource_idx);
     send_to_all_guis(server, buffer);
 }
 
@@ -54,6 +54,6 @@ void pdi_f(server_t *server, session_client_t *player)
 {
     char buffer[64];
 
-    snprintf(buffer, sizeof(buffer), "pdi %d\n", player->idx);
+    snprintf(buffer, sizeof(buffer), "pdi #%d\n", player->idx);
     send_to_all_guis(server, buffer);
 }

@@ -87,7 +87,7 @@ int ppo_h(server_t *server, session_client_t *client, const command_t *cmd)
     player_idx = atoi(&cmd->args[0][1]);
     player = &server->players[player_idx];
     if (player_idx != -1) {
-        dprintf(client->fd, "ppo %d %d %d %d\n", player->idx,
+        dprintf(client->fd, "ppo #%d %d %d %d\n", player->idx,
             player->x, player->y, player->orientation);
     }
     (void)server;
