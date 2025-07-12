@@ -213,8 +213,6 @@ void Core::pollEvents()
     while (m_window->pollEvent(m_event)) {
         if (m_inputHandler)
             m_inputHandler->handleEvent(m_event);
-        // if (m_playerInfoPanel)
-        //     m_playerInfoPanel->handleEvent(m_event);
         handleWindowEvents();
     }
 }
