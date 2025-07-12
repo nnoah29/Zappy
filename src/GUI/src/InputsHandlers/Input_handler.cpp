@@ -1,6 +1,7 @@
-#include "../lib/Input_handler.hpp"
+#include "Input_handler.hpp"
 #include <iostream>
 #include <cstring>
+#include "../Logger/Logger.hpp"
 
 InputHandler::InputHandler(sf::RenderWindow &window, RenderingEngine &renderingEngine)
     : m_window(window), m_renderingEngine(renderingEngine),
@@ -17,26 +18,25 @@ void InputHandler::handleEvent(const sf::Event &event)
         case sf::Event::MouseButtonReleased:
             handleMouseButton(event);
             break;
-            
         case sf::Event::MouseMoved:
             handleMouseMove(event);
             break;
-            
+
         case sf::Event::MouseWheelScrolled:
             handleMouseWheel(event);
             break;
-            
+
         case sf::Event::KeyPressed:
         case sf::Event::KeyReleased:
             handleKeyboard(event);
             break;
-            
+
         default:
             break;
     }
 }
 
-void InputHandler::update(float deltaTime)
+void InputHandler::update(float deltaTime) const
 {
     updateCameraMovement(deltaTime);
 }
@@ -49,11 +49,7 @@ void InputHandler::handleMouseButton(const sf::Event &event)
             m_isDragging = false;
             m_selectedTile = m_renderingEngine.screenToTile(m_lastMousePos);
             m_hasTileSelected = true;
-            
-            std::cout << "Selected tile: (" << m_selectedTile.x << ", " << m_selectedTile.y << ")" << std::endl;
-        }
-        else if (event.type == sf::Event::MouseButtonReleased) {
-            m_isDragging = false;
+            LOG(Logger::LogLevel::INFO, "Selected tiles (%d x % d)", m_selectedTile.x, m_selectedTile.y);
         }
     }
     else if (event.mouseButton.button == sf::Mouse::Right) {
@@ -69,24 +65,22 @@ void InputHandler::handleMouseButton(const sf::Event &event)
 
 void InputHandler::handleMouseMove(const sf::Event &event)
 {
-    sf::Vector2i currentMousePos(event.mouseMove.x, event.mouseMove.y);
-    
+    const sf::Vector2i currentMousePos(event.mouseMove.x, event.mouseMove.y);
+
     if (m_isDragging) {
-        sf::Vector2i delta = m_lastMousePos - currentMousePos;
-        float deltaX = static_cast<float>(delta.x);
-        float deltaY = static_cast<float>(delta.y);
-        
+        const sf::Vector2i delta = m_lastMousePos - currentMousePos;
+        const auto deltaX = static_cast<float>(delta.x);
+        const auto deltaY = static_cast<float>(delta.y);
         m_renderingEngine.moveCamera(deltaX, deltaY);
     }
-    
     m_lastMousePos = currentMousePos;
 }
 
-void InputHandler::handleMouseWheel(const sf::Event &event)
+void InputHandler::handleMouseWheel(const sf::Event &event) const
 {
     if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
         float zoomDelta = event.mouseWheelScroll.delta;
-        
+
         if (zoomDelta > 0) {
             m_renderingEngine.setZoom(m_renderingEngine.getZoomLevel() * ZOOM_FACTOR);
         }
@@ -103,10 +97,10 @@ void InputHandler::handleKeyboard(const sf::Event &event)
     }
 }
 
-void InputHandler::updateCameraMovement(float deltaTime)
+void InputHandler::updateCameraMovement(float deltaTime) const
 {
-    float moveDistance = CAMERA_SPEED * deltaTime;
-    
+    const float moveDistance = CAMERA_SPEED * deltaTime;
+
     if (m_keyPressed[sf::Keyboard::Left] || m_keyPressed[sf::Keyboard::A]) {
         m_renderingEngine.moveCamera(-moveDistance, 0);
     }
@@ -120,9 +114,9 @@ void InputHandler::updateCameraMovement(float deltaTime)
         m_renderingEngine.moveCamera(0, moveDistance);
     }
     if (m_keyPressed[sf::Keyboard::Add] || m_keyPressed[sf::Keyboard::Equal]) {
-        m_renderingEngine.setZoom(m_renderingEngine.getZoomLevel() * (1.0f + deltaTime));
+        m_renderingEngine.setZoom(m_renderingEngine.getZoomLevel() * (1.0f + KEYBOARD_ZOOM_SPEED * deltaTime));
     }
     if (m_keyPressed[sf::Keyboard::Subtract] || m_keyPressed[sf::Keyboard::Hyphen]) {
-        m_renderingEngine.setZoom(m_renderingEngine.getZoomLevel() * (1.0f - deltaTime));
+        m_renderingEngine.setZoom(m_renderingEngine.getZoomLevel() / (1.0f + KEYBOARD_ZOOM_SPEED * deltaTime));
     }
 }

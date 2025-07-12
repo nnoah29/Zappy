@@ -2,10 +2,11 @@
 // Created by aureldsk on 16/06/25.
 //
 
-#include "../lib/Network.hpp"
+#include "Network.hpp"
 
 #include <cstring>
 #include <string>
+#include <vector>
 
 Network::Network(): clientSocket(-1), connected(false)
 {
@@ -18,7 +19,7 @@ Network::~Network()
 }
 
 
-void Network::connect(std::string ip, int port)
+void Network::connect(const std::string& ip, int port)
 {
     if (connected)
         throw Error("Already connected");
@@ -27,9 +28,9 @@ void Network::connect(std::string ip, int port)
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
 
-    std::string portStr = std::to_string(port);
+    const std::string portStr = std::to_string(port);
     if (getaddrinfo(ip.c_str(), portStr.c_str(), &hints, &res) != 0)
-        throw Error("Failed to resolve host: " + ip);
+        throw std::runtime_error("Failed to resolve host: " + ip);
 
     for (p = res; p != nullptr; p = p->ai_next) {
         clientSocket = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
@@ -42,11 +43,9 @@ void Network::connect(std::string ip, int port)
         close(clientSocket);
         clientSocket = -1;
     }
-
     freeaddrinfo(res);
-
     if (!connected)
-        throw Error("Connection failed to " + ip + ":" + portStr + " - " + strerror(errno));
+        throw std::runtime_error("Connection failed to " + ip + ":" + portStr + " - " + strerror(errno));
 }
 
 void Network::disconnect()
@@ -70,13 +69,21 @@ std::string Network::receive(size_t size)
 {
     if (!connected)
         throw Error("Not connected");
-    char buffer[size];
-    ssize_t bytesR = recv(clientSocket, buffer, size - 1, 0);
-    if (bytesR < 0)
-        throw Error("Failed to receive message");
-    buffer[bytesR] = '\0';
-    return std::string(buffer);
+
+    std::vector<char> buffer(size);
+    const ssize_t bytesR = recv(clientSocket, buffer.data(), size - 1, 0);
+
+    if (bytesR < 0) {
+        throw Error("Failed to receive message: " + std::string(strerror(errno)));
+    }
+    if (bytesR == 0) {
+        connected = false;
+        return "";
+    }
+
+    return buffer.data();
 }
+
 bool Network::isConnected() const
 {
     return connected;

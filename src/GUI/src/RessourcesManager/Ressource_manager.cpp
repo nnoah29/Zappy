@@ -1,14 +1,12 @@
-#include "../lib/Ressource_manager.hpp"
+#include "Ressource_manager.hpp"
 #include <iostream>
 
 ResourceManager *ResourceManager::s_instance = nullptr;
 
 ResourceManager &ResourceManager::getInstance()
 {
-    if (!s_instance) {
-        s_instance = new ResourceManager();
-    }
-    return *s_instance;
+    static ResourceManager instance;
+    return instance;
 }
 
 void ResourceManager::destroy()
@@ -39,17 +37,15 @@ bool ResourceManager::initialize()
         {ResourceType::EGG, "src/GUI/assets/egg.png"},
         {ResourceType::TILE_EMPTY, "src/GUI/assets/tile_empty.png"}
     };
-    
-    int totalTextures = sizeof(textures) / sizeof(TextureInfo);
-    for (int i = 0; i < totalTextures; i++) {
+
+    for (auto & [type, filename] : textures) {
         sf::Texture texture;
-        if (!texture.loadFromFile(textures[i].filename)) {
-            createFallbackTexture(textures[i].type);
+        if (!texture.loadFromFile(filename)) {
+            createFallbackTexture(type);
         } else {
-            m_textures[textures[i].type] = texture;
+            m_textures[type] = texture;
         }
     }
-    
     std::cout << "Loaded " << m_textures.size() << " textures" << std::endl;
     return true;
 }
@@ -57,7 +53,7 @@ bool ResourceManager::initialize()
 const sf::Texture &ResourceManager::getTexture(ResourceType type) const
 {
     static sf::Texture emptyTexture;
-    auto it = m_textures.find(type);
+    const auto it = m_textures.find(type);
     return (it != m_textures.end()) ? it->second : emptyTexture;
 }
 
@@ -71,25 +67,30 @@ sf::Sprite ResourceManager::createSprite(ResourceType type, float x, float y) co
 
 void ResourceManager::createFallbackTexture(ResourceType type)
 {
-    sf::Color colors[] = {
-        sf::Color::Green,      // FOOD
-        sf::Color::White,      // LINEMATE
-        sf::Color::Blue,       // DERAUMERE
-        sf::Color::Yellow,     // SIBUR
-        sf::Color::Magenta,    // MENDIANE
-        sf::Color::Cyan,       // PHIRAS
-        sf::Color::Red,        // THYSTAME
-        sf::Color(255, 128, 0), // PLAYER_NORTH
-        sf::Color(255, 128, 0), // PLAYER_EAST
-        sf::Color(255, 128, 0), // PLAYER_SOUTH
-        sf::Color(255, 128, 0), // PLAYER_WEST
-        sf::Color(255, 255, 0), // EGG
-        sf::Color(64, 64, 64)   // TILE_EMPTY
+    static const std::map<ResourceType, sf::Color> fallbackColors = {
+        {ResourceType::FOOD, sf::Color::Green},
+        {ResourceType::LINEMATE, sf::Color::White},
+        {ResourceType::DERAUMERE, sf::Color::Blue},
+        {ResourceType::SIBUR, sf::Color::Yellow},
+        {ResourceType::MENDIANE, sf::Color::Magenta},
+        {ResourceType::PHIRAS, sf::Color::Cyan},
+        {ResourceType::THYSTAME, sf::Color::Red},
+        {ResourceType::PLAYER_NORTH, sf::Color(255, 128, 0)},
+        {ResourceType::PLAYER_EAST, sf::Color(255, 128, 0)},
+        {ResourceType::PLAYER_SOUTH, sf::Color(255, 128, 0)},
+        {ResourceType::PLAYER_WEST, sf::Color(255, 128, 0)},
+        {ResourceType::EGG, sf::Color(255, 255, 0)},
+        {ResourceType::TILE_EMPTY, sf::Color(64, 64, 64)}
     };
-    
     sf::Image image;
-    image.create(32, 32, colors[static_cast<int>(type)]);
-    
+    sf::Color color = sf::Color::Black;
+    auto it = fallbackColors.find(type);
+    if (it != fallbackColors.end()) {
+        color = it->second;
+    }
+
+    image.create(32, 32, color);
+
     sf::Texture texture;
     texture.loadFromImage(image);
     m_textures[type] = texture;

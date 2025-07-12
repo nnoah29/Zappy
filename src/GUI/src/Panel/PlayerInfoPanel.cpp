@@ -1,14 +1,15 @@
-#include "../lib/PlayerInfoPanel.hpp"
+#include "PlayerInfoPanel.hpp"
 #include <iostream>
 #include <sstream>
+#include "../Logger/Logger.hpp"
 
 PlayerInfoPanel::PlayerInfoPanel(sf::RenderWindow &window, GameWorld &gameWorld)
     : m_window(window), m_gameWorld(gameWorld), 
       m_resourceManager(ResourceManager::getInstance()),
       m_selectedPlayerId(-1), m_visible(false)
 {
-    const float PANEL_WIDTH = 300.0f;
-    const float PANEL_HEIGHT = 400.0f;
+    constexpr float PANEL_WIDTH = 300.0f;
+    constexpr float PANEL_HEIGHT = 400.0f;
     
     m_size = sf::Vector2f(PANEL_WIDTH, PANEL_HEIGHT);
     m_position = sf::Vector2f(10.0f, 10.0f);
@@ -23,8 +24,7 @@ PlayerInfoPanel::PlayerInfoPanel(sf::RenderWindow &window, GameWorld &gameWorld)
 
 bool PlayerInfoPanel::initialize()
 {
-    m_font.loadFromFile("src/GUI/assets/fonts/ARIAL.TTF");
-    return true;
+    return m_font.loadFromFile("src/GUI/assets/fonts/ARIAL.TTF");
 }
 
 void PlayerInfoPanel::setSelectedPlayer(int playerId)
@@ -52,7 +52,7 @@ void PlayerInfoPanel::render()
     m_window.setView(currentView);
 }
 
-void PlayerInfoPanel::renderPlayerInfo(const Player &player)
+void PlayerInfoPanel::renderPlayerInfo(const Player &player) const
 {
     float currentY = m_position.y + MARGIN;
     
@@ -93,9 +93,9 @@ void PlayerInfoPanel::renderPlayerInfo(const Player &player)
         {"Thystame", player.inventory.thystame}
     };
     
-    for (const auto &item : items) {
+    for (const auto & [fst, snd] : items) {
         std::ostringstream oss;
-        oss << "  " << item.first << ": " << item.second;
+        oss << "  " << fst << ": " << snd;
         sf::Text resourceText = createText(oss.str(), m_position.x + MARGIN, currentY);
         resourceText.setFillColor(sf::Color::White);
         m_window.draw(resourceText);
@@ -103,11 +103,7 @@ void PlayerInfoPanel::renderPlayerInfo(const Player &player)
     }
 }
 
-void PlayerInfoPanel::renderInventory(const PlayerInventory &inventory, float startY)
-{
-}
-
-sf::Text PlayerInfoPanel::createText(const std::string &text, float x, float y, unsigned int size)
+sf::Text PlayerInfoPanel::createText(const std::string &text, float x, float y, unsigned int size) const
 {
     sf::Text sfText;
     sfText.setFont(m_font);
@@ -125,7 +121,7 @@ sf::Text PlayerInfoPanel::createText(const std::string &text, float x, float y, 
     return sfText;
 }
 
-void PlayerInfoPanel::renderResourceIcon(ResourceType type, int count, float x, float y)
+void PlayerInfoPanel::renderResourceIcon(ResourceType type, int count, float x, float y) const
 {
     if (count > 0) {
         sf::Sprite sprite = m_resourceManager.createSprite(type, x, y);

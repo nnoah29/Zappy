@@ -1,4 +1,4 @@
-#include "../lib/Parser.hpp"
+#include "Parser.hpp"
 
 std::vector<std::string> Parser::split(std::string& str, char sep)
 {

@@ -10,20 +10,20 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include "Exceptions.hpp"
+#include "../../lib/Exceptions.hpp"
 
 class Network {
 public:
     Network();
     ~Network();
-    void connect(std::string, int);
+    void connect(const std::string& ip, int);
     void disconnect();
     void send(const std::string &message);
     std::string receive(size_t size = 10000);
     bool isConnected() const;
 private:
     int clientSocket;
-    sockaddr_in serverAddr;
+    sockaddr_in serverAddr{};
     bool connected;
 };
 
